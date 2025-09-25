@@ -2296,7 +2296,7 @@
         const lightingList = document.querySelectorAll('#lightingList .element-item');
         const lightingMapping = {
           "К-сть елементів (деталей) з підсвіткою": "p_light_mod",
-          "К-сть пристроїв керування": "p_light_control"
+          "К-сть пристроїв керування": "p_light_work"
         };
         
         lightingList.forEach(lighting => {
@@ -2925,6 +2925,7 @@ function calculateTotal() {
   addDetail("Підійомні механізми",      valInt("furnLifts"),        "p_furn_lifts");
   addDetail("Аксесуари до шафи",        valInt("furnAccessories"),  "p_furn_accessories");
   addDetail("Штанги для одягу",         valInt("furnHangingRods"),  "p_furn_hanging_rods");
+  addDetail("Барні механізми",          valInt("furnBarMechanisms"), "p_furn_bar_mechanisms");
 
   // 6. Ручки - поінти тільки за конкретні типи
   if (valYes("hasHandles")) {
@@ -2952,7 +2953,7 @@ function calculateTotal() {
     const lightingList = document.querySelectorAll('#lightingList .element-item');
     const lightingMapping = {
       "К-сть елементів (деталей) з підсвіткою": "p_light_mod",
-      "К-сть пристроїв керування": "p_light_control"
+      "К-сть пристроїв керування": "p_light_work"
     };
     
     lightingList.forEach(lighting => {

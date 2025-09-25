@@ -2567,21 +2567,23 @@ function getSettingValue(id) {
   if (hasHandles === "yes") {
     const handles = document.querySelectorAll('[id^="handle_"]');
     const handleMapping = {
-      "handles_straight": "p_handle_straight",
-      "handles_curved": "p_handle_curved",
-      "handles_profile": "p_handle_profile",
-      "handles_invisible": "p_handle_none",
-      "handles_individual": "p_handle_individual"
+      "handles_gola_low": "p_handle_gola_low",
+      "handles_gola_up": "p_handle_gola_up",
+      "handles_gola_vert": "p_handle_gola_vert",
+      "handles_end": "p_handle_end",
+      "handles_milled": "p_handle_milled",
+      "handles_other": "p_handle_other"
     };
     
     handles.forEach(handle => {
       const handleType = handle.getAttribute('data-handle-type');
       const handleNames = {
-        "handle_1": "Ручка 1",
-        "handle_2": "Ручка 2",
-        "handle_3": "Ручка 3",
-        "handle_4": "Ручка 4",
-        "handle_5": "Ручка 5"
+        "handles_gola_low": "GOLA низ",
+        "handles_gola_up": "GOLA верх",
+        "handles_gola_vert": "GOLA вертикал.",
+        "handles_end": "Торцеві",
+        "handles_milled": "Фрезеровані",
+        "handles_other": "Інші"
       };
       
       const handleName = handleNames[handleType] || handleType;
