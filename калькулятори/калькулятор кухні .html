@@ -171,6 +171,47 @@
     .points-hud { display:inline-block; padding:8px 14px; border-radius:999px; background:#eef2ff; color:#1d4ed8; font-weight:700; border:1px solid #c7d2fe; font-size:16px; }
     @media (max-width:640px){ .points-hud { font-size:12px; padding:4px 8px; } }
     
+    /* Кнопка повернення */
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+      background: #1976d2;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      color: white;
+      text-decoration: none;
+      font-size: 24px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    .back-button:hover {
+      background: #1565c0;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(25, 118, 210, 0.4);
+      text-decoration: none;
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      .back-button {
+        top: 15px;
+        left: 15px;
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+      }
+    }
+    
     /* Підказки */
     .tooltip-container {
       position: relative;
@@ -411,6 +452,9 @@
   </style>
 </head>
 <body>
+<!-- Кнопка повернення -->
+<a href="../index.html" class="back-button">←</a>
+
 <div class="wrapper">
 <header>
 <div class="title-small header-bar">Калькулятор поінтів (Кухня) v1.6</div>
