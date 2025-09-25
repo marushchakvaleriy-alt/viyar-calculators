@@ -604,7 +604,25 @@
   </div>
   <!-- Розділ 4 -->
   <div class="section">
-  <h3>4. Додаткові елементи – конструкції</h3>
+  <h3>4. Корпуса-модулі</h3>
+  <label for="sectionsCount">Кількість проємів (секцій):</label>
+  <input id="sectionsCount" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/><br/><br/>
+  <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+    <label>Типи фасадів:</label>
+    <select id="facadeType" onchange="toggleFacadeFields()" style="width: 200px;">
+      <option value="">-- Виберіть --</option>
+      <option value="swing">Фасади роспашні</option>
+      <option value="sliding">Фасади розсувні</option>
+    </select>
+  </div>
+  <div id="facadeFields" class="hidden">
+    <div id="facadeTypesList"></div>
+  </div>
+  </div>
+
+  <!-- Розділ 5 -->
+  <div class="section">
+  <h3>5. Додаткові елементи – конструкції</h3>
   <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
     <label>Є додаткові елементи:</label>
     <select id="hasAdditionalElements" onchange="toggleAdditionalElementsFields()" style="width: 150px;">
@@ -618,9 +636,9 @@
   </div>
   <div id="additionalElementsList"></div>
   </div>
-  <!-- Розділ 5 -->
+  <!-- Розділ 6 -->
   <div class="section">
-  <h3>5. Функціональна фурнітура</h3>
+  <h3>6. Функціональна фурнітура</h3>
   <label for="furnDrawers">Ящики:</label>
   <input id="furnDrawers" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/><br/><br/>
   <label for="furnLifts">Підйомні механізми:</label>
@@ -1887,29 +1905,40 @@ function checkRequiredFields() {
     }
   }
   
-  // 4. Стільниці - перевіряємо динамічні стільниці
+  // 4. Корпуса-модулі
+  const sections = document.getElementById("sectionsCount")?.value;
+  if (!sections || parseInt(sections) <= 0) {
+    missing.push("4. Кількість проємів (секцій)");
+  }
+  
+  const facadeType = document.getElementById("facadeType")?.value;
+  if (!facadeType) {
+    missing.push("4. Типи фасадів");
+  }
+  
+  // 5. Стільниці - перевіряємо динамічні стільниці
   const hasCountertops = document.getElementById("hasCountertops");
   if (!hasCountertops || !hasCountertops.value) {
-    missing.push("4. Стільниці (вибір)");
+    missing.push("5. Стільниці (вибір)");
   } else if (hasCountertops.value === "yes") {
     const countertops = document.querySelectorAll('[id^="countertop_"]');
     if (countertops.length === 0) {
-      missing.push("4. Стільниці (не додано жодної)");
+      missing.push("5. Стільниці (не додано жодної)");
     }
   }
   
-  // 5. Додаткові елементи - перевіряємо динамічні елементи
+  // 6. Додаткові елементи - перевіряємо динамічні елементи
   const hasElements = document.getElementById("hasElements");
   if (!hasElements || !hasElements.value) {
-    missing.push("5. Додаткові елементи (вибір)");
+    missing.push("6. Додаткові елементи (вибір)");
   } else if (hasElements.value === "yes") {
     const elements = document.querySelectorAll('[id^="additionalElement_"]');
     if (elements.length === 0) {
-      missing.push("5. Додаткові елементи (не додано жодного)");
+      missing.push("6. Додаткові елементи (не додано жодного)");
     }
   }
   
-  // 6. Функціональна фурнітура
+  // 7. Функціональна фурнітура
   const furnFields = ["furnDrawers", "furnLifts", "furnBarMechanisms", "furnWardrobeAccessories", "furnClothingRods", "furnSlidingBottom", "furnWingline", "furnSlidingDoors", "furnSlideM"];
   for (let fieldId of furnFields) {
     const field = document.getElementById(fieldId);
@@ -2551,7 +2580,19 @@ function calculate() {
     });
   })();
   
-  // ===== 4. Додаткові елементи =====
+  // ===== 4. Корпуса-модулі =====
+  (function(){
+    addDetail("Кількість проємів (секцій)", valInt("sectionsCount"), "p_sections");
+    
+    const facadeType = document.getElementById("facadeType").value;
+    if (facadeType === "swing") {
+      addDetail("Фасади роспашні", 1, "p_swing_facades");
+    } else if (facadeType === "sliding") {
+      addDetail("Фасади розсувні", 1, "p_sliding_facades");
+    }
+  })();
+  
+  // ===== 5. Додаткові елементи =====
   (function(){
     const elements = document.querySelectorAll('[id^="additionalElement_"]');
     elements.forEach(element => {
@@ -2571,7 +2612,7 @@ function calculate() {
     });
   })();
   
-  // ===== 5. Функціональна фурнітура =====
+  // ===== 6. Функціональна фурнітура =====
   (function(){
     addDetail("Ящики", valInt("furnDrawers"), "p_furn_drawers");
     addDetail("Підйомні механізми", valInt("furnLifts"), "p_furn_lifts");
@@ -2763,7 +2804,14 @@ document.addEventListener('DOMContentLoaded', function() {
           <div>Наявність опусків: <input id="p_countertop_drops" type="number" value="3"/></div>
         </div>
         
-        <h3>4. Додаткові елементи</h3>
+        <h3>4. Корпуса-модулі</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+          <div>Кількість проємів (секцій): <input id="p_sections" type="number" value="2"/></div>
+          <div>Фасади роспашні: <input id="p_swing_facades" type="number" value="1"/></div>
+          <div>Фасади розсувні: <input id="p_sliding_facades" type="number" value="6"/></div>
+        </div>
+        
+        <h3>5. Додаткові елементи</h3>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
           <div>Металоконструкція рамкова: <input id="p_element_metal_frame" type="number" value="6"/></div>
           <div>Металоконструкція об'ємна: <input id="p_element_metal_volume" type="number" value="12"/></div>
@@ -2772,7 +2820,7 @@ document.addEventListener('DOMContentLoaded', function() {
           <div>Фальш панелі вертикальні: <input id="p_element_false_vertical" type="number" value="1"/></div>
         </div>
         
-        <h3>5. Функціональна фурнітура</h3>
+        <h3>6. Функціональна фурнітура</h3>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
           <div>Ящики: <input id="p_furn_drawers" type="number" value="1"/></div>
           <div>Підйомні механізми: <input id="p_furn_lifts" type="number" value="2"/></div>
