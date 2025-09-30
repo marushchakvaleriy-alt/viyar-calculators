@@ -550,6 +550,12 @@
       color: black;
     }
   </style>
+   </style>
+  
+   <!-- Додати jsPDF бібліотеку -->
+   <script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+   <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+ </head>
 </head>
 <body>
 <!-- Кнопка повернення -->
@@ -2846,24 +2852,10 @@ async function downloadPDF() {
 <h3>Результат розрахунку</h3>
 <p id="pointsResult" style="font-size:18px;font-weight:bold;color:#1d4ed8;display:none;">Поінти: 0</p>
 </div>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  // Автоматичний перерахунок відключений - поінти показуються тільки після натискання "Розрахувати"
-});
-</script>
-<script>
-// Автоматичний перерахунок відключений - поінти показуються тільки після натискання "Розрахувати"
-</script>
 </div></div>
 
 </body>
 </html>
-<script>
-(function(){
-  // Автоматичний перерахунок відключений
-  // Автоматичний перерахунок відключений - поінти показуються тільки після натискання "Розрахувати"
-})();
-</script>
 <script>
 // Ініціалізація оновлення поінтів в реальному часі
 document.addEventListener("DOMContentLoaded", () => {
