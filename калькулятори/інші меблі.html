@@ -395,6 +395,12 @@
     }
     
   </style>
+    </style>
+  
+  <!-- Додати jsPDF бібліотеку -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
 </head>
 <body>
 <div class="wrapper">
@@ -424,7 +430,7 @@
 </label>
 <button class="no-print" onclick="saveData()">Зберегти</button>
 <button class="no-print" onclick="loadData()">Завантажити</button>
-<button class="no-print" onclick="window.print()">Друк</button><button id="topClearBtn" class="no-print" onclick="clearForm()" style="margin-left:8px;background:#ef4444;color:#fff;border:none;border-radius:6px;padding:6px 12px;cursor:pointer;">Очистити</button><button style="display:none"></button>
+<button class="no-print" onclick="downloadPDF()" style="margin-left:8px;background:#2563eb;color:#fff;border:none;border-radius:6px;padding:6px 12px;cursor:pointer;">Зберегти PDF</button>
 </div>
 </header>
 <div class="container">
@@ -2631,6 +2637,72 @@ function calculate() {
 document.addEventListener('DOMContentLoaded', function() {
   loadSettings();
 });
+
+// Функція для завантаження PDF
+async function downloadPDF() {
+  try {
+    // Показуємо індикатор завантаження
+    const button = document.querySelector('button[onclick="downloadPDF()"]');
+    const originalText = button.textContent;
+    button.textContent = 'Генеруємо PDF...';
+    button.disabled = true;
+    
+    // Імпортуємо html2canvas
+    const html2canvas = window.html2canvas;
+    const jsPDF = window.jspdf.jsPDF;
+    
+    // Отримуємо елемент для конвертації
+    const element = document.querySelector('.wrapper');
+    
+    // Конвертуємо в canvas
+    const canvas = await html2canvas(element, {
+      scale: 2, // Вища якість
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+      width: element.scrollWidth,
+      height: element.scrollHeight
+    });
+    
+    // Створюємо PDF
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    
+    // Розраховуємо розміри для A4
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+    const imgWidth = canvas.width;
+    const imgHeight = canvas.height;
+    const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+    const imgX = (pdfWidth - imgWidth * ratio) / 2;
+    const imgY = 0;
+    
+    // Додаємо зображення до PDF
+    pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+    
+    // Генеруємо назву файлу
+    const projectNum = document.getElementById('projectNum').value || 'Без_номера';
+    const productName = document.getElementById('productName').value || 'Без_назви';
+    const date = document.getElementById('dateField').value || new Date().toLocaleDateString('uk-UA');
+    const fileName = `Калькулятор_інші_меблі_${projectNum}_${productName}_${date}.pdf`;
+    
+    // Завантажуємо PDF
+    pdf.save(fileName);
+    
+    // Повертаємо кнопку в початковий стан
+    button.textContent = originalText;
+    button.disabled = false;
+    
+  } catch (error) {
+    console.error('Помилка при створенні PDF:', error);
+    alert('Помилка при створенні PDF. Спробуйте ще раз.');
+    
+    // Повертаємо кнопку в початковий стан
+    const button = document.querySelector('button[onclick="downloadPDF()"]');
+    button.textContent = 'Завантажити PDF';
+    button.disabled = false;
+  }
+}
 
 </script>
 
