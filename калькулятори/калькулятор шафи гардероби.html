@@ -581,7 +581,6 @@
 <button class="no-print" onclick="saveData()">Зберегти</button>
 <button class="no-print" onclick="loadData()">Завантажити</button>
 <button class="no-print" onclick="window.print()">Друк</button><button id="topClearBtn" class="no-print" style="margin-left:8px;background:#ef4444;color:#fff;border:none;border-radius:6px;padding:6px 12px;cursor:pointer;">Очистити</button><button style="display:none"></button>
-<button class="settings-btn no-print" onclick="toggleSettings()">⚙</button>
 </div>
 </header>
 <div class="container">
@@ -2054,101 +2053,6 @@
     function closeModal() {
       document.getElementById("warningModal").style.display = "none";
     }
-
-    function saveData() {
-      try {
-        // Збираємо всі дані форми
-        const formData = {};
-        document.querySelectorAll('input, select, textarea').forEach(el => {
-          if (el.id && !el.closest('#inlineSaveControls')) {
-            const value = el.type === 'checkbox' || el.type === 'radio' ? el.checked : el.value;
-            formData[el.id] = value;
-          }
-        });
-        
-        // Додаємо метадані
-        const data = {
-          meta: {
-            kind: 'viyar-kitchen-calc',
-            version: '1.6',
-            timestamp: new Date().toISOString()
-          },
-          values: formData
-        };
-        
-        // Зберігаємо в localStorage
-        localStorage.setItem('kitchen_calc_data', JSON.stringify(data));
-        
-        // Створюємо файл для завантаження
-        const filename = buildFilename();
-        const text = JSON.stringify(data, null, 2);
-        const blob = new Blob([text], {type: 'application/json;charset=utf-8'});
-        const url = URL.createObjectURL(blob);
-        
-        // Створюємо посилання для завантаження
-        const downloadLink = document.createElement('a');
-        downloadLink.href = url;
-        downloadLink.download = filename;
-        downloadLink.style.display = 'none';
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-        
-        // Очищуємо URL через 30 секунд
-        setTimeout(() => {
-          try { URL.revokeObjectURL(url); } catch(e) {}
-        }, 30000);
-        
-        alert('Дані збережено успішно!');
-        // Поінти не показуються автоматично - натисніть "Розрахувати"
-      } catch (error) {
-        console.error('Помилка збереження:', error);
-        alert('Помилка збереження: ' + error.message);
-      }
-    }
-
-    function loadData() {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = '.json,.vcalc.json';
-      
-      input.onchange = function(e) {
-        const file = e.target.files && e.target.files[0];
-        if (!file) return;
-        
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-          try {
-            const data = JSON.parse(ev.target.result);
-            if (data && data.values) {
-              // Застосовуємо збережені дані
-              Object.keys(data.values).forEach(key => {
-                const el = document.getElementById(key);
-                if (el) {
-                  if (el.type === 'checkbox' || el.type === 'radio') {
-                    el.checked = data.values[key] === true || data.values[key] === '1';
-                  } else {
-                    el.value = data.values[key];
-                  }
-                  // Тригеримо події для перерахунку
-                  el.dispatchEvent(new Event('input', {bubbles: true}));
-                  el.dispatchEvent(new Event('change', {bubbles: true}));
-                }
-              });
-              alert('Дані завантажено успішно!');
-              // Поінти не показуються автоматично - натисніть "Розрахувати"
-            } else {
-              alert('Невірний формат файлу');
-            }
-          } catch (error) {
-            console.error('Помилка завантаження:', error);
-            alert('Помилка завантаження: ' + error.message);
-          }
-        };
-        reader.readAsText(file, 'utf-8');
-      };
-      input.click();
-    }
     
     function buildFilename() {
       const project = document.getElementById('projectNum')?.value?.trim() || '';
@@ -2434,64 +2338,7 @@
       if (currentPointsElement) currentPointsElement.textContent = "0";
     }
 
-    // Пароль для налаштувань
-    const correctPassword = '1111'; // Можете змінити пароль
-    
-    function toggleSettings() {
-      document.getElementById('passwordModal').style.display = 'flex';
-      document.getElementById('passwordInput').focus();
-    }
-
-    function closePasswordModal() {
-      document.getElementById('passwordModal').style.display = 'none';
-      document.getElementById('passwordInput').value = '';
-    }
-
-    function checkPassword() {
-      const password = document.getElementById('passwordInput').value;
-      
-      if (password === correctPassword) {
-        closePasswordModal();
-        document.getElementById('settingsModal').style.display = 'flex';
-      } else {
-        alert('Невірний пароль!');
-        document.getElementById('passwordInput').value = '';
-        document.getElementById('passwordInput').focus();
-      }
-    }
-
-    function handlePasswordKeypress(event) {
-      if (event.key === 'Enter') {
-        checkPassword();
-      }
-    }
-    
-    function changePassword() {
-      const newPassword = document.getElementById('newPassword').value;
-      const statusElement = document.getElementById('passwordChangeStatus');
-      
-      if (newPassword.length < 3) {
-        statusElement.textContent = 'Пароль повинен містити мінімум 3 символи';
-        statusElement.style.color = '#dc2626';
-        return;
-      }
-      
-      // Зберігаємо новий пароль в localStorage
-      localStorage.setItem('settings_password', newPassword);
-      
-      // Оновлюємо поточний пароль
-      SETTINGS_PASSWORD = newPassword;
-      
-      statusElement.textContent = 'Пароль успішно змінено!';
-      statusElement.style.color = '#059669';
-      document.getElementById('newPassword').value = '';
-      
-      // Приховуємо повідомлення через 3 секунди
-      setTimeout(() => {
-        statusElement.textContent = '';
-      }, 3000);
-    }
-
+   
     window.onload = function() {
       // Приховуємо поінти при завантаженні
       const out = document.getElementById("pointsResult");
@@ -2538,237 +2385,89 @@
           return false;
         });
       }
-      
-      // Спробуємо завантажити збережені дані з localStorage
-      try {
-        const savedData = localStorage.getItem('kitchen_calc_data');
-        if (savedData) {
-          const data = JSON.parse(savedData);
-          if (data && data.values) {
-            // Застосовуємо збережені дані
-            Object.keys(data.values).forEach(key => {
-              const el = document.getElementById(key);
-              if (el) {
-                if (el.type === 'checkbox' || el.type === 'radio') {
-                  el.checked = data.values[key] === true || data.values[key] === '1';
-                } else {
-                  el.value = data.values[key];
-                }
-                // Тригеримо події для перерахунку
-                el.dispatchEvent(new Event('input', {bubbles: true}));
-                el.dispatchEvent(new Event('change', {bubbles: true}));
-              }
-            });
-            console.log('Збережені дані завантажено з localStorage');
-            // Оновлюємо поінти після завантаження даних
-            if (typeof updatePointsDisplay === "function") {
-              updatePointsDisplay();
-            }
-          }
-        }
-      } catch (error) {
-        console.error('Помилка завантаження з localStorage:', error);
-      }
-      
+          
       // Оновлюємо поінти після завантаження сторінки
       if (typeof updatePointsDisplay === "function") {
         updatePointsDisplay();
       }
     }
   </script>
-
-<!-- Модальне вікно для введення пароля -->
-<div id="passwordModal" class="modal" style="display: none;">
-  <div class="modal-content" style="max-width: 400px;">
-    <div class="modal-header">
-      <h3>Введіть пароль</h3>
-      <button class="close" onclick="closePasswordModal()">&times;</button>
-    </div>
-    <div>
-      <label for="passwordInput">Пароль:</label><br/>
-      <input type="password" id="passwordInput" onkeypress="handlePasswordKeypress(event)" style="width: 100%; margin-bottom: 15px; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" placeholder="Введіть пароль для доступу до налаштувань">
-    </div>
-    <div class="modal-actions">
-      <button onclick="closePasswordModal()" style="background: #6b7280;">Скасувати</button>
-      <button onclick="checkPassword()" style="background: #2563eb;">Відкрити налаштування</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="settingsModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);"><div class="settings-content">
-<button aria-label="Закрити" class="settings-close" onclick="closeSettings()">✕</button>
-<div style="background:#fff; margin:50px auto; padding:20px; width:80%; height:80%; overflow:auto; border-radius:8px;">
-<h2>⚙️ Налаштування поінтів</h2>
-<form id="pointsForm">
-<h3>🔒 Зміна пароля</h3>
-<label for="newPassword">Новий пароль:</label>
-<input id="newPassword" type="password" placeholder="Введіть новий пароль" style="width: 200px; margin-right: 10px;"/>
-<button type="button" onclick="changePassword()">Змінити пароль</button>
-<p id="passwordChangeStatus" style="margin-top: 10px; font-size: 12px;"></p>
-<hr style="margin: 20px 0;"/>
-<h3>1. Основні параметри</h3>
-      Форма шафи - Пряма: <input id="p_forma_pryama" type="number" value="19"/><br/>
-      Форма шафи - Г-подібна: <input id="p_forma_g" type="number" value="23"/><br/>
-      Форма шафи - П-подібна: <input id="p_forma_p" type="number" value="27"/><br/>
-      Нестандартна геометрія: <input id="p_geo" type="number" value="8"/><br/>
-      Мансардна шафа: <input id="p_attic" type="number" value="18"/><br/>
-      Тип встановлення - Вбудована: <input id="p_installation_builtin" type="number" value="3"/><br/>
-      Тип встановлення - Окремостояча: <input id="p_installation_standalone" type="number" value="1"/><br/>
-      Тип встановлення - Шафа підвісна: <input id="p_installation_suspended" type="number" value="25"/><br/>
-      Без замірів: <input id="p_zamir_none" type="number" value="1"/><br/>
-      По замірам 3D: <input id="p_zamir_3d" type="number" value="8"/><br/>
-      По замірам фото-ескіз: <input id="p_zamir_photo" type="number" value="12"/><br/>
-<h3>2. Матеріали</h3>
-      Матеріал корпуса: <input id="p_mat_corpus" type="number" value="3"/><br/>
-      Скло-дзеркало: <input id="p_mat_glass" type="number" value="2"/><br/>
-<h4>Фасадні матеріали:</h4>
-      ДСП мат. корпусу: <input id="p_facade_dsp_mat" type="number" value="2"/><br/>
-      ДСП: <input id="p_facade_dsp" type="number" value="3"/><br/>
-      МДФ плити: <input id="p_facade_mdf" type="number" value="6"/><br/>
-      Фарба/плівка 'прямі': <input id="p_facade_paint_straight" type="number" value="10"/><br/>
-      Фарба/плівка 'фрезеровані': <input id="p_facade_paint_milled" type="number" value="14"/><br/>
-      Шпоновані 'прямі': <input id="p_facade_veneer_straight" type="number" value="12"/><br/>
-      Шпоновані 'фрезеровані': <input id="p_facade_veneer_milled" type="number" value="16"/><br/>
-      Алюм. рамкові: <input id="p_facade_alum_frame" type="number" value="8"/><br/>
-      ARPA/Fenix: <input id="p_facade_arpa" type="number" value="8"/><br/>
-      Fiushin: <input id="p_facade_fiushin" type="number" value="10"/><br/>
-      HPL: <input id="p_facade_hpl" type="number" value="14"/><br/>
-      R&D фасади індивід.: <input id="p_facade_rd_individual" type="number" value="30"/><br/>
-      МДФ фасади з індивідуальним фрезеруванням: <input id="p_facade_mdf_individual" type="number" value="17"/><br/>
-<h3>3. Корпус-модулі</h3>
-      Довжина шафи м/п: <input id="p_sections" type="number" value="2"/><br/>
-      Без фасадів: <input id="p_facade_none" type="number" value="0"/><br/>
-      Фасади роспашні: <input id="p_swing_facades" type="number" value="1"/><br/>
-      Розсувні с-ми (нижньоопорні): <input id="p_furn_sliding_bottom" type="number" value="6"/><br/>
-      Розсувні с-ми (верхньопідвісні): <input id="p_furn_sliding_top" type="number" value="12"/><br/>
-      Складна система WingLine: <input id="p_furn_wingline" type="number" value="12"/><br/>
-      Системи розсувних дверей (Revego, Hawa, Salice): <input id="p_furn_doors" type="number" value="24"/><br/>
-      Розсувні с-ми (типу slide М): <input id="p_furn_slide" type="number" value="6"/><br/>
-<h3>4. Додаткові елементи</h3>
-      Фальш горизонтальні: <input id="p_false_hor" type="number" value="3"/><br/>
-      Фальш вертикальні: <input id="p_false_ver" type="number" value="1"/><br/>
-      Деталь R&D, гнутий елемент тощо: <input id="p_false_rnd" type="number" value="15"/><br/>
-      Металоконструкція рамкова: <input id="p_metal_frame" type="number" value="6"/><br/>
-      Металоконструкція обємна: <input id="p_metal_volume" type="number" value="12"/><br/>
-<h3>5. Функціональна фурнітура</h3>
-      Ящики: <input id="p_furn_drawers" type="number" value="1"/><br/>
-      Підійомні механізми: <input id="p_furn_lifts" type="number" value="2"/><br/>
-      Аксесуари до шафи: <input id="p_furn_accessories" type="number" value="3"/><br/>
-      Штанги для одягу: <input id="p_furn_hanging_rods" type="number" value="1"/><br/>
-      Барні механізми: <input id="p_furn_bar_mechanisms" type="number" value="2"/><br/>
-<h3>6. Ручки</h3>
-      GOLA: <input id="p_handle_gola_low" type="number" value="3"/><br/>
-      Торцеві: <input id="p_handle_end" type="number" value="7"/><br/>
-      Фрезеровані: <input id="p_handle_fr" type="number" value="8"/><br/>
-      Інші, накладні тощо: <input id="p_handle_other" type="number" value="3"/><br/>
-<h3>9. Вбудована техніка</h3>
-      Люк технічний: <input id="p_tech_hatch" type="number" value="6"/><br/>
-      Техніка (пралка, сушка, сейф тощо): <input id="p_tech_appliance" type="number" value="4"/><br/>
-<h3>10. Підсвітка</h3>
-      К-сть елементів (деталей) з підсвіткою: <input id="p_light_mod" type="number" value="2"/><br/>
-      К-сть пристроїв керування: <input id="p_light_work" type="number" value="3"/><br/>
-<br/><button onclick="savePoints()" type="button">Зберегти</button>
-<button onclick="closeSettings()" type="button">Закрити</button>
-</form>
-</div>
-<div class="calc-actions"><button onclick="calculate()" type="button">Розрахувати</button></div>
-</div>
-<script>
-function closeSettings() {
-  document.getElementById('settingsModal').style.display = 'none';
-}
-function savePoints() {
-  const inputs = document.querySelectorAll('#pointsForm input');
-  inputs.forEach(input => {
-    localStorage.setItem(input.id, input.value);
-  });
-  alert('Поінти збережено!');
-}
-window.onload = () => {
-  const inputs = document.querySelectorAll('#pointsForm input');
-  inputs.forEach(input => {
-    const saved = localStorage.getItem(input.id);
-    if (saved !== null) {
-      input.value = saved;
-      console.log("Loaded setting:", input.id, "=", saved);
-    }
-  });
-  
-  // Також завантажуємо налаштування з нового ключа
-  try {
-    const settingsData = localStorage.getItem("kitchen_points_settings");
-    if (settingsData) {
-      const data = JSON.parse(settingsData);
-      inputs.forEach(input => {
-        if (data[input.id] !== undefined) {
-          input.value = data[input.id];
-          console.log("Loaded from kitchen_points_settings:", input.id, "=", data[input.id]);
-        }
-      });
-    }
-  } catch (e) {
-    console.log("No kitchen_points_settings found");
-  }
-  
-  // Ініціалізуємо тарифи за замовчуванням, якщо вони не знайдені
-  const defaultTariffs = {
-    "p_forma_pryama": "1",
-    "p_forma_g": "1", 
-    "p_forma_p": "1",
-    "p_geo": "1",
-    "p_attic": "1",
-    "p_zamir_none": "0",
-    "p_zamir_3d": "1",
-    "p_zamir_photo": "1",
-    "p_mat_corpus": "1",
-    "p_mat_glass": "1",
-    "p_sections": "1",
-    "p_facade_none": "0",
-    "p_swing_facades": "1",
-    "p_furn_sliding_bottom": "1",
-    "p_furn_sliding_top": "1", 
-    "p_furn_wingline": "1",
-    "p_furn_doors": "1",
-    "p_furn_slide": "1",
-    "p_false_hor": "1",
-    "p_false_ver": "1",
-    "p_false_rnd": "1",
-    "p_metal_structures": "1",
-    "p_handle_gola_low": "1",
-    "p_handle_gola_up": "1",
-    "p_handle_gola_vert": "1",
-    "p_handle_end": "1",
-    "p_handle_fr": "1",
-    "p_light_mod": "1",
-    "p_light_work": "1",
-    "p_light_base": "1",
-    "p_light_other": "1",
-    "p_appliance": "1"
-  };
-  
-  inputs.forEach(input => {
-    if (!input.value && defaultTariffs[input.id]) {
-      input.value = defaultTariffs[input.id];
-      console.log("Set default value for:", input.id, "=", defaultTariffs[input.id]);
-    }
-  });
-  
-  // Оновлюємо поінти після завантаження налаштувань
-  if (typeof updatePointsDisplay === "function") {
-    updatePointsDisplay();
-  }
-};
-</script>
 <script>
 function getSettingValue(id) {
-  const el = document.getElementById(id);
-  if (!el) {
-    console.log("Element not found:", id);
-    return 1; // Повертаємо 1 за замовчуванням замість 0
-  }
-  const v = parseFloat(el.value);
-  console.log("getSettingValue:", id, "value:", el.value, "parsed:", v);
-  return (Number.isFinite(v) && v > 0) ? v : 1; // Повертаємо 1 за замовчуванням замість 0
+  // Статичні значення поінтів (замість динамічних налаштувань)
+  const POINT_VALUES = {
+    // Основні параметри
+    "p_forma_pryama": 19,    // Форма шафи - Пряма
+    "p_forma_g": 23,         // Форма шафи - Г-подібна
+    "p_forma_p": 27,         // Форма шафи - П-подібна
+    "p_geo": 8,              // Нестандартна геометрія
+    "p_attic": 18,           // Мансардна шафа
+    "p_installation_builtin": 3,      // Тип встановлення - Вбудована
+    "p_installation_standalone": 1,   // Тип встановлення - Окремостояча
+    "p_installation_suspended": 25,   // Тип встановлення - Шафа підвісна
+    "p_zamir_none": 1,       // Без замірів
+    "p_zamir_3d": 8,         // По замірам 3D
+    "p_zamir_photo": 12,     // По замірам фото-ескіз
+    
+    // Матеріали
+    "p_mat_corpus": 3,       // Матеріал корпусу
+    "p_mat_glass": 2,        // Скло-дзеркало
+    
+    // Фасадні матеріали
+    "p_facade_dsp_mat": 2,   // ДСП мат. корпусу
+    "p_facade_dsp": 3,       // ДСП
+    "p_facade_mdf": 6,       // МДФ плити
+    "p_facade_paint_straight": 10,    // Фарба/плівка 'прямі'
+    "p_facade_paint_milled": 14,      // Фарба/плівка 'фрезеровані'
+    "p_facade_veneer_straight": 12,   // Шпоновані 'прямі'
+    "p_facade_veneer_milled": 16,     // Шпоновані 'фрезеровані'
+    "p_facade_alum_frame": 8,         // Алюм. рамкові
+    "p_facade_arpa": 8,               // ARPA/Fenix
+    "p_facade_fiushin": 10,           // Fiushin
+    "p_facade_hpl": 14,               // HPL
+    "p_facade_rd_individual": 30,     // R&D фасади індивід.
+    "p_facade_mdf_individual": 17,    // МДФ фасади з індивідуальним фрезеруванням
+    
+    // Корпус-модулі
+    "p_sections": 2,         // Довжина шафи м/п
+    "p_facade_none": 0,      // Без фасадів
+    "p_swing_facades": 1,    // Фасади роспашні
+    "p_furn_sliding_bottom": 6,       // Розсувні с-ми (нижньоопорні)
+    "p_furn_sliding_top": 12,         // Розсувні с-ми (верхньопідвісні)
+    "p_furn_wingline": 12,            // Складна система WingLine
+    "p_furn_doors": 24,               // Системи розсувних дверей (Revego, Hawa, Salice)
+    "p_furn_slide": 6,                // Розсувні с-ми (типу slide М)
+    
+    // Додаткові елементи
+    "p_false_hor": 3,        // Фальш горизонтальні
+    "p_false_ver": 1,        // Фальш вертикальні
+    "p_false_rnd": 15,       // Деталь R&D, гнутий елемент тощо
+    "p_metal_frame": 6,      // Металоконструкція рамкова
+    "p_metal_volume": 12,    // Металоконструкція об'ємна
+    
+    // Функціональна фурнітура
+    "p_furn_drawers": 1,     // Ящики
+    "p_furn_lifts": 2,       // Підійомні механізми
+    "p_furn_accessories": 3, // Аксесуари до шафи
+    "p_furn_hanging_rods": 1, // Штанги для одягу
+    "p_furn_bar_mechanisms": 2, // Барні механізми
+    
+    // Ручки
+    "p_handle_gola_low": 3,  // GOLA
+    "p_handle_end": 7,       // Торцеві
+    "p_handle_fr": 8,        // Фрезеровані
+    "p_handle_other": 3,     // Інші, накладні тощо
+    
+    // Вбудована техніка
+    "p_tech_hatch": 6,       // Люк технічний
+    "p_tech_appliance": 4,   // Техніка (пралка, сушка, сейф тощо)
+    
+    // Підсвітка
+    "p_light_mod": 2,        // К-сть елементів (деталей) з підсвіткою
+    "p_light_work": 3,       // К-сть пристроїв керування
+  };
+  
+  return POINT_VALUES[id] || 1;
 }
 
 
@@ -3050,206 +2749,8 @@ function calculateTotal() {
 <p id="pointsResult" style="font-size:18px;font-weight:bold;color:#1d4ed8;display:none;">Поінти: 0</p>
 </div>
 <script>
-// ===== Persist settings (tariffs) and protect them from reset =====
-document.addEventListener("DOMContentLoaded", () => {
-  const settingsRoot = document.querySelector("#settingsModal, .settings-modal, [data-role='settings']");
-
-  function saveSettings() {
-    if (!settingsRoot) return;
-    const data = {};
-    settingsRoot.querySelectorAll("input, select, textarea").forEach(el => {
-      const key = el.id || el.name;
-      if (!key) return;
-      if (el.type === "checkbox" || el.type === "radio") data[key] = el.checked ? "1" : "0";
-      else data[key] = el.value;
-    });
-    try { localStorage.setItem("kitchen_points_settings", JSON.stringify(data)); } catch(_) {}
-  }
-
-  function loadSettings() {
-    if (!settingsRoot) return;
-    let data = null;
-    try { data = JSON.parse(localStorage.getItem("kitchen_points_settings") || "null"); } catch(_) {}
-    if (!data) return;
-    settingsRoot.querySelectorAll("input, select, textarea").forEach(el => {
-      const key = el.id || el.name;
-      if (!key || !(key in data)) return;
-      const val = data[key];
-      if (el.type === "checkbox" || el.type === "radio") el.checked = val === "1";
-      else el.value = val;
-    });
-  }
-
-  // Save on change & at "Зберегти" click (if present)
-  if (settingsRoot) {
-    settingsRoot.addEventListener("change", saveSettings);
-    settingsRoot.addEventListener("input", saveSettings);
-    const saveBtn = Array.from(settingsRoot.querySelectorAll("button")).find(b => /зберегти/i.test(b.textContent));
-    if (saveBtn) saveBtn.addEventListener("click", saveSettings);
-  }
-  loadSettings(); // restore settings on load
-
-  // ===== Custom CLEAR (Очистити) for main form only =====
-  // Find main form container (try to detect); fallback to document.body
-  const formRoot = document.querySelector("#mainForm, form#calculatorForm, .calculator-form, main, .wrapper") || document.body;
-
-  function clearMainFormOnly() {
-    const settingsSet = new Set();
-    if (settingsRoot) settingsRoot.querySelectorAll("*").forEach(n => settingsSet.add(n));
-
-    const nodes = formRoot.querySelectorAll("input, select, textarea");
-    nodes.forEach(el => {
-      if (settingsSet.has(el)) return; // skip settings elements
-      const tag = el.tagName.toLowerCase();
-      if (tag === "input") {
-        const t = (el.type || "").toLowerCase();
-        if (["text","number","email","tel","search","url","password","date","time","datetime-local"].includes(t) && el.id !== "dateField") el.value = "";
-        else if (t === "checkbox" || t === "radio") el.checked = false;
-        else if (t === "range") { el.value = el.hasAttribute("min") ? el.getAttribute("min") : 0; }
-        else if (t === "reset") { /* skip */ }
-        else { try { if (el.id !== "dateField") el.value = ""; } catch(_) {} }
-      } else if (tag === "select") {
-        if (el.options && el.options.length > 0) el.selectedIndex = 0; else el.value = "";
-      } else if (tag === "textarea") {
-        if (el.id !== "dateField") el.value = "";
-      }
-      el.dispatchEvent(new Event("change", { bubbles: true }));
-      el.dispatchEvent(new Event("input", { bubbles: true }));
-    });
-    
-    // Приховуємо поінти при очищенні
-    const out = document.getElementById("pointsResult");
-    if (out) out.style.display = "none";
-  }
-
-  // Wire up clear buttons
-  const candidates = Array.from(document.querySelectorAll('button, input[type="reset"]'));
-  const clearButtons = candidates.filter(el => {
-    const txt = (el.textContent || el.value || "").trim().toLowerCase();
-    return el.type === "reset" || ["очистити","скинути","очистка","clear","reset"].some(k => txt === k || txt.includes(k));
-  });
-  clearButtons.forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      e.preventDefault();
-      // Просто перезавантажуємо сторінку
-      location.reload();
-    }, { capture: true });
-  });
-});
-</script>
-<script>
 document.addEventListener("DOMContentLoaded", () => {
   // Автоматичний перерахунок відключений - поінти показуються тільки після натискання "Розрахувати"
-});
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  // Автоматичний перерахунок відключений
-
-  // Restore settings from localStorage (if present)
-  const settingsRoot = document.querySelector('#settingsModal, .settings-modal, [data-role="settings"]');
-  function loadSettings(){
-    try{
-      const raw = localStorage.getItem("kitchen_points_settings");
-      if (!raw || !settingsRoot) return;
-      const data = JSON.parse(raw);
-      settingsRoot.querySelectorAll("input,select,textarea").forEach(el=>{
-        const key = el.id || el.name;
-        if (!key || !(key in data)) return;
-        if (el.type === "checkbox" || el.type === "radio") el.checked = data[key] === "1";
-        else el.value = data[key];
-      });
-    }catch(e){}
-  }
-  loadSettings();
-
-  // Save settings on change (so Clear never loses them even if something touches them)
-  if (settingsRoot){
-    const saveSettings = ()=>{
-      try{
-        const obj = {};
-        settingsRoot.querySelectorAll("input,select,textarea").forEach(el=>{
-          const key = el.id || el.name;
-          if (!key) return;
-          obj[key] = (el.type==="checkbox"||el.type==="radio") ? (el.checked?"1":"0") : el.value;
-        });
-        localStorage.setItem("kitchen_points_settings", JSON.stringify(obj));
-      }catch(e){}
-    };
-    settingsRoot.addEventListener("change", saveSettings);
-    settingsRoot.addEventListener("input",  saveSettings);
-  }
-
-  // SCOPED CLEAR: clear only inside the same visual container as the clicked Clear button.
-  const buttons = Array.from(document.querySelectorAll('button, input[type="reset"]')).filter(el=>{
-    const txt = (el.textContent || el.value || "").trim().toLowerCase();
-    const isClear = el.type==="reset" || ["очистити","скинути","очистка","clear","reset"].some(k=>txt===k || txt.includes(k));
-    if (!isClear) return false;
-    // Ignore buttons inside settings
-    return !el.closest('#settingsModal, .settings-modal, [data-role="settings"], [id*="setting"], [class*="setting"]');
-  });
-
-  function findFormContainer(btn){
-    // Prefer nearest <form>, else a big section container
-    return btn.closest("form, .calculator-form, main, .wrapper, .container, .content, .card, section") || document.body;
-  }
-
-  buttons.forEach(btn=>{
-    btn.addEventListener("click", (e)=>{
-      e.preventDefault();
-      // Просто перезавантажуємо сторінку
-      location.reload();
-    }, {capture:true});
-  });
-
-  // Автоматичний перерахунок відключений - поінти показуються тільки після натискання "Розрахувати"
-});
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  // Автоматичний перерахунок відключений
-
-  function isInSettings(el) {
-    return !!(el && el.closest('#settingsModal, .settings-modal, [data-role="settings"], [id*="setting"], [class*="setting"]'));
-  }
-
-  function clearMainFormFrom(rootNode){
-    // find a broad container for the calculator form
-    const formRoot = rootNode?.closest("form, .calculator-form, main, .wrapper, .container, .content, section") || document.querySelector("main, .wrapper, .container, .content") || document.body;
-    const nodes = formRoot.querySelectorAll("input, select, textarea");
-    nodes.forEach(el=>{
-      if (isInSettings(el)) return; // do NOT touch settings
-      if (el.id === "dateField") return; // НЕ очищуємо дату
-      const tag = el.tagName.toLowerCase();
-      if (tag === "input") {
-        const t = (el.type || "").toLowerCase();
-        if (["text","number","email","tel","search","url","password","date","time","datetime-local"].includes(t) && el.id !== "dateField") el.value = "";
-        else if (t === "checkbox" || t === "radio") el.checked = false;
-        else if (t === "range") el.value = el.min || "0";
-        else if (t === "reset" || t === "button" || t === "submit") { /* skip */ }
-        else { try { if (el.id !== "dateField") el.value = ""; } catch(_) {} }
-      } else if (tag === "select") {
-        if (el.options && el.options.length) el.selectedIndex = 0; else if (el.id !== "dateField") el.value = "";
-      } else if (tag === "textarea") {
-        if (el.id !== "dateField") el.value = "";
-      }
-      el.dispatchEvent(new Event("input", {bubbles:true}));
-      el.dispatchEvent(new Event("change", {bubbles:true}));
-    });
-    
-    // Приховуємо поінти при очищенні
-    const out = document.getElementById("pointsResult");
-    if (out) out.style.display = "none";
-  }
-
-  const topBtn = document.getElementById("topClearBtn");
-  if (topBtn) {
-    topBtn.addEventListener("click", (e)=>{
-      e.preventDefault();
-      // Просто перезавантажуємо сторінку
-      location.reload();
-    });
-  }
 });
 </script>
 <script>
