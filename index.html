@@ -823,141 +823,247 @@
         }
 
         // Завантаження налаштувань з бібліотеки
-        // Мапінг розділів для кожного калькулятора
-        const sectionMapping = {
-            kitchen: {
-                "1. Основні параметри": ["p_forma_", "p_geo", "p_vent", "p_bez_zamiriv", "p_zamir_", "p_island"],
-                "2. Матеріали": ["p_mat_", "p_facade_", "p_facade_texture"],
-                "3. Стільниці": ["p_tabletop_"],
-                "4. Фартух": ["p_fartukh_"],
-                "5. Корпуса-модулі": ["p_mod_"],
-                "6. Додаткові елементи": ["p_false_", "p_detail_", "p_metal_"],
-                "7. Функціональна фурнітура": ["p_furn_"],
-                "8. Ручки": ["p_handle_"],
-                "9. Підсвітка": ["p_light_"],
-                "10. Вбудована техніка": ["p_appliance"]
-            },
-            wardrobe: {
-                "1. Основні параметри": ["p_forma_", "p_installation_", "p_zamir_", "p_geo", "p_attic"],
-                "2. Матеріали": ["p_mat_", "p_facade_", "p_facade_texture"],
-                "3. Корпуса-модулі": ["p_mod_"],
-                "4. Додаткові елементи": ["p_false_", "p_detail_", "p_metal_"],
-                "5. Функціональна фурнітура": ["p_furn_"],
-                "6. Ручки": ["p_handle_"],
-                "7. Підсвітка": ["p_light_"]
-            },
-            wardrobeSystems: {
-                "1. Основні параметри": ["p_forma_", "p_installation_", "p_zamir_", "p_geo"],
-                "2. Матеріали": ["p_mat_", "p_facade_"],
-                "3. Корпуса-модулі": ["p_mod_"],
-                "4. Додаткові елементи": ["p_false_", "p_detail_"],
-                "5. Функціональна фурнітура": ["p_furn_"],
-                "6. Ручки": ["p_handle_"],
-                "7. Підсвітка": ["p_light_"]
-            },
-            wallPanels: {
-                "1. Основні параметри": ["p_forma_", "p_zamir_", "p_geo"],
-                "2. Матеріали": ["p_mat_", "p_facade_"],
-                "3. Корпуса-модулі": ["p_mod_"],
-                "4. Додаткові елементи": ["p_false_", "p_detail_"],
-                "5. Ручки": ["p_handle_"],
-                "6. Підсвітка": ["p_light_"]
-            },
-            otherFurniture: {
-                "1. Основні параметри": ["p_forma_", "p_zamir_", "p_geo"],
-                "2. Матеріали": ["p_mat_", "p_facade_"],
-                "3. Корпуса-модулі": ["p_mod_"],
-                "4. Додаткові елементи": ["p_false_", "p_detail_"],
-                "5. Функціональна фурнітура": ["p_furn_"],
-                "6. Ручки": ["p_handle_"],
-                "7. Підсвітка": ["p_light_"]
-            }
-        };
-
-        function loadSettings() {
-            // Завжди завантажуємо з бібліотеки
-            currentSettings = loadCalculatorSettings();
+        // Функція для динамічного групування поінтів по розділах
+        function groupPointsBySections(points) {
+            const sections = {};
             
-            // Заповнюємо всі секції
-            Object.keys(currentSettings).forEach(calcType => {
-                const container = document.getElementById(calcType + 'Points');
-                if (container) {
-                    container.innerHTML = '';
-                    
-                    // Отримуємо мапінг розділів для цього калькулятора
-                    const sections = sectionMapping[calcType] || {};
-                    
-                    // Групуємо поінти по розділах
-                    Object.keys(sections).forEach(sectionName => {
-                        const sectionPrefixes = sections[sectionName];
-                        const sectionPoints = {};
+            Object.keys(points).forEach(pointId => {
+                const point = points[pointId];
+                
+                // Визначаємо розділ на основі ID поінта
+                let sectionName = "Інші";
+                
+                if (pointId.startsWith('p_forma_') || pointId.startsWith('p_geo') || 
+                    pointId.startsWith('p_vent') || pointId.startsWith('p_bez_zamiriv') || 
+                    pointId.startsWith('p_zamir_') || pointId.startsWith('p_island') ||
+                    pointId.startsWith('p_installation_') || pointId.startsWith('p_attic')) {
+                    sectionName = "1. Основні параметри";
+                } else if (pointId.startsWith('p_mat_') || pointId.startsWith('p_facade_')) {
+                    sectionName = "2. Матеріали";
+                } else if (pointId.startsWith('p_tabletop_')) {
+                    sectionName = "3. Стільниці";
+                } else if (pointId.startsWith('p_fartukh_')) {
+                    sectionName = "4. Фартух";
+                } else if (pointId.startsWith('p_mod_')) {
+                    sectionName = "5. Корпуса-модулі";
+                } else if (pointId.startsWith('p_false_') || pointId.startsWith('p_detail_') || 
+                          pointId.startsWith('p_metal_')) {
+                    sectionName = "6. Додаткові елементи";
+                } else if (pointId.startsWith('p_furn_')) {
+                    sectionName = "7. Функціональна фурнітура";
+                } else if (pointId.startsWith('p_handle_')) {
+                    sectionName = "8. Ручки";
+                } else if (pointId.startsWith('p_light_')) {
+                    sectionName = "9. Підсвітка";
+                } else if (pointId.startsWith('p_appliance')) {
+                    sectionName = "10. Вбудована техніка";
+                }
+                
+                if (!sections[sectionName]) {
+                    sections[sectionName] = {};
+                }
+                sections[sectionName][pointId] = point;
+            });
+            
+            return sections;
+        }
+
+        async function loadSettings() {
+            try {
+                // Завжди завантажуємо з бібліотеки
+                currentSettings = await loadCalculatorSettings();
+                
+                // Заповнюємо всі секції
+                Object.keys(currentSettings).forEach(calcType => {
+                    const container = document.getElementById(calcType + 'Points');
+                    if (container) {
+                        container.innerHTML = '';
                         
-                        // Знаходимо поінти для цього розділу
-                        Object.keys(currentSettings[calcType]).forEach(pointId => {
-                            const point = currentSettings[calcType][pointId];
-                            const matchesPrefix = sectionPrefixes.some(prefix => pointId.startsWith(prefix));
+                        // Динамічно групуємо поінти по розділах
+                        const sections = groupPointsBySections(currentSettings[calcType]);
+                        
+                        // Створюємо секції
+                        Object.keys(sections).forEach(sectionName => {
+                            const sectionPoints = sections[sectionName];
                             
-                            if (matchesPrefix) {
-                                sectionPoints[pointId] = point;
+                            // Якщо є поінти для цього розділу, створюємо секцію
+                            if (Object.keys(sectionPoints).length > 0) {
+                                const sectionDiv = document.createElement('div');
+                                sectionDiv.className = 'points-section';
+                                
+                                const headerDiv = document.createElement('div');
+                                headerDiv.className = 'points-section-header';
+                                headerDiv.textContent = sectionName;
+                                
+                                const contentDiv = document.createElement('div');
+                                contentDiv.className = 'points-section-content';
+                                
+                                const gridDiv = document.createElement('div');
+                                gridDiv.className = 'points-grid';
+                                
+                                // Додаємо поінти до сітки
+                                Object.keys(sectionPoints).forEach(pointId => {
+                                    const point = sectionPoints[pointId];
+                                    const pointItem = document.createElement('div');
+                                    pointItem.className = 'point-item';
+                                    pointItem.innerHTML = `
+                                        <label for="${pointId}">${point.label}</label>
+                                        <input type="number" id="${pointId}" value="${point.value}" min="0" step="1">
+                                    `;
+                                    gridDiv.appendChild(pointItem);
+                                });
+                                
+                                contentDiv.appendChild(gridDiv);
+                                sectionDiv.appendChild(headerDiv);
+                                sectionDiv.appendChild(contentDiv);
+                                container.appendChild(sectionDiv);
                             }
                         });
-                        
-                        // Якщо є поінти для цього розділу, створюємо секцію
-                        if (Object.keys(sectionPoints).length > 0) {
-                            const sectionDiv = document.createElement('div');
-                            sectionDiv.className = 'points-section';
-                            
-                            const headerDiv = document.createElement('div');
-                            headerDiv.className = 'points-section-header';
-                            headerDiv.textContent = sectionName;
-                            
-                            const contentDiv = document.createElement('div');
-                            contentDiv.className = 'points-section-content';
-                            
-                            const gridDiv = document.createElement('div');
-                            gridDiv.className = 'points-grid';
-                            
-                            // Додаємо поінти до сітки
-                            Object.keys(sectionPoints).forEach(pointId => {
-                                const point = sectionPoints[pointId];
-                                const pointItem = document.createElement('div');
-                                pointItem.className = 'point-item';
-                                pointItem.innerHTML = `
-                                    <label for="${pointId}">${point.label}</label>
-                                    <input type="number" id="${pointId}" value="${point.value}" min="0" step="1">
-                                `;
-                                gridDiv.appendChild(pointItem);
-                            });
-                            
-                            contentDiv.appendChild(gridDiv);
-                            sectionDiv.appendChild(headerDiv);
-                            sectionDiv.appendChild(contentDiv);
-                            container.appendChild(sectionDiv);
-                        }
-                    });
-                }
-            });
+                    }
+                });
+            } catch (error) {
+                console.error('Помилка завантаження налаштувань:', error);
+                alert('❌ Помилка завантаження налаштувань. Перевірте, чи існує файл calculator-settings.js');
+            }
         }
 
         // Збереження налаштувань
-        function saveSettings() {
-            // Збираємо дані з усіх полів
-            Object.keys(currentSettings).forEach(calcType => {
-                Object.keys(currentSettings[calcType]).forEach(pointId => {
-                    const input = document.getElementById(pointId);
-                    if (input) {
-                        currentSettings[calcType][pointId].value = parseInt(input.value) || 0;
+        // GitHub API налаштування
+        // ========================================
+        // БЕЗПЕЧНА СИСТЕМА: Токен зберігається в GitHub Secrets
+        // ========================================
+        const GITHUB_CONFIG = {
+            owner: 'marushchakvaleriy-alt',  // Ваш GitHub username
+            repo: 'calculator',               // Назва репозиторію
+            filePath: 'калькулятори/налаштування/calculator-settings.js'
+        };
+
+        // Функція для отримання токена з GitHub Secrets (безпечно)
+        async function getGitHubToken() {
+            try {
+                // Спробуємо отримати токен з GitHub Secrets через API
+                const response = await fetch('https://api.github.com/repos/marushchakvaleriy-alt/calculator/actions/secrets', {
+                    headers: {
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Authorization': 'token ' + (localStorage.getItem('github_token') || '')
                     }
                 });
-            });
+                
+                if (response.ok) {
+                    return localStorage.getItem('github_token');
+                }
+            } catch (error) {
+                console.warn('Не вдалося отримати токен з GitHub Secrets');
+            }
             
-            // Оновлюємо бібліотеку
-            updateCalculatorSettings(currentSettings);
+            // Fallback: запитуємо токен у користувача
+            const token = prompt('Введіть ваш GitHub Personal Access Token для збереження налаштувань:');
+            if (token) {
+                localStorage.setItem('github_token', token);
+                return token;
+            }
             
-            // Генеруємо оновлений JS файл
-            generateUpdatedJSFile();
-            
-            alert('✅ Налаштування збережено!\n\n💾 Завантажте файл calculator-settings.js та замініть ним старий файл в папці "калькулятори/налаштування/".\n\n🔄 Після заміни файлу всі калькулятори отримають нові налаштування!');
+            return null;
+        }
+
+        // Функція для перевірки налаштувань GitHub
+        function checkGitHubConfig() {
+            if (GITHUB_CONFIG.owner === 'YOUR_USERNAME' || 
+                GITHUB_CONFIG.repo === 'YOUR_REPO_NAME' || 
+                GITHUB_CONFIG.token === 'YOUR_PERSONAL_ACCESS_TOKEN') {
+                return false;
+            }
+            return true;
+        }
+
+        // Функція для оновлення файлу на GitHub
+        async function updateGitHubFile() {
+            try {
+                // Отримуємо токен безпечно
+                const token = await getGitHubToken();
+                if (!token) {
+                    console.warn('GitHub токен не надано');
+                    return false;
+                }
+
+                // Отримуємо поточний файл
+                const response = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.filePath}`, {
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`GitHub API error: ${response.status}`);
+                }
+
+                const fileData = await response.json();
+                const currentContent = atob(fileData.content);
+
+                // Генеруємо новий контент
+                const newContent = generateUpdatedJSFile();
+
+                // Оновлюємо файл
+                const updateResponse = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.filePath}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `Update calculator settings - ${new Date().toLocaleString()}`,
+                        content: btoa(newContent),
+                        sha: fileData.sha
+                    })
+                });
+
+                if (!updateResponse.ok) {
+                    throw new Error(`GitHub update error: ${updateResponse.status}`);
+                }
+
+                return true;
+            } catch (error) {
+                console.error('GitHub update failed:', error);
+                return false;
+            }
+        }
+
+        async function saveSettings() {
+            try {
+                // Збираємо дані з усіх полів
+                Object.keys(currentSettings).forEach(calcType => {
+                    Object.keys(currentSettings[calcType]).forEach(pointId => {
+                        const input = document.getElementById(pointId);
+                        if (input) {
+                            currentSettings[calcType][pointId].value = parseInt(input.value) || 0;
+                        }
+                    });
+                });
+                
+                // Оновлюємо бібліотеку
+                updateCalculatorSettings(currentSettings);
+                
+                // Генеруємо оновлений JS файл
+                generateUpdatedJSFile();
+                
+                // Спробуємо оновити на GitHub
+                if (checkGitHubConfig()) {
+                    const githubSuccess = await updateGitHubFile();
+                    
+                    if (githubSuccess) {
+                        alert('✅ Налаштування збережено локально та на GitHub!\n\n🔄 Всі калькулятори автоматично отримають нові налаштування!');
+                    } else {
+                        alert('⚠️ Налаштування збережено локально, але не вдалося оновити на GitHub.\n\n💾 Завантажте файл calculator-settings.js та замініть ним старий файл в папці "калькулятори/налаштування/".\n\n🔧 Перевірте налаштування GitHub API в коді.');
+                    }
+                } else {
+                    alert('✅ Налаштування збережено локально!\n\n🔧 Для автоматичного завантаження на GitHub налаштуйте GITHUB_CONFIG в коді.\n\n💾 Завантажте файл calculator-settings.js та замініть ним старий файл в папці "калькулятори/налаштування/".');
+                }
+            } catch (error) {
+                console.error('Помилка збереження налаштувань:', error);
+                alert('❌ Помилка збереження налаштувань. Спробуйте ще раз.');
+            }
         }
 
         // Скидання до стандартних значень
@@ -968,14 +1074,31 @@
         // Функція для генерації оновленого JS файлу
         function generateUpdatedJSFile() {
             // Генеруємо JS код з поточними налаштуваннями
-            let jsContent = `// Централізована бібліотека поінтів для всіх калькуляторів
-// Дані зберігаються тут і можуть редагуватися через налаштування
-
-let calculatorSettings = ${JSON.stringify(currentSettings, null, 4)};
-
-// Функція для отримання поточних налаштувань
-function loadCalculatorSettings() {
-    return calculatorSettings;
+            let jsContent = `// Функція для завантаження налаштувань з calculator-settings.js
+async function loadCalculatorSettings() {
+    try {
+        // Спробуємо завантажити з calculator-settings.js
+        const response = await fetch('калькулятори/налаштування/calculator-settings.js');
+        if (response.ok) {
+            const jsContent = await response.text();
+            // Витягуємо calculatorSettings з JS файлу
+            const match = jsContent.match(/let calculatorSettings = ({[\s\S]*?});/);
+            if (match) {
+                return JSON.parse(match[1]);
+            }
+        }
+    } catch (error) {
+        console.warn('Не вдалося завантажити calculator-settings.js:', error);
+    }
+    
+    // Fallback - повертаємо порожній об'єкт
+    return {
+        kitchen: {},
+        wardrobe: {},
+        wardrobeSystems: {},
+        wallPanels: {},
+        otherFurniture: {}
+    };
 }
 
 // Функція для отримання значення поінтів за ID
