@@ -514,8 +514,6 @@
     <!-- Додати jsPDF бібліотеку -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    
-    <!-- Підключення бібліотеки налаштувань -->
     <script src="налаштування/calculator-settings.js"></script>
   </head>
 <body>
@@ -1856,107 +1854,6 @@ function updateFacadeMaterialNumbers() {
     
     // Безпечна версія розрахунку без валідації
     function calculateTotal() {
-      function getSettingValue(id) {
-        // Використовуємо бібліотеку налаштувань
-        if (typeof window.getSettingValue === 'function') {
-          return window.getSettingValue(id);
-        }
-        
-        // Fallback до статичних значень
-        console.warn('⚠️ Бібліотека налаштувань недоступна, використовуються статичні значення');
-        const POINT_VALUES = {
-  // Основні параметри
-  "p_forma_pryama": 19,    // Форма кухні - Пряма
-  "p_forma_g": 23,         // Форма кухні - Г-подібна
-  "p_forma_p": 27,         // Форма кухні - П-подібна
-  "p_geo": 8,              // Нестандартна геометрія
-  "p_vent": 8,             // Вентмагістраль
-  "p_bez_zamiriv": 3,      // Без замірів
-  "p_zamir_3d": 8,         // По замірам 3D
-  "p_zamir_foto": 21,      // По замірам фото-ескіз
-  "p_island": 6,           // Острів
-  
-  // Матеріали
-  "p_mat_corpus": 3,       // Матеріал корпусу
-  "p_mat_glass": 2,        // Скло-дзеркало
-  "p_facade_dsp_mat": 2,   // ДСП мат.корпусу
-  "p_facade_dsp": 3,       // ДСП
-  "p_facade_mdf": 6,       // МДФ плити
-  "p_facade_paint_straight": 8,    // Фарба/плівка "прямі"
-  "p_facade_paint_milled": 10,     // Фарба/плівка "фрезеровані"
-  "p_facade_veneer_straight": 12,  // Шпоновані "прямі"
-  "p_facade_veneer_milled": 14,    // Шпоновані "фрезеровані"
-  "p_facade_alum_frame": 16,       // Алюм. рамкові
-  "p_facade_arpa": 18,             // ARPA/Fenix
-  "p_facade_fiushin": 20,          // Fiushin
-  "p_facade_hpl": 22,              // HPL
-  "p_facade_rd_individual": 24,    // R&D фасади індивід.
-  "p_facade_mdf_individual": 26,   // МДФ фасади з індивідуальним фрезеруванням
-  "p_facade_texture": 3,           // Перехід текстури фасадних матеріалів
-  
-  // Стільниці
-  "p_tabletop_dsp_mdf": 4,         // ДСП-МДФ
-  "p_tabletop_ceramic": 6,         // Керамограніт-Кварц
-  "p_tabletop_hpl": 8,             // HPL
-  "p_tabletop_acryl": 10,          // Акрил
-  "p_tabletop_rd": 12,             // R&D (дерево-метал)
-  "p_tabletop_form_straight": 2,   // Форма стільниці - Прямий
-  "p_tabletop_form_g": 4,          // Форма стільниці - Г-подібний
-  "p_tabletop_form_p": 6,          // Форма стільниці - П-подібний
-  "p_tabletop_drop": 3,            // Опуски стільниці
-  
-  // Фартух
-  "p_fartukh_dsp_mdf": 3,          // ДСП-МДФ
-  "p_fartukh_ceramic": 5,          // Керамограніт-Кварц
-  "p_fartukh_hpl": 7,              // HPL
-  "p_fartukh_acryl": 9,            // Акрил
-  "p_fartukh_glass": 11,           // Скло
-  "p_fartukh_rd": 13,              // R&D (дерево-метал)
-  
-  // Корпуса-модулі
-  "p_mod_low": 2,                  // Нижні модулі
-  "p_mod_up": 3,                   // Верхні модулі
-  "p_mod_ant": 4,                  // Антресолі
-  "p_mod_penal": 5,                // Пенали
-  
-  // Додаткові елементи
-  "p_false_hor": 3,                // Фальш горизонтальні
-  "p_false_ver": 4,                // Фальш вертикальні
-  "p_detail_rd": 6,                // Деталь R&D, гнутий елемент тощо
-  "p_metal_frame": 8,              // Металоконструкція рамкова
-  "p_metal_volume": 10,            // Металоконструкція об'ємна
-  
-  // Функціональна фурнітура
-  "p_furn_drawers": 2,             // Ящики
-  "p_furn_lifts": 4,               // Підійомні механізми
-  "p_furn_cargo": 3,               // Карго/сушка/смітник
-  "p_furn_magic": 5,               // Магічний кут
-  "p_furn_servo": 6,               // Servo-Drive
-  "p_furn_console": 3,             // Консольні полиці
-  "p_furn_top": 2,                 // Верхні шухляди
-  "p_furn_doors": 4,               // Системи розсувних дверей
-  "p_furn_slide": 5,               // Slide M
-  
-  // Ручки
-  "p_handle_gola_low": 1,          // GOLA низ
-  "p_handle_gola_up": 2,           // GOLA верх
-  "p_handle_gola_vert": 3,         // GOLA вертикал.
-  "p_handle_end": 4,               // Торцеві
-  "p_handle_milled": 5,            // Фрезеровані
-  "p_handle_other": 6,             // Інші
-  
-  // Підсвітка
-  "p_light_mod": 3,                // К-сть модулів з підсвіткою
-  "p_light_work": 4,               // Підсвітка робочої зони
-  "p_light_base": 2,               // Підсвітка цоколя
-  "p_light_other": 5,              // Інше (окремий модуль підсвітки)
-  
-  // Вбудована техніка
-  "p_appliance": 2,                // Вбудована техніка
-  };
-          
-          return POINT_VALUES[id] || 0;
-        }
       }
       
       function valInt(id) {
@@ -1972,7 +1869,7 @@ function updateFacadeMaterialNumbers() {
       }
       
       function addDetail(label, count, tariffId) {
-        const t = getSettingValue(tariffId);
+        const t = window.getSettingValue ? window.getSettingValue(tariffId) : 1;
         if (!count || !t) return;
         points += count * t;
       }

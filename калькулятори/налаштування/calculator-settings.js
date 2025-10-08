@@ -2,6 +2,10 @@
 // Дані зберігаються тут і можуть редагуватися через налаштування
 
 let calculatorSettings = {
+    "password": {
+        "value": "1111",
+        "label": "Пароль для налаштувань"
+    },
     "wardrobe": {
         "p_forma_pryama": {
             "value": 1000,
@@ -449,29 +453,21 @@ let calculatorSettings = {
             "value": 5,
             "label": "Slide M"
         },
-        "p_handle_gola_low": {
-            "value": 1,
-            "label": "GOLA низ"
-        },
-        "p_handle_gola_up": {
-            "value": 2,
-            "label": "GOLA верх"
-        },
-        "p_handle_gola_vert": {
+        "p_handle_gola": {
             "value": 3,
-            "label": "GOLA вертикал."
+            "label": "GOLA"
         },
         "p_handle_end": {
             "value": 4,
             "label": "Торцеві"
         },
-        "p_handle_milled": {
-            "value": 5,
+        "p_handle_fr": {
+            "value": 8,
             "label": "Фрезеровані"
         },
         "p_handle_other": {
             "value": 6,
-            "label": "Інші"
+            "label": "Інші, накладні тощо"
         },
         "p_light_mod": {
             "value": 3,

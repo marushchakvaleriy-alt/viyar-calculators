@@ -1725,101 +1725,14 @@ function toggleLightingFields() {
 }
 
 function getSettingValue(id) {
-  // Статичні значення поінтів (замість динамічних налаштувань)
-  const POINT_VALUES = {
-    // Основні параметри
-    "p_product_підлогова_меблева_конструкція": 1,    // Підлогова меблева конструкція
-    "p_product_підвісна_меблева_конструкція": 4,     // Підвісна меблева конструкція
-    "p_product_тумба_в_санвузол_з_рукомийником": 8,  // Тумба в санвузол (з рукомийником)
-    "p_product_тумба_над_інсталяцією": 4,            // Тумба над інсталяцією
-    "p_product_елементи_стінових_панелей_прямих_як_елемент_конструкції": 6,  // Елементи стінових панелей прямих
-    "p_product_елементи_стінових_панелей_рейкових_як_елемент_конструкції": 12,  // Елементи стінових панелей рейкових
-    "p_product_елементи_стінових_панелей_нестандартної_форми_як_елемент_конструкції": 15,  // Елементи стінових панелей нестандартної форми
-    
-    // Варіант встановлення
-    "p_installation_standalone": 1,    // Окремо стоячі меблі
-    "p_installation_built_in": 6,      // Вбудовані меблі
-    
-    // Заміри
-    "p_measure_no": 1,       // Без замірів
-    "p_measure_3d": 8,       // По замірам 3D
-    "p_measure_photo": 12,   // По замірам фото-ескіз
-    
-    // Додаткові параметри
-    "p_geometry": 8,         // Нестандартна геометрія приміщення
-    "p_corpus": 3,           // Матеріал корпусу (шт.)
-    "p_glass": 2,            // Скло-дзеркало
-    
-    // Матеріали
-    "p_material_dsp_mat_corpus": 2,    // ДСП мат. корпусу
-    "p_material_dsp": 3,               // ДСП
-    "p_material_mdf_boards": 6,        // МДФ плити
-    "p_material_paint_film_straight": 10,    // Фарба/плівка "прямі"
-    "p_material_paint_film_milled": 14,     // Фарба/плівка "фрезеровані"
-    "p_material_veneered_straight": 12,     // Шпоновані "прямі"
-    "p_material_veneered_milled": 16,       // Шпоновані "фрезеровані"
-    "p_material_aluminum_frame": 8,         // Алюм. рамкові
-    "p_material_arpa_fenix": 8,             // ARPA/Fenix
-    "p_material_fiushin": 10,               // Fiushin
-    "p_material_hpl": 14,                   // HPL
-    "p_material_rd_facades_individual": 30, // R&D фасади індивід.
-    "p_material_mdf_facades_individual_milling": 17,  // МДФ фасади з індивідуальним фрезеруванням
-    
-    // Стільниці
-    "p_countertop_dsp_mdf": 3,           // ДСП-МДФ
-    "p_countertop_ceramic_quartz": 6,    // Керамограніт-Кварц
-    "p_countertop_hpl": 5,               // HPL
-    "p_countertop_acrylic": 10,          // Акрил
-    "p_countertop_rd_wood_metal": 18,    // R&D (дерево-метал)
-    "p_countertop_sink_integrated": 12,  // Рукомийник інтегрований
-    "p_countertop_drops": 3,             // Наявність опусків
-    "p_countertop_shape_straight": 1,    // Прямий
-    "p_countertop_shape_g_shape": 3,     // Г-подібний
-    "p_countertop_shape_p_shape": 5,     // П-подібний
-    
-    // Корпуса-модулі
-    "p_sections": 2,           // Кількість проємів (секцій)
-    "p_swing_facades": 1,      // Фасади роспашні
-    "p_sliding_facades": 6,    // Фасади розсувні
-    
-    // Додаткові елементи
-    "p_element_metal_frame": 6,        // Металоконструкція рамкова
-    "p_element_metal_volume": 12,      // Металоконструкція об'ємна
-    "p_element_rd_detail": 15,         // Деталь R&D, гнутий елемент тощо
-    "p_element_false_horizontal": 1,   // Фальш панелі горизонтальні
-    "p_element_false_vertical": 1,     // Фальш панелі вертикальні
-    
-    // Функціональна фурнітура
-    "p_furn_drawers": 1,           // Ящики
-    "p_furn_lifts": 2,             // Підйомні механізми
-    "p_furn_bar": 2,               // Барні механізми
-    "p_furn_accessories": 3,       // Аксесуари до шафи
-    "p_furn_rods": 1,              // К-сть штанг для одягу
-    "p_furn_sliding_bottom": 6,    // Розсувні с-ми (нижньоопорні)
-    "p_furn_wingline": 12,         // Складна система WingLine
-    "p_furn_doors": 24,            // Системи розсувних дверей (Revego, Hawa, Salice)
-    "p_furn_slide_m": 6,           // Розсувні с-ми (типу slide М)
-    
-    // Вбудована техніка
-    "p_appliances_hatch": 6,       // Люк технічний інші комунікації
-    "p_appliances_sink": 6,        // Рукомийник
-    "p_appliances_fireplace": 30,  // Каміни
-    "p_appliances_other": 8,       // Техніка (пралка, сушка, бойлер тощо)
-    
-    // Ручки
-    "p_handle_gola_low": 6,        // GOLA низ
-    "p_handle_gola_high": 6,       // GOLA верх
-    "p_handle_gola_vertical": 6,   // GOLA вертикал.
-    "p_handle_end": 7,             // Торцеві
-    "p_handle_milled": 8,          // Фрезеровані
-    "p_handle_other": 6,           // Інші
-    
-    // Підсвітка
-    "p_lighting_light_elements": 2,  // Елементів (деталей) з підсвіткою
-    "p_lighting_light_control": 3,   // Пристроїв керування
-  };
+  // Використовуємо бібліотеку налаштувань
+  if (typeof window.getSettingValue === 'function') {
+    return window.getSettingValue(id);
+  }
   
-  return POINT_VALUES[id] || 1;
+  // Fallback - повертаємо стандартне значення
+  console.warn('⚠️ Бібліотека налаштувань недоступна, використовую стандартне значення: 1');
+  return 1;
 }
 
 function valInt(id) {

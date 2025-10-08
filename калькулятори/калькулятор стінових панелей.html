@@ -869,84 +869,8 @@
 <script>
         </script>
 <script>
-// ===== СТАТИЧНІ ЗНАЧЕННЯ ПОІНТІВ =====
-// Всі значення поінтів для розрахунків - легко змінювати тут
-const POINT_VALUES = {
-  // 1. Основні параметри виробу - стінові панелі
-  "p_product_стінові_панелі": 1,        // Стінові панелі
-  "p_product_стельові_панелі": 2,       // Стельові панелі
-  "p_product_колони": 3,                // Колони
-  "p_product_панелі_до_стелі": 2,       // Панелі до стелі
-  "p_product_перегородки_рейкові": 4,   // Перегородки рейкові
-  
-  // Форма виробу
-  "p_shape_straight": 1,    // Пряма
-  "p_shape_corner": 3,      // Кутова
-  "p_shape_u": 5,           // П-подібна
-  "p_shape_g": 8,           // G-по периметру
-  
-  // Заміри
-  "p_measure_no": 1,       // Без замірів
-  "p_measure_3d": 8,       // По замірам 3D
-  "p_measure_photo": 12,   // По замірам фото-ескіз
-  
-  // Додаткові параметри
-  "p_geometry": 8,         // Нестандартна геометрія приміщення
-  
-  // 2. Тип конструкції
-  "p_construction_solid": 1,           // Суцільні
-  "p_construction_framed": 2,          // Каркасні
-  "p_construction_profiled": 3,        // Профільні панелі (AGT)
-  "p_construction_slatted": 2,         // Рейкові
-  "p_construction_modular": 4,         // Модульні
-  "p_construction_individual_simple": 8,    // Панель індивідуальна R&D - Просте
-  "p_construction_individual_complex": 12,  // Панель індивідуальна R&D - Складне
-  "p_construction_individual_development": 20, // Панель індивідуальна R&D - Розробка нового
-  
-  // Тип монтажу
-  "p_installation_mechanical": 1,      // Механічний монтаж
-  "p_installation_adhesive": 2,        // Клейовий монтаж
-  
-  // 3. Матеріали панелей
-  "p_material_dsp": 3,               // ДСП
-  "p_material_mdf_boards": 6,        // МДФ плити
-  "p_material_paint_straight": 10,   // Фарба/плівка "прямі"
-  "p_material_paint_milled": 14,     // Фарба/плівка "фрезеровані"
-  "p_material_veneered_straight": 12, // Шпоновані "прямі"
-  "p_material_veneered_milled": 16,   // Шпоновані "фрезеровані"
-  "p_material_aluminum_frame": 8,     // Алюм. рамкові
-  "p_material_arpa_fenix": 8,         // ARPA/Fenix
-  "p_material_hpl": 14,               // HPL
-  "p_material_rd_individual": 30,     // R&D фасади індивід.
-  "p_material_mdf_individual": 17,    // МДФ фасади з індивідуальним фрезеруванням
-  "p_material_mirror": 15,            // Дзеркало
-  "p_material_glass": 12,             // Скло
-  "p_material_quartzite": 25,         // Кварцит-керамограніт-мрамор
-  
-  // Додаткові параметри матеріалів
-  "p_texture_none": 0,                // Ні
-  "p_texture_selection": 3,           // Підбір текстури
-  "p_texture_milling": 5,             // Перехід фрезерування
-  
-  // 4. Додаткові елементи - конструкції
-  "p_furn_revision_doors": 2,         // Ревізійні дверки/лючки
-  "p_furn_swing_door": 4,             // Наявність розпашної двері як частина стінпанелей
-  "p_furn_door_block_connection": 3,  // Стиковка панелей з дверним блоком прихованого монтажу
-  "p_furn_door_opening": 2,           // Обшивка проему дверного
-  "p_furn_window_opening": 2,         // Обшивка проему віконного
-  "p_furn_door_overlay": 1,           // Елемент дверної накладки
-  "p_furn_overlay_elements": 3,       // Накладні елементи (молдинги, декри - тощо)
-  "p_furn_expansion_strips": 2,       // Розшивки/стиковочні планки-профілі
-  "p_furn_mirror_cutouts": 4,         // Вирізи в дзеркальних панелях
-  
-  // 5. Інтегровані елементи
-  "p_integrated_technical_hatch": 6,  // Люк технічний (ревізійний, електро - тощо)
-  "p_integrated_appliances": 8,       // Техніка (пралка, сушка, сейф, винина шафа тощо)
-  
-  // 6. Підсвітка
-  "p_lighting_light_elements": 2,     // Елементів (деталей) з підсвіткою
-  "p_lighting_light_control": 3,      // Пристроїв керування і вимірюються в кількостях
-};
+// ===== ПОІНТИ ЗАВАНТАЖУЮТЬСЯ З БІБЛІОТЕКИ НАЛАШТУВАНЬ =====
+// Всі значення поінтів тепер зберігаються в calculator-settings.js
 
 // Масив для зберігання доданих виробів
 let addedProducts = [];
@@ -1653,8 +1577,14 @@ function toggleLightingFields() {
 }
 
 function getSettingValue(id) {
-  // Використовуємо глобальну константу POINT_VALUES з початку коду
-  return POINT_VALUES[id] || 1;
+  // Використовуємо бібліотеку налаштувань
+  if (typeof window.getSettingValue === 'function') {
+    return window.getSettingValue(id);
+  }
+  
+  // Fallback - повертаємо стандартне значення
+  console.warn('⚠️ Бібліотека налаштувань недоступна, використовую стандартне значення: 1');
+  return 1;
 }
 
 function valInt(id) {

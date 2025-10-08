@@ -831,75 +831,8 @@
 <script>
         </script>
 <script>
-// ===== СТАТИЧНІ ЗНАЧЕННЯ ПОІНТІВ =====
-// Всі значення поінтів для розрахунків - легко змінювати тут
-const POINT_VALUES = {
-  // 1. Основні параметри виробу
-  "p_product_стелажна_с-ма": 1,    // Стелажна с-ма ( к-сть вертикальних секцій/модулів)
-  "p_product_пристінна_с-ма": 4,   // Пристінна с-ма  ( к-сть вертикальних секцій/модулів)
-  
-  // Форма виробу
-  "p_shape_straight": 1,    // Пряма
-  "p_shape_corner": 3,      // Кутова
-  "p_shape_u": 5,           // П-подібна
-  "p_shape_g": 8,           // G-по периметру
-  
-  // Заміри
-  "p_measure_no": 1,       // Без замірів
-  "p_measure_3d": 8,       // По замірам 3D
-  "p_measure_photo": 12,   // По замірам фото-ескіз
-  
-  // Додаткові параметри
-  "p_geometry": 8,         // Нестандартна геометрія приміщення
-  "p_corpus": 3,           // Матеріал корпусу (шт.)
-  "p_glass": 2,            // Скло-дзеркало
-  
-  // 2. Матеріали
-  "p_material_dsp_mat_corpus": 2,    // ДСП мат. корпусу
-  "p_material_dsp": 3,               // ДСП
-  "p_material_mdf_boards": 6,        // МДФ плити
-  "p_material_paint_film_straight": 10,    // Фарба/плівка "прямі"
-  "p_material_paint_film_milled": 14,     // Фарба/плівка "фрезеровані"
-  "p_material_veneered_straight": 12,     // Шпоновані "прямі"
-  "p_material_veneered_milled": 16,       // Шпоновані "фрезеровані"
-  "p_material_aluminum_frame": 8,         // Алюм. рамкові
-  "p_material_arpa_fenix": 8,             // ARPA/Fenix
-  "p_material_fiushin": 10,               // Fiushin
-  "p_material_hpl": 14,                   // HPL
-  "p_material_rd_facades_individual": 30, // R&D фасади індивід.
-  "p_material_mdf_facades_individual_milling": 17,  // МДФ фасади з індивідуальним фрезеруванням
-  
-  // 3. Додаткові елементи – конструкції
-  "p_element_metal_frame": 6,        // Металоконструкція рамкова
-  "p_element_metal_volume": 12,      // Металоконструкція об'ємна
-  "p_element_rd_detail": 15,         // Деталь R&D, гнутий елемент тощо
-  
-  // 4. Складові елементи гардеробної
-  "p_furn_tumba_90": 15,        // Тумба конструкція 90*
-  "p_furn_tumba_45": 8,         // Тумба конструкція 45*
-  "p_furn_shelf_straight": 3,   // Полиця пряма
-  "p_furn_shelf_multi": 5,      // Полиця збірна (багатокомпонентна)
-  "p_furn_podium": 10,          // Подіум
-  "p_furn_drawers": 1,          // Ящики
-  "p_furn_bar": 2,              // Барні механізми
-  "p_furn_accessories": 3,      // Аксесуари: кошики, полиці для взуття тощо
-  "p_furn_rods": 1,             // К-сть штанг для одягу
-  "p_furn_lifts": 2,            // Підйомні механізми
-  
-  // 5. Інтегровані елементи
-  "p_integrated_technical_hatch": 6,  // Люк технічний (ревізійний, електро - тощо)
-  "p_integrated_appliances": 8,       // Техніка (пралка, сушка, сейф, винина шафа тощо)
-  
-  // 6. Ручки
-  "p_handle_gola": 6,           // GOLA
-  "p_handle_end": 7,            // Торцеві
-  "p_handle_milled": 8,         // Фрезеровані
-  "p_handle_other": 6,          // Інші
-  
-  // 7. Підсвітка
-  "p_lighting_light_elements": 2,  // Елементів (деталей) з підсвіткою
-  "p_lighting_light_control": 3,   // Пристроїв керування і вимірюються в кількостях
-};
+// ===== ПОІНТИ ЗАВАНТАЖУЮТЬСЯ З БІБЛІОТЕКИ НАЛАШТУВАНЬ =====
+// Всі значення поінтів тепер зберігаються в calculator-settings.js
 
 // Масив для зберігання доданих виробів
 let addedProducts = [];
@@ -1729,8 +1662,14 @@ function toggleLightingFields() {
 }
 
 function getSettingValue(id) {
-  // Використовуємо глобальну константу POINT_VALUES з початку коду
-  return POINT_VALUES[id] || 1;
+  // Використовуємо бібліотеку налаштувань
+  if (typeof window.getSettingValue === 'function') {
+    return window.getSettingValue(id);
+  }
+  
+  // Fallback - повертаємо стандартне значення
+  console.warn('⚠️ Бібліотека налаштувань недоступна, використовую стандартне значення: 1');
+  return 1;
 }
 
 function valInt(id) {
