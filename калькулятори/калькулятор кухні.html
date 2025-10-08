@@ -1,0 +1,2643 @@
+<html lang="uk">
+<head>
+<meta charset="utf-8"/>
+<title>Калькулятор поінтів — Viyar</title>
+<style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f3f4f6;
+      font-size: 14px;
+    }
+    .wrapper {
+      max-width: 1100px;
+      margin: 20px auto;
+      background: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    header {
+      padding: 10px 0;
+      position: relative;
+      background: white;
+    }
+    .title-small {
+      font-size: 12px;
+      color: #4b5563;
+      margin-bottom: 4px;
+    }
+    .header-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    header img { height: 32px; }
+    header label { margin-left: 6px; font-size: 13px; }
+    input, select {
+      font-size: 14px;
+      padding: 6px 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      background: #fff;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus, select:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px rgba(37,99,235,0.2);
+    }
+    header input { width: 110px; }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    button:hover { background: #1d4ed8; }
+    .settings-btn {
+      position: absolute;
+      top: 0;
+      right: 8px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #374151;
+    }
+    .settings-btn:hover { color: #111827; }
+    .section { margin: 20px 0; }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    .facade-list label {
+      display: block;
+      margin: 8px 0 4px;
+    }
+    .hidden { display: none; }
+    
+    /* Стилі для кнопки видалення (×) */
+    .remove-btn {
+      background: none !important;
+      border: none !important;
+      color: #000 !important;
+      font-size: 16px !important;
+      cursor: pointer !important;
+      padding: 2px 6px !important;
+      margin-left: 8px !important;
+      border-radius: 0 !important;
+      font-weight: bold !important;
+    }
+    .remove-btn:hover {
+      color: #dc2626 !important;
+      background: none !important;
+    }
+  
+    .settings-modal { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,.35); z-index: 9999; }
+    .settings-content { position: relative; background:#fff; padding:16px 20px; border-radius:12px; max-width:720px; width:95%; max-height:80vh; overflow:auto; box-shadow:0 10px 30px rgba(0,0,0,.2); }
+    .settings-close { position:absolute; top:10px; right:12px; border:none; background:transparent; font-size:20px; line-height:1; cursor:pointer; color:#6b7280; }
+    .settings-close:hover { color:#111827; }
+  
+    .header-bar { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .points-hud { display:inline-block; padding:8px 14px; border-radius:999px; background:#eef2ff; color:#1d4ed8; font-weight:700; border:1px solid #c7d2fe; font-size:16px; }
+    @media (max-width:640px){ .points-hud { font-size:12px; padding:4px 8px; } }
+    
+    /* Кнопка повернення */
+    .back-button {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 1000;
+      background: #1976d2;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    .back-button:hover {
+      background: #1565c0;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(25, 118, 210, 0.4);
+      text-decoration: none;
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      .back-button {
+        top: 10px;
+        left: 10px;
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+      }
+    }
+    
+    /* Підказки */
+    .tooltip-container {
+      position: relative;
+      display: inline-block;
+      margin-left: 5px;
+    }
+    .tooltip-icon {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      background: #6b7280;
+      color: white;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 16px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: help;
+      vertical-align: middle;
+    }
+    .tooltip-icon:hover {
+      background: #374151;
+    }
+    .tooltip-content {
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1f2937;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      line-height: 1.4;
+      white-space: nowrap;
+      max-width: 300px;
+      white-space: normal;
+      z-index: 1000;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
+    }
+    .tooltip-content::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: #1f2937;
+    }
+    .tooltip-container:hover .tooltip-content {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    /* Поле пароля */
+    .password-field {
+      display: none;
+      margin: 10px 0;
+      padding: 10px;
+      background: #f9fafb;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+    }
+    .password-field input {
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      margin-right: 10px;
+      width: 200px;
+    }
+    .password-field button {
+      padding: 8px 16px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .password-field button:hover {
+      background: #1d4ed8;
+    }
+    .password-error {
+      color: #dc2626;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+    
+    /* Стилі для друку - оптимізовано для А4 */
+    @media print {
+      @page {
+        size: A4;
+        margin: 0.5cm 0.5cm 0.5cm 0.5cm;
+      }
+      
+      .no-print,
+      .header-bar,
+      .password-field,
+      .calc-actions,
+      .modal,
+      .password-modal,
+      .settings-modal {
+        display: none !important;
+      }
+      
+      /* Показуємо поінти при друку */
+      .points-hud {
+        display: inline-block !important;
+        background: #f0f0f0 !important;
+        border: 1px solid #ccc !important;
+        padding: 3px 6px !important;
+        margin: 5px 0 !important;
+        font-weight: bold !important;
+        font-size: 12px !important;
+      }
+      
+      * {
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-size: 10px !important;
+        line-height: 1.2 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        color: #000 !important;
+        background: white !important;
+      }
+      
+      .wrapper {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: none !important;
+      }
+      
+      header {
+        margin: 0 0 5px 0 !important;
+        padding: 0 !important;
+        page-break-after: avoid;
+      }
+      
+      .container {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+      }
+      
+      .section {
+        margin: 0 0 5px 0 !important;
+        padding: 0 !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+        orphans: 1;
+        widows: 1;
+      }
+      
+      h3 {
+        font-size: 11px !important;
+        margin: 3px 0 2px 0 !important;
+        color: #000 !important;
+        page-break-after: avoid;
+        font-weight: bold !important;
+      }
+      
+      label {
+        font-size: 9px !important;
+        margin: 0 0 1px 0 !important;
+        display: inline-block !important;
+        width: auto !important;
+      }
+      
+      input, select {
+        font-size: 9px !important;
+        padding: 1px 2px !important;
+        margin: 0 0 1px 0 !important;
+        border: 1px solid #ccc !important;
+        width: 60px !important;
+        height: 16px !important;
+      }
+      
+      /* Компактний макет для полів */
+      .section > div {
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      
+      /* Групування полів в рядки */
+      .section label {
+        display: inline-block !important;
+        width: 120px !important;
+        margin-right: 5px !important;
+        vertical-align: top !important;
+      }
+      
+      .section input, .section select {
+        display: inline-block !important;
+        width: 50px !important;
+        margin-right: 15px !important;
+        margin-bottom: 2px !important;
+      }
+      
+      /* Спеціальні правила для flex-контейнерів */
+      .section div[style*="flex"] {
+        display: block !important;
+      }
+      
+      .section div[style*="flex"] > div {
+        display: inline-block !important;
+        margin-right: 20px !important;
+        vertical-align: top !important;
+      }
+      
+      /* Приховуємо зайві елементи */
+      .tooltip-container {
+        display: none !important;
+      }
+      
+      /* Мінімальні відступи */
+      br {
+        line-height: 0.5 !important;
+      }
+      
+      /* Уникаємо розривів сторінки */
+      .section:nth-child(5),
+      .section:nth-child(6),
+      .section:nth-child(7),
+      .section:nth-child(8),
+      .section:nth-child(9),
+      .section:nth-child(10) {
+        page-break-before: avoid !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+    }
+
+    /* Модальне вікно - сучасний дизайн */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      padding: 0;
+      border-radius: 16px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow: hidden;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+      animation: slideUp 0.3s ease-out;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    @keyframes slideUp {
+      from { 
+        transform: translateY(30px);
+        opacity: 0;
+      }
+      to { 
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      color: white;
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: white;
+    }
+
+    .modal-actions {
+      padding: 20px 24px;
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      background: #f8fafc;
+    }
+
+    .modal-actions button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .modal-actions button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .close {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background-color 0.2s;
+    }
+
+    .close:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Стилі для кнопки видалення (×) */
+    .remove-btn {
+      background: none !important;
+      border: none !important;
+      color: #000 !important;
+      font-size: 16px !important;
+      cursor: pointer !important;
+      padding: 2px 6px !important;
+      margin-left: 8px !important;
+      border-radius: 0 !important;
+      font-weight: bold !important;
+    }
+    .remove-btn:hover {
+      color: #dc2626 !important;
+      background: none !important;
+    }
+  </style>
+   
+    <!-- Додати jsPDF бібліотеку -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <!-- Підключення бібліотеки налаштувань -->
+    <script src="налаштування/calculator-settings.js"></script>
+  </head>
+<body>
+<!-- Кнопка повернення -->
+<a href="../index.html" class="back-button">←</a>
+
+<div class="wrapper">
+<header>
+<div class="title-small header-bar">Калькулятор поінтів (Кухня) v1.6</div>
+<div class="header-line">
+<img src="Картинки/logo2.svg" alt="Logo" class="header-logo">
+<label>Проєкт № <input id="projectNum" placeholder="Номер" type="text"/></label>
+<label>Назва виробу <input id="productName" placeholder="Назва" type="text"/></label>
+<label>Менеджер <input id="managerName" placeholder="Прізвище" type="text"/></label>
+<label>Дата 
+<input id="dateField" placeholder="Дата автоматично" type="text" readonly style="background-color: #f5f5f5; cursor: not-allowed;" value=""/>
+<script>
+(function() {
+  const dateField = document.getElementById("dateField");
+  if (dateField) {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+    dateField.value = `${day}-${month}-${year}`;
+  }
+})();
+</script>
+</label>
+<button class="no-print" onclick="saveData()">Зберегти</button>
+<button class="no-print" onclick="loadData()">Завантажити</button>
+<button class="no-print" onclick="downloadPDF()" style="margin-left:8px;background:#1d4ed8;color:#fff;border:none;border-radius:6px;padding:6px 12px;cursor:pointer;">Завантажити PDF</button>
+</div>
+</header>
+<div class="container">
+<!-- Розділ 1 -->
+<div class="section">
+<h3>1. Основні параметри</h3>
+<div style="display: flex; gap: 40px; align-items: flex-start;">
+  <div>
+    <label for="kitchenForm">Форма кухні:</label><br/>
+    <select id="kitchenForm">
+      <option value="">-- Виберіть форму --</option>
+      <option value="Пряма">Пряма</option>
+      <option value="Г-подібна">Г-подібна</option>
+      <option value="П-подібна">П-подібна</option>
+    </select>
+    <br/><br/>
+    <label for="measure">Заміри:</label><br/>
+    <select id="measure">
+      <option value="">-- Виберіть --</option>
+      <option value="Без замірів">Без замірів</option>
+      <option value="По замірам 3D">По замірам 3D</option>
+      <option value="По замірам фото-ескіз">По замірам фото-ескіз</option>
+    </select>
+    <br/><br/>
+    <label for="island">Наявність острова:</label><br/>
+    <select id="island">
+      <option value="">-- Виберіть --</option>
+      <option value="Так">Так</option>
+      <option value="Ні">Ні</option>
+    </select>
+  </div>
+
+  <div style="margin-left: 30px;">
+    <label for="geom">Нестандартна геометрія приміщення:<span class="tooltip-container"><span class="tooltip-icon">?</span><div class="tooltip-content">Наявність колон, вент-шахт, виступів, балок тощо</div></span></label><br/>
+    <select id="geom">
+      <option value="">-- Виберіть --</option>
+      <option value="Так">Так</option>
+      <option value="Ні">Ні</option>
+    </select>
+    <br/><br/>
+    <label for="vent">Наявність вентмагістралі:</label><br/>
+    <select id="vent">
+      <option value="">-- Виберіть --</option>
+      <option value="Так">Так</option>
+      <option value="Ні">Ні</option>
+    </select>
+  </div>
+</div><!-- Розділ 2 -->
+<div class="section">
+<h3>2. Матеріали</h3>
+<label for="corpus">Матеріал корпусу (шт.):</label>
+<input id="corpus" min="0" onfocus="this.select()" type="number" value="0"/><br/><br/>
+<label for="glassSelect">Скло-дзеркало:</label>
+<select id="glassSelect" onchange="toggleGlassCount()">
+<option value="">-- Виберіть --</option>
+<option value="Так">Так</option>
+<option value="Ні">Ні</option>
+</select>
+<div class="hidden" id="glassCountWrapper">
+<br/>
+<label for="glassCount">Кількість скло-дзеркал (шт.):</label>
+<input id="glassCount" min="0" onfocus="this.select()" type="number" value="0"/>
+</div><br/><br/>
+<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+  <label for="hasFacadeMaterials">Фасадні матеріали:</label>
+  <select id="hasFacadeMaterials" onchange="toggleFacadeMaterialsFields()">
+    <option value="">-- Виберіть --</option>
+    <option value="yes">Так</option>
+    <option value="no">Ні</option>
+  </select>
+  <button type="button" id="addFacadeMaterialBtn" onclick="showAddFacadeMaterialModal()" class="hidden" style="background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">
+    + Додати матеріал
+  </button>
+</div>
+<div class="hidden" id="facadeMaterialsFields">
+<div id="facadeMaterialsList"></div>
+</div>
+</div>
+<!-- Розділ 3 -->
+<div class="section">
+<h3>3. Стільниці</h3>
+<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+  <label for="hasCountertops">Стільниці:</label>
+  <select id="hasCountertops" onchange="toggleCountertopsFields()">
+    <option value="">-- Виберіть --</option>
+    <option value="yes">Так</option>
+    <option value="no">Ні</option>
+  </select>
+  <button type="button" id="addCountertopBtn" onclick="showAddCountertopModal()" class="hidden" style="background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">
+    + Додати стільницю
+  </button>
+</div>
+<div class="hidden" id="countertopsFields">
+<div id="countertopsList"></div>
+</div>
+</div>
+<!-- Розділ 4 -->
+<div class="section">
+<h3>4. Фартух (стіна/панелі)</h3>
+<label for="hasBacksplash">Є фартух:</label>
+<select id="hasBacksplash" onchange="toggleBacksplashFields()">
+<option value="">-- Виберіть --</option>
+<option value="Так">Так</option>
+<option value="Ні">Ні</option>
+</select>
+<div class="hidden" id="backsplashFields">
+<br/>
+<label for="backsplashMaterial">Матеріал:</label>
+<select id="backsplashMaterial">
+<option value="">-- Виберіть --</option>
+<option value="ДСП-МДФ">ДСП-МДФ</option>
+<option value="Керамограніт-Кварц">Керамограніт-Кварц</option>
+<option value="HPL">HPL</option>
+<option value="Акрил">Акрил</option>
+<option value="Скло">Скло</option>
+<option value="R&amp;D (дерево-метал)">R&amp;D (дерево-метал)</option>
+</select>
+</div>
+</div>
+<!-- Розділ 5 -->
+<div class="section">
+<h3>5. Корпуса-модулі</h3>
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<div style="display: flex; gap: 40px;">
+<div>
+<label for="lowerModules">Нижні:</label><br/>
+<input id="lowerModules" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/>
+</div>
+<div style="margin-left: 30px;">
+<label for="topModules">Антресолі:</label><br/>
+<input id="topModules" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/>
+</div>
+</div>
+<div style="display: flex; gap: 40px;">
+<div>
+<label for="upperModules">Верхні:</label><br/>
+<input id="upperModules" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/>
+</div>
+<div style="margin-left: 30px;">
+<label for="tallModules">Пенали:</label><br/>
+<input id="tallModules" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/>
+</div>
+</div>
+</div>
+<!-- Розділ 5 -->
+<div class="section">
+<h3>6. Додаткові елементи – конструкції<span class="tooltip-container"><span class="tooltip-icon">?</span><div class="tooltip-content">Фальш панелі горизонтальні<br/>Фальш панелі вертикальні<br/>Фальш панелі R&D<br/>Металеві конструкції<br/>Радіусні елементи</div></span></h3>
+<label for="hasAdditionalElements">Додаткові елементи:</label>
+<select id="hasAdditionalElements" onchange="toggleAdditionalElementsFields()">
+<option value="">-- Виберіть --</option>
+<option value="yes">Так</option>
+<option value="no">Ні</option>
+</select>
+<button type="button" id="addAdditionalElementBtn" onclick="showAddAdditionalElementModal()" class="hidden" style="background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">
++ Додати елемент
+</button>
+<div class="hidden" id="additionalElementsFields">
+<div id="additionalElementsList"></div>
+</div>
+</div>
+<!-- Розділ 6 -->
+<div class="section">
+<h3>7. Функціональна фурнітура</h3>
+<label for="furnDrawers">Ящики:</label>
+<input id="furnDrawers" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/><br/><br/>
+<label for="furnLifts">Підійомні механізми:</label>
+<input id="furnLifts" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/><br/><br/>
+<label for="furnCargo">Карго-колона / сушки / смітники:</label>
+<input id="furnCargo" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/><br/><br/>
+<label for="furnMagic">Магічний кут:</label>
+<input id="furnMagic" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/><br/><br/>
+<label for="furnServo">Елементи з Servo-Drive:</label>
+<input id="furnServo" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/><br/><br/>
+<label for="furnConsole">Консольні полиці (менсолотримач):</label>
+<input id="furnConsole" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/><br/><br/>
+<label for="furnTopDrawers">Висувний механізм для верхніх шухляд:</label>
+<input id="furnTopDrawers" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/><br/><br/>
+<label for="furnSlidingDoors">Системи розсувних дверей (Revego, Hawa, Salice):</label>
+<input id="furnSlidingDoors" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/><br/><br/>
+<label for="furnSlideM">Розсувні системи (типу Slide M):</label>
+<input id="furnSlideM" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/>
+</div>
+<!-- Розділ 7 -->
+<div class="section">
+<h3>8. Ручки</h3>
+<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+  <label for="hasHandles">Ручки:</label>
+  <select id="hasHandles" onchange="toggleHandlesFields()">
+    <option value="">-- Виберіть --</option>
+    <option value="yes">Так</option>
+    <option value="no">Ні</option>
+  </select>
+  <button type="button" id="addHandleBtn" onclick="showAddHandleModal()" class="hidden" style="background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">
+    + Додати ручку
+  </button>
+</div>
+<div class="hidden" id="handlesFields">
+<div id="handlesList"></div>
+</div>
+</div>
+<script>
+      </script>
+<!-- Розділ 8 -->
+<div class="section">
+<h3>9. Підсвітка</h3>
+<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+  <label for="hasLighting">Підсвітка:</label>
+  <select id="hasLighting" onchange="toggleLightingFields()">
+    <option value="">-- Виберіть --</option>
+    <option value="yes">Так</option>
+    <option value="no">Ні</option>
+  </select>
+  <button type="button" id="addLightingBtn" onclick="showAddLightingModal()" class="hidden" style="background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">
+    + Додати підсвітку
+  </button>
+</div>
+<div class="hidden" id="lightingFields">
+<div id="lightingList"></div>
+</div>
+<h3>10. Вбудована техніка</h3>
+<label for="appliancesCount">К-сть одиниць:<span class="tooltip-container"><span class="tooltip-icon">?</span><div class="tooltip-content">Кількість одиниць техніки (мийки, витяжка, духовка, холодильник тощо)</div></span></label>
+<input id="appliancesCount" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/>
+</div>
+<button class="no-print" onclick="calculate()">Розрахувати</button>
+</div>
+</div>
+
+<!-- Модальне вікно -->
+<div class="points-hud" id="pointsHUD" style="display: none;">Поінти: 0</div>
+<div class="modal" id="warningModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
+  <div class="modal-content">
+    <h3>⚠️ Помилка</h3>
+    <p id="warningText"></p>
+    <button onclick="closeModal()">OK</button>
+  </div>
+</div>
+<script>
+    const facadeOptions = [
+      "ДСП мат. корпусу","ДСП","МДФ плити","Фарба/плівка 'прямі'","Фарба/плівка 'фрезеровані'",
+      "Шпоновані 'прямі'","Шпоновані 'фрезеровані'","Алюм. рамкові","ARPA/Fenix",
+      "Fiushin","HPL","R&D фасади індивід.","МДФ фасади з індивідуальним фрезеруванням"
+    ];
+
+    function generateFacades() {
+      const count = parseInt(document.getElementById("facadeCount").value) || 0;
+      const container = document.getElementById("facadeContainer");
+      container.innerHTML = "";
+      if (count > 13) return;
+      for (let i = 1; i <= count; i++) {
+        const label = document.createElement("label");
+        label.innerText = "Матеріал фасадів №" + i + ":";
+        const select = document.createElement("select");
+        select.id = "facade_" + i;
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.textContent = "-- Виберіть --";
+        select.appendChild(defaultOption);
+        facadeOptions.forEach(opt => {
+          const option = document.createElement("option");
+          option.value = opt;
+          option.textContent = opt;
+          select.appendChild(option);
+        });
+        container.appendChild(label);
+        container.appendChild(select);
+        container.appendChild(document.createElement("br"));
+      }
+    }
+
+    function toggleFacadeMaterialsFields() {
+      const hasFacadeMaterials = document.getElementById("hasFacadeMaterials").value;
+      const fields = document.getElementById("facadeMaterialsFields");
+      const addButton = document.getElementById("addFacadeMaterialBtn");
+      
+      if (hasFacadeMaterials === "yes") {
+        fields.classList.remove("hidden");
+        addButton.classList.remove("hidden");
+      } else {
+        fields.classList.add("hidden");
+        addButton.classList.add("hidden");
+        // Очищаємо список матеріалів
+        document.getElementById("facadeMaterialsList").innerHTML = "";
+      }
+    }
+
+    function showAddFacadeMaterialModal() {
+      document.getElementById('addFacadeMaterialModal').style.display = 'flex';
+    }
+
+    function closeAddFacadeMaterialModal() {
+  document.getElementById('addFacadeMaterialModal').style.display = 'none';
+  // Скидаємо поля
+  document.getElementById('newFacadeMaterialType').value = '';
+  document.getElementById('newFacadeMaterialTexture').value = '';
+}
+
+    function addFacadeMaterial() {
+  const materialType = document.getElementById("newFacadeMaterialType").value;
+  const texture = document.getElementById("newFacadeMaterialTexture").value;
+  
+  if (!materialType || !texture) {
+    alert('Будь ласка, заповніть всі поля');
+    return;
+  }
+
+  const materialNames = {
+    "dsp_mat": "ДСП мат.корпусу",
+    "dsp": "ДСП", 
+    "mdf": "МДФ плити",
+    "paint_straight": "Фарба/плівка 'прямі'",
+    "paint_milled": "Фарба/плівка 'фрезеровані'",
+    "veneer_straight": "Шпоновані 'прямі'",
+    "veneer_milled": "Шпоновані 'фрезеровані'",
+    "alum_frame": "Алюм. рамкові",
+    "arpa": "ARPA/Fenix",
+    "fiushin": "Fiushin",
+    "hpl": "HPL",
+    "rd_individual": "R&D фасади індивід.",
+    "mdf_individual": "МДФ фасади з індивідуальним фрезеруванням"
+  };
+
+  const textureNames = {
+    "yes": "Перехід текстури",
+    "no": "без переходу"
+  };
+
+  const displayName = materialNames[materialType] || materialType;
+  const textureName = textureNames[texture] || texture;
+  const materialsList = document.getElementById("facadeMaterialsList");
+  
+  // Створюємо новий елемент
+  const materialDiv = document.createElement("div");
+  materialDiv.className = "element-item";
+  materialDiv.id = `facadeMaterial_${materialType}_${Date.now()}`;
+  materialDiv.setAttribute('data-material-type', materialType);
+  materialDiv.setAttribute('data-texture', texture);
+  
+  materialDiv.innerHTML = `
+    <div style="display: flex; align-items: center; gap: 10px; font-size: 14px;">
+      <span class="material-number"></span>. ${displayName}, ${textureName}
+      <button type="button" class="remove-btn" onclick="removeFacadeMaterial('${materialDiv.id}')" style="background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer;">×</button>
+    </div>
+  `;
+  
+  materialsList.appendChild(materialDiv);
+  
+  // Перенумеровуємо всі матеріали
+  updateFacadeMaterialNumbers();
+  
+  // Закриваємо модальне вікно
+  closeAddFacadeMaterialModal();
+}
+
+function updateFacadeMaterialNumbers() {
+  const materialsList = document.getElementById("facadeMaterialsList");
+  const materials = materialsList.querySelectorAll('[id^="facadeMaterial_"]');
+  
+  const materialNames = {
+    "dsp_mat": "ДСП мат.корпусу",
+    "dsp": "ДСП", 
+    "mdf": "МДФ плити",
+    "paint_straight": "Фарба/плівка 'прямі'",
+    "paint_milled": "Фарба/плівка 'фрезеровані'",
+    "veneer_straight": "Шпоновані 'прямі'",
+    "veneer_milled": "Шпоновані 'фрезеровані'",
+    "alum_frame": "Алюм. рамкові",
+    "arpa": "ARPA/Fenix",
+    "fiushin": "Fiushin",
+    "hpl": "HPL",
+    "rd_individual": "R&D фасади індивід.",
+    "mdf_individual": "МДФ фасади з індивідуальним фрезеруванням"
+  };
+
+  const textureNames = {
+    "yes": "перехід текстури",
+    "no": "без переходу"
+  };
+  
+  materials.forEach((material, index) => {
+    const materialType = material.getAttribute('data-material-type');
+    const texture = material.getAttribute('data-texture');
+    const displayName = materialNames[materialType] || materialType;
+    const textureName = textureNames[texture] || texture;
+    const numberSpan = material.querySelector('.material-number');
+    if (numberSpan) {
+      numberSpan.textContent = `${index + 1}`;
+    }
+  });
+}
+
+    function removeFacadeMaterial(elementId) {
+      const element = document.getElementById(elementId);
+      if (element) {
+        element.remove();
+        // Перенумеровуємо матеріали після видалення
+        updateFacadeMaterialNumbers();
+      }
+    }
+
+
+    // Функції для додаткових елементів
+    function showAddAdditionalElementModal() {
+      document.getElementById('addAdditionalElementModal').style.display = 'flex';
+    }
+
+    function closeAddAdditionalElementModal() {
+      document.getElementById('addAdditionalElementModal').style.display = 'none';
+      document.getElementById('newAdditionalElementType').value = '';
+      document.getElementById('newAdditionalElementQuantity').value = '1';
+    }
+
+    function addAdditionalElement() {
+      const elementType = document.getElementById("newAdditionalElementType").value;
+      const quantity = parseInt(document.getElementById("newAdditionalElementQuantity").value) || 1;
+      
+      if (!elementType) {
+        alert('Будь ласка, виберіть тип елементу');
+        return;
+      }
+
+      const elementNames = {
+        "false_hor": "Фальш горизонтальні",
+        "false_ver": "Фальш вертикальні", 
+        "detail_rd": "Деталь R&D, гнутий елемент тощо",
+        "metal_frame": "Металоконструкція рамкова",
+        "metal_volume": "Металоконструкція об'ємна"
+      };
+
+      const displayName = elementNames[elementType] || elementType;
+      const elementsList = document.getElementById("additionalElementsList");
+      
+      // Створюємо новий елемент
+      const elementDiv = document.createElement("div");
+      elementDiv.className = "element-item";
+      elementDiv.id = `additionalElement_${elementType}_${Date.now()}`;
+      elementDiv.setAttribute('data-element-type', elementType);
+      elementDiv.setAttribute('data-quantity', quantity);
+      
+      elementDiv.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px; font-size: 14px;">
+          <span class="element-number"></span>. ${displayName}
+          <input type="number" id="quantity_${elementDiv.id}" value="${quantity}" min="1" onchange="updateAdditionalElementQuantity('${elementDiv.id}')" style="width: 100px; padding: 5px; border: 1px solid #ccc; border-radius: 4px;">
+          <button type="button" class="remove-btn" onclick="removeAdditionalElement('${elementDiv.id}')" style="background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer;">×</button>
+        </div>
+      `;
+      
+      elementsList.appendChild(elementDiv);
+      
+      // Перенумеровуємо всі елементи
+      updateAdditionalElementNumbers();
+      
+      // Закриваємо модальне вікно
+      closeAddAdditionalElementModal();
+    }
+
+    function updateAdditionalElementNumbers() {
+      const elementsList = document.getElementById("additionalElementsList");
+      const elements = elementsList.querySelectorAll('[id^="additionalElement_"]');
+      
+      const elementNames = {
+        "false_hor": "Фальш горизонтальні",
+        "false_ver": "Фальш вертикальні", 
+        "detail_rd": "Деталь R&D, гнутий елемент тощо",
+        "metal_frame": "Металоконструкція рамкова",
+        "metal_volume": "Металоконструкція об'ємна"
+      };
+      
+      elements.forEach((element, index) => {
+        const elementType = element.getAttribute('data-element-type');
+        const displayName = elementNames[elementType] || elementType;
+        const label = element.querySelector('label');
+        if (label) {
+          label.textContent = `${index + 1}. ${displayName}`;
+        }
+      });
+    }
+
+    function removeAdditionalElement(elementId) {
+      const element = document.getElementById(elementId);
+      if (element) {
+        element.remove();
+        // Перенумеровуємо елементи після видалення
+        updateAdditionalElementNumbers();
+      }
+    }
+
+    function updateAdditionalElementQuantity(elementId) {
+      const element = document.getElementById(elementId);
+      if (!element) return;
+      
+      const input = element.querySelector('input[type="number"]');
+      const newQuantity = parseInt(input.value) || 1;
+      
+      if (newQuantity < 1) {
+        input.value = 1;
+        element.setAttribute('data-quantity', 1);
+      } else {
+        element.setAttribute('data-quantity', newQuantity);
+      }
+    }
+
+    // Функції для ручок
+    function showAddHandleModal() {
+      document.getElementById('addHandleModal').style.display = 'flex';
+    }
+
+    function closeAddHandleModal() {
+      document.getElementById('addHandleModal').style.display = 'none';
+      document.getElementById('newHandleType').value = '';
+    }
+
+    function addHandle() {
+      const handleType = document.getElementById("newHandleType").value;
+      if (!handleType) {
+        alert('Будь ласка, виберіть тип ручки');
+        return;
+      }
+
+      const handleNames = {
+        "handles_gola_low": "GOLA низ",
+        "handles_gola_up": "GOLA верх",
+        "handles_gola_vert": "GOLA вертикал.",
+        "handles_end": "Торцеві",
+        "handles_milled": "Фрезеровані",
+        "handles_other": "Інші"
+      };
+
+      const displayName = handleNames[handleType] || handleType;
+      const handlesList = document.getElementById("handlesList");
+      
+      const handleDiv = document.createElement("div");
+      handleDiv.className = "element-item";
+      handleDiv.id = `handle_${handleType}_${Date.now()}`;
+      handleDiv.setAttribute('data-handle-type', handleType);
+      
+      handleDiv.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px; font-size: 14px;">
+          <span class="handle-number"></span>. ${displayName}
+          <button type="button" class="remove-btn" onclick="removeHandle('${handleDiv.id}')" style="background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer;">×</button>
+        </div>
+      `;
+      
+      handlesList.appendChild(handleDiv);
+      updateHandleNumbers();
+      closeAddHandleModal();
+    }
+
+    function updateHandleNumbers() {
+      const handlesList = document.getElementById("handlesList");
+      const handles = handlesList.querySelectorAll('[id^="handle_"]');
+      const handleNames = {
+        "handles_gola_low": "GOLA низ",
+        "handles_gola_up": "GOLA верх",
+        "handles_gola_vert": "GOLA вертикал.",
+        "handles_end": "Торцеві",
+        "handles_milled": "Фрезеровані",
+        "handles_other": "Інші"
+      };
+      
+      handles.forEach((handle, index) => {
+        const handleType = handle.getAttribute('data-handle-type');
+        const displayName = handleNames[handleType] || handleType;
+        const numberSpan = handle.querySelector('.handle-number');
+        if (numberSpan) {
+          numberSpan.textContent = `${index + 1}`;
+        }
+      });
+    }
+
+    function removeHandle(elementId) {
+      const element = document.getElementById(elementId);
+      if (element) {
+        element.remove();
+        updateHandleNumbers();
+      }
+    }
+
+
+    // Функції для підсвітки
+    function showAddLightingModal() {
+      document.getElementById('addLightingModal').style.display = 'flex';
+    }
+
+    function closeAddLightingModal() {
+      document.getElementById('addLightingModal').style.display = 'none';
+      document.getElementById('newLightingType').value = '';
+      document.getElementById('newLightingQuantity').value = '1';
+      document.getElementById('lightingQuantityField').style.display = 'none';
+    }
+
+    function showLightingQuantityField() {
+      const lightingType = document.getElementById("newLightingType").value;
+      const quantityField = document.getElementById('lightingQuantityField');
+      
+      if (lightingType === 'light_modules' || lightingType === 'light_other') {
+        quantityField.style.display = 'block';
+      } else {
+        quantityField.style.display = 'none';
+      }
+    }
+
+
+    function addLightingFromModal() {
+      const lightingType = document.getElementById("newLightingType").value;
+      
+      if (!lightingType) {
+        alert('Будь ласка, виберіть тип підсвітки');
+        return;
+      }
+
+      let quantity = 1;
+      if (lightingType === 'light_modules' || lightingType === 'light_other') {
+        quantity = parseInt(document.getElementById("newLightingQuantity").value) || 1;
+      }
+
+      const lightingNames = {
+        "light_modules": "К-сть модулів (корпусів) з підсвіткою (в боковинах, полицях, ящиках)",
+        "light_work": "Підсвітка робочої зони",
+        "light_base": "Підсвітка цоколя",
+        "light_other": "Інше (окремий модуль підсвітки, один відрізок)"
+      };
+
+      const lightingTooltips = {
+        "light_modules": "Підсвітка в середині модулів-пеналів (в боковинах, полицях, підсвітка ящиків тощо)",
+        "light_work": "Підсвітка робочої поверхні",
+        "light_base": "Підсвітка цоколя шафи",
+        "light_other": "Окремий модуль підсвітки"
+      };
+
+      const displayName = lightingNames[lightingType] || lightingType;
+      const tooltip = lightingTooltips[lightingType] || "";
+      const lightingList = document.getElementById("lightingList");
+      
+      const lightingDiv = document.createElement("div");
+      lightingDiv.className = "element-item";
+      lightingDiv.id = `lighting_${lightingType}_${Date.now()}`;
+      lightingDiv.setAttribute('data-lighting-type', lightingType);
+      lightingDiv.setAttribute('data-quantity', quantity);
+      
+      const quantityInput = (lightingType === 'light_modules' || lightingType === 'light_other') 
+        ? `<input type="number" id="quantity_${lightingDiv.id}" value="${quantity}" min="1" onchange="updateLightingQuantity('${lightingDiv.id}')" style="width: 100px; padding: 5px; border: 1px solid #ccc; border-radius: 4px;">`
+        : '';
+      
+      const tooltipHtml = tooltip ? `<span class="tooltip-container"><span class="tooltip-icon">?</span><div class="tooltip-content">${tooltip}</div></span>` : '';
+      
+      lightingDiv.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px; font-size: 14px;">
+          <span class="lighting-number"></span>. ${displayName}${tooltipHtml}
+          ${quantityInput}
+          <button type="button" class="remove-btn" onclick="removeLighting('${lightingDiv.id}')" style="background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer;">×</button>
+        </div>
+      `;
+      
+      lightingList.appendChild(lightingDiv);
+      updateLightingNumbers();
+      closeAddLightingModal();
+    }
+
+    function updateLightingNumbers() {
+      const lightingList = document.getElementById("lightingList");
+      const lights = lightingList.querySelectorAll('[id^="lighting_"]');
+      const lightingNames = {
+        "light_modules": "К-сть модулів (корпусів) з підсвіткою (в боковинах, полицях, ящиках)",
+        "light_work": "Підсвітка робочої зони",
+        "light_base": "Підсвітка цоколя",
+        "light_other": "Інше (окремий модуль підсвітки, один відрізок)"
+      };
+      
+      lights.forEach((light, index) => {
+        const lightingType = light.getAttribute('data-lighting-type');
+        const quantity = parseInt(light.getAttribute('data-quantity')) || 1;
+        const displayName = lightingNames[lightingType] || lightingType;
+        const numberSpan = light.querySelector('.lighting-number');
+        if (numberSpan) {
+          numberSpan.textContent = `${index + 1}`;
+        }
+      });
+    }
+
+    function removeLighting(elementId) {
+      const element = document.getElementById(elementId);
+      if (element) {
+        element.remove();
+        updateLightingNumbers();
+      }
+    }
+
+    function updateLightingQuantity(elementId) {
+      const element = document.getElementById(elementId);
+      if (!element) return;
+      
+      const input = element.querySelector('input[type="number"]');
+      const newQuantity = parseInt(input.value) || 1;
+      
+      if (newQuantity < 1) {
+        input.value = 1;
+        element.setAttribute('data-quantity', 1);
+      } else {
+        element.setAttribute('data-quantity', newQuantity);
+      }
+    }
+    
+    function toggleGlassCount() {
+      const glass = document.getElementById("glassSelect").value;
+      const wrapper = document.getElementById("glassCountWrapper");
+      wrapper.classList.toggle("hidden", glass !== "Так");
+    }
+
+    // ===== ФУНКЦІЇ ДЛЯ СТІЛЬНИЦЬ =====
+    
+    // Функція для переключення полів стільниць
+    function toggleCountertopsFields() {
+      const hasCountertops = document.getElementById("hasCountertops").value;
+      const fields = document.getElementById("countertopsFields");
+      const addButton = document.getElementById("addCountertopBtn");
+      
+      if (hasCountertops === "yes") {
+        fields.classList.remove("hidden");
+        addButton.classList.remove("hidden");
+      } else {
+        fields.classList.add("hidden");
+        addButton.classList.add("hidden");
+        // Очищаємо список стільниць
+        document.getElementById("countertopsList").innerHTML = "";
+      }
+    }
+
+    // Функція для відкриття модального вікна додавання стільниці
+    function showAddCountertopModal() {
+      document.getElementById('addCountertopModal').style.display = 'flex';
+      // Скидаємо поля
+      document.getElementById('newCountertopMaterial').value = '';
+      document.getElementById('newCountertopShape').value = '';
+      document.getElementById('newCountertopDrops').value = '';
+    }
+
+    // Функція для закриття модального вікна стільниць
+    function closeAddCountertopModal() {
+      document.getElementById('addCountertopModal').style.display = 'none';
+    }
+
+    // Функція для додавання стільниці
+    function addCountertop() {
+      const material = document.getElementById("newCountertopMaterial").value;
+      const shape = document.getElementById("newCountertopShape").value;
+      const drops = document.getElementById("newCountertopDrops").value;
+      const quantity = 1; // За замовчуванням 1
+      
+      if (!material || !shape || !drops) {
+        alert('Будь ласка, заповніть всі поля');
+        return;
+      }
+
+      const materialNames = {
+        "dsp_mdf": "ДСП-МДФ",
+        "ceramic": "Керамограніт-Кварц", 
+        "hpl": "HPL",
+        "acryl": "Акрил",
+        "rd": "R&D (дерево-метал)"
+      };
+      
+      const shapeNames = {
+        "straight": "Прямий",
+        "g_shape": "Г-подібний",
+        "p_shape": "П-подібний"
+      };
+      
+      const dropsNames = {
+        "yes": "з опусками",
+        "no": "без опусків"
+      };
+
+      const materialName = materialNames[material] || material;
+      const shapeName = shapeNames[shape] || shape;
+      const dropsName = dropsNames[drops] || drops;
+      
+      const countertopsList = document.getElementById("countertopsList");
+      const countertopId = `countertop_${Date.now()}`;
+      
+      // Створюємо новий елемент
+      const countertopDiv = document.createElement("div");
+      countertopDiv.id = countertopId;
+      countertopDiv.style.cssText = "padding: 4px 0; margin-bottom: 3px;";
+      countertopDiv.setAttribute('data-material', material);
+      countertopDiv.setAttribute('data-shape', shape);
+      countertopDiv.setAttribute('data-drops', drops);
+      countertopDiv.setAttribute('data-quantity', quantity);
+      
+      countertopDiv.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px; font-size: 14px;">
+          <span class="countertop-number"></span>. ${materialName}, ${shapeName}, ${dropsName}
+          <input type="number" id="quantity_${countertopId}" value="${quantity}" min="1" onchange="updateCountertopQuantity('${countertopId}')" style="width: 100px; padding: 5px; border: 1px solid #ccc; border-radius: 4px;">
+          <button onclick="removeCountertop('${countertopId}')" class="remove-btn" title="Видалити" style="background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer;">×</button>
+        </div>
+      `;
+      
+      countertopsList.appendChild(countertopDiv);
+      
+      // Оновлюємо нумерацію
+      updateCountertopNumbers();
+      
+      // Закриваємо модальне вікно
+      closeAddCountertopModal();
+    }
+
+    // Функція для оновлення нумерації стільниць
+    function updateCountertopNumbers() {
+      const countertopsList = document.getElementById("countertopsList");
+      const countertops = countertopsList.querySelectorAll('[id^="countertop_"]');
+      
+      countertops.forEach((countertop, index) => {
+        const numberSpan = countertop.querySelector('.countertop-number');
+        if (numberSpan) {
+          numberSpan.textContent = index + 1;
+        }
+      });
+    }
+
+    // Функція для видалення стільниці
+    function removeCountertop(elementId) {
+      const element = document.getElementById(elementId);
+      if (element) {
+        element.remove();
+        // Перенумеровуємо стільниці після видалення
+        updateCountertopNumbers();
+      }
+    }
+
+    function updateCountertopQuantity(elementId) {
+      const element = document.getElementById(elementId);
+      if (!element) return;
+      
+      const input = element.querySelector('input[type="number"]');
+      const newQuantity = parseInt(input.value) || 1;
+      
+      if (newQuantity < 1) {
+        input.value = 1;
+        element.setAttribute('data-quantity', 1);
+      } else {
+        element.setAttribute('data-quantity', newQuantity);
+      }
+    }
+
+    
+    function toggleBacksplashFields() {
+      const hasBack = document.getElementById("hasBacksplash").value;
+      const fields = document.getElementById("backsplashFields");
+      fields.classList.toggle("hidden", hasBack !== "Так");
+    }
+
+    function toggleLightingFields() {
+      const hasLighting = document.getElementById("hasLighting").value;
+      const fields = document.getElementById("lightingFields");
+      const addButton = document.getElementById("addLightingBtn");
+      
+      if (hasLighting === "yes") {
+        fields.classList.remove("hidden");
+        addButton.classList.remove("hidden");
+      } else {
+        fields.classList.add("hidden");
+        addButton.classList.add("hidden");
+        // Очищаємо список підсвітки
+        document.getElementById("lightingList").innerHTML = "";
+      }
+    }
+    
+    function toggleHandlesFields() {
+      const hasHandles = document.getElementById("hasHandles").value;
+      const fields = document.getElementById("handlesFields");
+      const addButton = document.getElementById("addHandleBtn");
+      
+      if (hasHandles === "yes") {
+        fields.classList.remove("hidden");
+        addButton.classList.remove("hidden");
+      } else {
+        fields.classList.add("hidden");
+        addButton.classList.add("hidden");
+        // Очищаємо список ручок
+        document.getElementById("handlesList").innerHTML = "";
+      }
+    }
+    
+    function toggleAdditionalElementsFields() {
+      const hasAdditionalElements = document.getElementById("hasAdditionalElements").value;
+      const fields = document.getElementById("additionalElementsFields");
+      const addButton = document.getElementById("addAdditionalElementBtn");
+      
+      if (hasAdditionalElements === "yes") {
+        fields.classList.remove("hidden");
+        addButton.classList.remove("hidden");
+      } else {
+        fields.classList.add("hidden");
+        addButton.classList.add("hidden");
+        // Очищаємо список елементів
+        document.getElementById("additionalElementsList").innerHTML = "";
+      }
+    }
+
+
+    function calculate() {
+      // Перевіряємо всі обов'язкові поля
+      const missingFields = checkRequiredFields();
+      
+      if (missingFields.length > 0) {
+        showMissingFieldsWarning(missingFields);
+        return;
+      }
+      
+      calculateTotal();
+    }
+    
+    function checkRequiredFields() {
+      const missing = [];
+      
+      // 1. Основні параметри
+      if (!document.getElementById("kitchenForm")?.value) {
+        missing.push("1. Форма кухні");
+      }
+      if (!document.getElementById("measure")?.value) {
+        missing.push("1. Тип замірів");
+      }
+      if (!document.getElementById("island")?.value) {
+        missing.push("1. Острів");
+      }
+      if (!document.getElementById("geom")?.value) {
+        missing.push("1. Нестандартна геометрія");
+      }
+      if (!document.getElementById("vent")?.value) {
+        missing.push("1. Вентиляційна шахта");
+      }
+      
+      // 2. Матеріали
+      const corpus = document.getElementById("corpus")?.value;
+      if (!corpus || parseInt(corpus) <= 0) {
+        missing.push("2. Матеріал корпуса (кількість)");
+      }
+      
+      const hasFacadeMaterials = document.getElementById("hasFacadeMaterials")?.value;
+      if (!hasFacadeMaterials) {
+        missing.push("2. Фасадні матеріали (вибір)");
+      }
+      if (hasFacadeMaterials === "yes") {
+        const facadeMaterials = document.querySelectorAll('[id^="facadeMaterial_"]');
+        if (facadeMaterials.length === 0) {
+          missing.push("2. Фасадні матеріали (не додано жодного)");
+        }
+      }
+      
+      // 3. Скло-дзеркало
+      const glassSelect = document.getElementById("glassSelect")?.value;
+      if (!glassSelect) {
+        missing.push("3. Скло-дзеркало (вибір)");
+      }
+      if (glassSelect === "Так") {
+        const glassCount = document.getElementById("glassCount")?.value;
+        if (!glassCount || parseInt(glassCount) <= 0) {
+          missing.push("3. Скло-дзеркало (кількість)");
+        }
+      }
+      
+      // 4. Стільниці - перевіряємо динамічні стільниці
+      const hasCountertops = document.getElementById("hasCountertops");
+      if (!hasCountertops || !hasCountertops.value) {
+        missing.push("4. Стільниці (вибір)");
+      } else if (hasCountertops.value === "yes") {
+        const countertops = document.querySelectorAll('[id^="countertop_"]');
+        if (countertops.length === 0) {
+          missing.push("4. Стільниці (не додано жодної)");
+        }
+      }
+      
+      // 5. Корпуса-модулі
+      const moduleFields = ["lowerModules", "upperModules", "topModules", "tallModules"];
+      for (let fieldId of moduleFields) {
+        const field = document.getElementById(fieldId);
+        if (!field || field.value === "") {
+          const labels = {
+            "lowerModules": "5. Нижні модулі",
+            "upperModules": "5. Верхні модулі",
+            "topModules": "5. Антресолі",
+            "tallModules": "5. Пенали"
+          };
+          missing.push(labels[fieldId]);
+        }
+      }
+      
+      // 6. Додаткові елементи - перевіряємо динамічні елементи
+      const hasAdditionalElements = document.getElementById("hasAdditionalElements");
+      if (!hasAdditionalElements || !hasAdditionalElements.value) {
+        missing.push("6. Додаткові елементи (вибір)");
+      } else if (hasAdditionalElements.value === "yes") {
+        const additionalElements = document.querySelectorAll('[id^="additionalElement_"]');
+        if (additionalElements.length === 0) {
+          missing.push("6. Додаткові елементи (не додано жодного)");
+        }
+      }
+      
+      // 7. Функціональна фурнітура
+      const furnFields = ["furnDrawers", "furnLifts", "furnCargo", "furnMagic", "furnServo", "furnConsole", "furnTopDrawers", "furnSlidingDoors", "furnSlideM"];
+      for (let fieldId of furnFields) {
+        const field = document.getElementById(fieldId);
+        if (!field || field.value === "") {
+          const labels = {
+            "furnDrawers": "7. Ящики",
+            "furnLifts": "7. Підійомні механізми",
+            "furnCargo": "7. Карго-колона / сушки / смітники",
+            "furnMagic": "7. Магічний кут",
+            "furnServo": "7. Елементи з Servo-Drive",
+            "furnConsole": "7. Консольні полиці",
+            "furnTopDrawers": "7. Висувний механізм для верхніх шухляд",
+            "furnSlidingDoors": "7. Системи розсувних дверей",
+            "furnSlideM": "7. Розсувні системи (типу Slide M)"
+          };
+          missing.push(labels[fieldId]);
+        }
+      }
+      
+      // 8. Ручки - перевіряємо динамічні ручки
+      const hasHandles = document.getElementById("hasHandles");
+      if (!hasHandles || !hasHandles.value) {
+        missing.push("8. Ручки (вибір)");
+      } else if (hasHandles.value === "yes") {
+        const handles = document.querySelectorAll('[id^="handle_"]');
+        if (handles.length === 0) {
+          missing.push("8. Ручки (не додано жодної)");
+        }
+      }
+      
+      // 9. Підсвітка - перевіряємо динамічну підсвітку
+      const hasLighting = document.getElementById("hasLighting");
+      if (!hasLighting || !hasLighting.value) {
+        missing.push("9. Підсвітка (вибір)");
+      } else if (hasLighting.value === "yes") {
+        const lights = document.querySelectorAll('[id^="lighting_"]');
+        if (lights.length === 0) {
+          missing.push("9. Підсвітка (не додано жодного типу)");
+        }
+      }
+      
+      // 10. Вбудована техніка
+      const appliancesCount = document.getElementById("appliancesCount")?.value;
+      if (!appliancesCount || appliancesCount === "") {
+        missing.push("10. Вбудована техніка (кількість)");
+      }
+      
+      return missing;
+    }
+    
+    function showMissingFieldsWarning(missingFields) {
+      let warningText = "Не заповнені наступні поля:\n\n";
+      missingFields.forEach((field) => {
+        warningText += `${field}\n`;
+      });
+      
+      document.getElementById("warningText").innerText = warningText;
+      document.getElementById("warningModal").style.display = "flex";
+    }
+
+    function showWarning(text) {
+      document.getElementById("warningText").innerText = text;
+      document.getElementById("warningModal").style.display = "flex";
+    }
+
+    /*
+    // TEMP: старий код валідації - видалити
+    function oldCode() {
+      // Перевірка скла-дзеркала
+      const glassSelect = document.getElementById("glassSelect").value;
+      if (!glassSelect) {
+        showWarning("Виберіть, чи є скло-дзеркало.");
+        return;
+      }
+      if (glassSelect === "Так") {
+        const glassCount = parseInt(document.getElementById("glassCount").value) || 0;
+        if (glassCount === 0) {
+          showWarning("Вкажіть кількість скло-дзеркал.");
+          return;
+        }
+      }
+      for (let i = 1; i <= facadeCount; i++) {
+        const val = document.getElementById("facade_" + i).value;
+        if (!val) {
+          showWarning("Виберіть усі матеріали фасадів.");
+          return;
+        }
+      }
+
+      // Розділ 3
+      const hasCountertop = document.getElementById("hasCountertop").value;
+      if (!hasCountertop) {
+        showWarning("Вкажіть, чи є стільниця.");
+        return;
+      }
+      if (hasCountertop === "Так") {
+        const mat = document.getElementById("counterMaterial").value;
+        const shape = document.getElementById("counterShape").value;
+        const drops = document.getElementById("counterDrops").value;
+        if (!mat || !shape || !drops) {
+          showWarning("Заповніть усі поля для стільниці.");
+          return;
+        }
+      }
+
+
+      // Розділ 5
+      const lower = document.getElementById("lowerModules").value;
+      const upper = document.getElementById("upperModules").value;
+      const top = document.getElementById("topModules").value;
+      const tall = document.getElementById("tallModules").value;
+      if (lower === "" || upper === "" || top === "" || tall === "") {
+        showWarning("Заповніть усі поля в розділі 5 (корпуса-модулі).");
+        return;
+      }
+
+
+      // Розділ 6 - Додаткові елементи
+      const hasAdditionalElements = document.getElementById("hasAdditionalElements").value;
+      if (!hasAdditionalElements) {
+        showWarning("Вкажіть, чи є додаткові елементи.");
+        return;
+      }
+      if (hasAdditionalElements === "yes") {
+        const additionalElements = document.querySelectorAll('[id^="additionalElement_"]');
+        if (additionalElements.length === 0) {
+          showWarning("Додайте хоча б один додатковий елемент.");
+          return;
+        }
+      }
+
+      
+      
+      // Розділ 6
+      const furnIds = [
+        "furnDrawers","furnLifts","furnCargo","furnMagic",
+        "furnServo","furnConsole","furnTopDrawers",
+        "furnSlidingDoors","furnSlideM"
+      ];
+      for (let id of furnIds) {
+        const val = document.getElementById(id).value;
+        if (val === "") {
+          showWarning("Заповніть усі поля в розділі 6 (Функціональна фурнітура).");
+          return;
+        }
+        if (parseInt(val) < 0) {
+          showWarning("Значення не може бути від’ємним у розділі 6.");
+          return;
+        }
+      }
+
+      
+      // Розділ 7
+
+      // Розділ 8 - Підсвітка
+      const hasLighting = document.getElementById("hasLighting").value;
+      if (!hasLighting) {
+        showWarning("Вкажіть, чи є підсвітка.");
+        return;
+      }
+      if (hasLighting === "yes") {
+        const lights = document.querySelectorAll('[id^="lighting_"]');
+        if (lights.length === 0) {
+          showWarning("Додайте хоча б один тип підсвітки.");
+          return;
+        }
+      }
+
+      // Розділ 9 - Вбудована техніка
+      const appliancesCount = document.getElementById("appliancesCount").value;
+      if (appliancesCount === "") {
+        showWarning("Оберіть кількість вбудованої техніки.");
+        return;
+      }
+      if (parseInt(appliancesCount) < 0) {
+        showWarning("Кількість вбудованої техніки не може бути від’ємною.");
+        return;
+      }
+
+      // Розділ 7 - Ручки
+      const hasHandles = document.getElementById("hasHandles").value;
+      if (!hasHandles) {
+        showWarning("Вкажіть, чи є ручки.");
+        return;
+      }
+      if (hasHandles === "yes") {
+        const handles = document.querySelectorAll('[id^="handle_"]');
+        if (handles.length === 0) {
+          showWarning("Додайте хоча б одну ручку.");
+          return;
+        }
+      }
+
+      calculateTotal();
+    }
+    */
+
+    function closeModal() {
+      document.getElementById("warningModal").style.display = "none";
+    }
+
+    function saveData() {
+      try {
+        // Збираємо всі дані форми
+        const formData = {};
+        document.querySelectorAll('input, select, textarea').forEach(el => {
+          if (el.id && !el.closest('#inlineSaveControls')) {
+            const value = el.type === 'checkbox' || el.type === 'radio' ? el.checked : el.value;
+            formData[el.id] = value;
+          }
+        });
+        
+        // Додаємо метадані
+        const data = {
+          meta: {
+            kind: 'viyar-kitchen-calc',
+            version: '1.6',
+            timestamp: new Date().toISOString()
+          },
+          values: formData
+        };
+        
+               
+        // Створюємо файл для завантаження
+        const filename = buildFilename();
+        const text = JSON.stringify(data, null, 2);
+        const blob = new Blob([text], {type: 'application/json;charset=utf-8'});
+        const url = URL.createObjectURL(blob);
+        
+        // Створюємо посилання для завантаження
+        const downloadLink = document.createElement('a');
+        downloadLink.href = url;
+        downloadLink.download = filename;
+        downloadLink.style.display = 'none';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        
+        // Очищуємо URL через 30 секунд
+        setTimeout(() => {
+          try { URL.revokeObjectURL(url); } catch(e) {}
+        }, 30000);
+        
+        alert('Дані збережено успішно!');
+        // Поінти не показуються автоматично - натисніть "Розрахувати"
+      } catch (error) {
+        console.error('Помилка збереження:', error);
+        alert('Помилка збереження: ' + error.message);
+      }
+    }
+
+    function loadData() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json,.vcalc.json';
+      
+      input.onchange = function(e) {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+          try {
+            const data = JSON.parse(ev.target.result);
+            if (data && data.values) {
+              // Застосовуємо збережені дані
+              Object.keys(data.values).forEach(key => {
+                const el = document.getElementById(key);
+                if (el) {
+                  if (el.type === 'checkbox' || el.type === 'radio') {
+                    el.checked = data.values[key] === true || data.values[key] === '1';
+                  } else {
+                    el.value = data.values[key];
+                  }
+                  // Тригеримо події для перерахунку
+                  el.dispatchEvent(new Event('input', {bubbles: true}));
+                  el.dispatchEvent(new Event('change', {bubbles: true}));
+                }
+              });
+              alert('Дані завантажено успішно!');
+              // Поінти не показуються автоматично - натисніть "Розрахувати"
+            } else {
+              alert('Невірний формат файлу');
+            }
+          } catch (error) {
+            console.error('Помилка завантаження:', error);
+            alert('Помилка завантаження: ' + error.message);
+          }
+        };
+        reader.readAsText(file, 'utf-8');
+      };
+      input.click();
+    }
+    
+    function buildFilename() {
+      const project = document.getElementById('projectNum')?.value?.trim() || '';
+      const manager = document.getElementById('managerName')?.value?.trim() || '';
+      const date = document.getElementById('dateField')?.value?.trim() || new Date().toISOString().split('T')[0];
+      
+      const parts = [];
+      if (project) parts.push(project.replace(/\s+/g, '_'));
+      if (manager) parts.push(manager.replace(/\s+/g, '_'));
+      parts.push(date);
+      
+      const base = parts.join('__') || 'kitchen_calc_' + new Date().toISOString().split('T')[0];
+      return base + '.vcalc.json';
+    }
+    
+    // Безпечна версія розрахунку без валідації
+    function calculateTotal() {
+      function getSettingValue(id) {
+        // Використовуємо бібліотеку налаштувань
+        if (typeof window.getSettingValue === 'function') {
+          return window.getSettingValue(id);
+        }
+        
+        // Fallback до статичних значень
+        console.warn('⚠️ Бібліотека налаштувань недоступна, використовуються статичні значення');
+        const POINT_VALUES = {
+  // Основні параметри
+  "p_forma_pryama": 19,    // Форма кухні - Пряма
+  "p_forma_g": 23,         // Форма кухні - Г-подібна
+  "p_forma_p": 27,         // Форма кухні - П-подібна
+  "p_geo": 8,              // Нестандартна геометрія
+  "p_vent": 8,             // Вентмагістраль
+  "p_bez_zamiriv": 3,      // Без замірів
+  "p_zamir_3d": 8,         // По замірам 3D
+  "p_zamir_foto": 21,      // По замірам фото-ескіз
+  "p_island": 6,           // Острів
+  
+  // Матеріали
+  "p_mat_corpus": 3,       // Матеріал корпусу
+  "p_mat_glass": 2,        // Скло-дзеркало
+  "p_facade_dsp_mat": 2,   // ДСП мат.корпусу
+  "p_facade_dsp": 3,       // ДСП
+  "p_facade_mdf": 6,       // МДФ плити
+  "p_facade_paint_straight": 8,    // Фарба/плівка "прямі"
+  "p_facade_paint_milled": 10,     // Фарба/плівка "фрезеровані"
+  "p_facade_veneer_straight": 12,  // Шпоновані "прямі"
+  "p_facade_veneer_milled": 14,    // Шпоновані "фрезеровані"
+  "p_facade_alum_frame": 16,       // Алюм. рамкові
+  "p_facade_arpa": 18,             // ARPA/Fenix
+  "p_facade_fiushin": 20,          // Fiushin
+  "p_facade_hpl": 22,              // HPL
+  "p_facade_rd_individual": 24,    // R&D фасади індивід.
+  "p_facade_mdf_individual": 26,   // МДФ фасади з індивідуальним фрезеруванням
+  "p_facade_texture": 3,           // Перехід текстури фасадних матеріалів
+  
+  // Стільниці
+  "p_tabletop_dsp_mdf": 4,         // ДСП-МДФ
+  "p_tabletop_ceramic": 6,         // Керамограніт-Кварц
+  "p_tabletop_hpl": 8,             // HPL
+  "p_tabletop_acryl": 10,          // Акрил
+  "p_tabletop_rd": 12,             // R&D (дерево-метал)
+  "p_tabletop_form_straight": 2,   // Форма стільниці - Прямий
+  "p_tabletop_form_g": 4,          // Форма стільниці - Г-подібний
+  "p_tabletop_form_p": 6,          // Форма стільниці - П-подібний
+  "p_tabletop_drop": 3,            // Опуски стільниці
+  
+  // Фартух
+  "p_fartukh_dsp_mdf": 3,          // ДСП-МДФ
+  "p_fartukh_ceramic": 5,          // Керамограніт-Кварц
+  "p_fartukh_hpl": 7,              // HPL
+  "p_fartukh_acryl": 9,            // Акрил
+  "p_fartukh_glass": 11,           // Скло
+  "p_fartukh_rd": 13,              // R&D (дерево-метал)
+  
+  // Корпуса-модулі
+  "p_mod_low": 2,                  // Нижні модулі
+  "p_mod_up": 3,                   // Верхні модулі
+  "p_mod_ant": 4,                  // Антресолі
+  "p_mod_penal": 5,                // Пенали
+  
+  // Додаткові елементи
+  "p_false_hor": 3,                // Фальш горизонтальні
+  "p_false_ver": 4,                // Фальш вертикальні
+  "p_detail_rd": 6,                // Деталь R&D, гнутий елемент тощо
+  "p_metal_frame": 8,              // Металоконструкція рамкова
+  "p_metal_volume": 10,            // Металоконструкція об'ємна
+  
+  // Функціональна фурнітура
+  "p_furn_drawers": 2,             // Ящики
+  "p_furn_lifts": 4,               // Підійомні механізми
+  "p_furn_cargo": 3,               // Карго/сушка/смітник
+  "p_furn_magic": 5,               // Магічний кут
+  "p_furn_servo": 6,               // Servo-Drive
+  "p_furn_console": 3,             // Консольні полиці
+  "p_furn_top": 2,                 // Верхні шухляди
+  "p_furn_doors": 4,               // Системи розсувних дверей
+  "p_furn_slide": 5,               // Slide M
+  
+  // Ручки
+  "p_handle_gola_low": 1,          // GOLA низ
+  "p_handle_gola_up": 2,           // GOLA верх
+  "p_handle_gola_vert": 3,         // GOLA вертикал.
+  "p_handle_end": 4,               // Торцеві
+  "p_handle_milled": 5,            // Фрезеровані
+  "p_handle_other": 6,             // Інші
+  
+  // Підсвітка
+  "p_light_mod": 3,                // К-сть модулів з підсвіткою
+  "p_light_work": 4,               // Підсвітка робочої зони
+  "p_light_base": 2,               // Підсвітка цоколя
+  "p_light_other": 5,              // Інше (окремий модуль підсвітки)
+  
+  // Вбудована техніка
+  "p_appliance": 2,                // Вбудована техніка
+  };
+          
+          return POINT_VALUES[id] || 0;
+        }
+      }
+      
+      function valInt(id) {
+        const el = document.getElementById(id);
+        if (!el) return 0;
+        const v = parseInt(el.value);
+        return isNaN(v) ? 0 : v;
+      }
+      
+      function valYes(id) {
+        const el = document.getElementById(id);
+        return el && (el.value === "Так" || el.value === "так" || el.value === "yes" || el.value === "1");
+      }
+      
+      function addDetail(label, count, tariffId) {
+        const t = getSettingValue(tariffId);
+        if (!count || !t) return;
+        points += count * t;
+      }
+
+      let points = 0;
+
+      // ===== 1. Основні параметри =====
+      (function(){
+        const form = (document.getElementById("kitchenForm")?.value || "").trim();
+        if (form === "Пряма") addDetail("Форма кухні: Пряма", 1, "p_forma_pryama");
+        else if (form === "Г-подібна") addDetail("Форма кухні: Г-подібна", 1, "p_forma_g");
+        else if (form === "П-подібна") addDetail("Форма кухні: П-подібна", 1, "p_forma_p");
+
+        const measure = (document.getElementById("measure")?.value || "").trim();
+        if (measure === "Без замірів") addDetail("Без замірів", 1, "p_bez_zamiriv");
+        else if (measure === "По замірам 3D") addDetail("По замірам 3D", 1, "p_zamir_3d");
+        else if (measure === "По замірам фото-ескіз") addDetail("По замірам фото-ескіз", 1, "p_zamir_foto");
+
+        const geomYes = (document.getElementById("geom")?.value || "").trim().toLowerCase() === "так";
+        if (geomYes) addDetail("Нестандартна геометрія", 1, "p_geo");
+
+        const ventYes = (document.getElementById("vent")?.value || "").trim().toLowerCase() === "так";
+        if (ventYes) addDetail("Вентмагістраль", 1, "p_vent");
+
+        const islandYes = (document.getElementById("island")?.value || "").trim().toLowerCase() == "так";
+        if (islandYes) addDetail("Острів", 1, "p_island");
+      })();
+
+      // ===== 2. Матеріали =====
+      (function(){
+        const corpusCount = parseInt(document.getElementById("corpus")?.value) || 0;
+        if (corpusCount > 0) addDetail("Матеріал корпусу", corpusCount, "p_mat_corpus");
+
+        const glassSel = (document.getElementById("glassSelect")?.value || "").trim().toLowerCase();
+        const glassCount = parseInt(document.getElementById("glassCount")?.value) || 0;
+        if (glassSel === "так" && glassCount > 0) addDetail("Скло-дзеркало", glassCount, "p_mat_glass");
+      })();
+
+      // 2. Матеріали - Фасадні матеріали (нова система)
+const hasFacadeMaterials = document.getElementById("hasFacadeMaterials")?.value;
+if (hasFacadeMaterials === "yes") {
+  const facadeMaterials = document.querySelectorAll('[id^="facadeMaterial_"]');
+  const materialMapping = {
+    "dsp_mat": "p_facade_dsp_mat",
+    "dsp": "p_facade_dsp", 
+    "mdf": "p_facade_mdf",
+    "paint_straight": "p_facade_paint_straight",
+    "paint_milled": "p_facade_paint_milled",
+    "veneer_straight": "p_facade_veneer_straight",
+    "veneer_milled": "p_facade_veneer_milled",
+    "alum_frame": "p_facade_alum_frame",
+    "arpa": "p_facade_arpa",
+    "fiushin": "p_facade_fiushin",
+    "hpl": "p_facade_hpl",
+    "rd_individual": "p_facade_rd_individual",
+    "mdf_individual": "p_facade_mdf_individual"
+  };
+
+  const materialNames = {
+    "dsp_mat": "ДСП мат.корпусу",
+    "dsp": "ДСП", 
+    "mdf": "МДФ плити",
+    "paint_straight": "Фарба/плівка 'прямі'",
+    "paint_milled": "Фарба/плівка 'фрезеровані'",
+    "veneer_straight": "Шпоновані 'прямі'",
+    "veneer_milled": "Шпоновані 'фрезеровані'",
+    "alum_frame": "Алюм. рамкові",
+    "arpa": "ARPA/Fenix",
+    "fiushin": "Fiushin",
+    "hpl": "HPL",
+    "rd_individual": "R&D фасади індивід.",
+    "mdf_individual": "МДФ фасади з індивідуальним фрезеруванням"
+  };
+
+  const textureNames = {
+    "yes": "з текстурою",
+    "no": "без текстури"
+  };
+
+  facadeMaterials.forEach((material, index) => {
+    const materialType = material.getAttribute('data-material-type');
+    const texture = material.getAttribute('data-texture');
+    
+    const materialName = materialNames[materialType] || materialType;
+    const textureName = textureNames[texture] || texture;
+    
+    // Додаємо поінти за матеріал
+    if (materialType && materialMapping[materialType]) {
+      addDetail(`Фасадний матеріал ${index + 1}: ${materialName}`, 1, materialMapping[materialType]);
+    }
+    
+    // Додаємо поінти за текстуру (тільки якщо вибрано "з текстурою")
+    if (texture === "yes") {
+      addDetail(`Текстура фасадного матеріалу ${index + 1}`, 1, "p_facade_texture");
+    }
+  });
+}
+
+      // 3. Стільниці (нова динамічна система)
+      const hasCountertops = document.getElementById("hasCountertops")?.value;
+      if (hasCountertops === "yes") {
+        const countertops = document.querySelectorAll('[id^="countertop_"]');
+        
+        const materialMapping = {
+          "dsp_mdf": "p_tabletop_dsp_mdf",
+          "ceramic": "p_tabletop_ceramic", 
+          "hpl": "p_tabletop_hpl",
+          "acryl": "p_tabletop_acryl",
+          "rd": "p_tabletop_rd"
+        };
+        
+        const formMapping = {
+          "straight": "p_tabletop_form_straight",
+          "g_shape": "p_tabletop_form_g",
+          "p_shape": "p_tabletop_form_p"
+        };
+
+        countertops.forEach((countertop, index) => {
+          const material = countertop.getAttribute('data-material');
+          const shape = countertop.getAttribute('data-shape');
+          const drops = countertop.getAttribute('data-drops');
+          
+          // Додаємо поінти за матеріал
+          if (material) {
+            const materialTariffId = materialMapping[material];
+            if (materialTariffId) {
+              addDetail(`Стільниця ${index + 1}: ${material}`, 1, materialTariffId);
+            }
+          }
+          
+          // Додаємо поінти за форму
+          if (shape) {
+            const formTariffId = formMapping[shape];
+            if (formTariffId) {
+              addDetail(`Форма стільниці ${index + 1}: ${shape}`, 1, formTariffId);
+            }
+          }
+          
+          // Додаємо поінти за опуски
+          if (drops === "yes") {
+            addDetail(`Опуски стільниці ${index + 1}`, 1, "p_tabletop_drop");
+          }
+        });
+      }
+
+      // 4. Фартух - поінти тільки за матеріал
+      if (valYes("hasBacksplash")) {
+        const backsplashMaterial = document.getElementById("backsplashMaterial")?.value;
+        if (backsplashMaterial) {
+          const materialMapping = {
+            "ДСП-МДФ": "p_fartukh_dsp_mdf",
+            "Керамограніт-Кварц": "p_fartukh_ceramic",
+            "HPL": "p_fartukh_hpl",
+            "Акрил": "p_fartukh_acryl",
+            "Скло": "p_fartukh_glass",
+            "R&D (дерево-метал)": "p_fartukh_rd"
+          };
+          const tariffId = materialMapping[backsplashMaterial] || "p_fartukh";
+          addDetail("Фартух: " + backsplashMaterial, 1, tariffId);
+        }
+      }
+
+      // 5. Корпуса-модулі
+      addDetail("Нижні модулі", valInt("lowerModules"), "p_mod_low");
+      addDetail("Верхні модулі", valInt("upperModules"), "p_mod_up");
+      addDetail("Антресолі",     valInt("topModules"),   "p_mod_ant");
+      addDetail("Пенали",        valInt("tallModules"),  "p_mod_penal");
+
+      // 6. Додаткові елементи (нова система)
+      const hasAdditionalElements = document.getElementById("hasAdditionalElements")?.value;
+      if (hasAdditionalElements === "yes") {
+        const additionalElements = document.querySelectorAll('[id^="additionalElement_"]');
+        const elementMapping = {
+          "false_hor": "p_false_hor",
+          "false_ver": "p_false_ver",
+          "detail_rd": "p_detail_rd",
+          "metal_frame": "p_metal_frame",
+          "metal_volume": "p_metal_volume"
+        };
+
+        additionalElements.forEach(element => {
+          const elementType = element.getAttribute('data-element-type');
+          const elementNames = {
+            "false_hor": "Фальш горизонтальні",
+            "false_ver": "Фальш вертикальні",
+            "detail_rd": "Деталь R&D, гнутий елемент тощо",
+            "metal_frame": "Металоконструкція рамкова",
+            "metal_volume": "Металоконструкція об'ємна"
+          };
+          
+          const elementName = elementNames[elementType] || elementType;
+          
+          if (elementType && elementMapping[elementType]) {
+            addDetail("Додатковий елемент: " + elementName, 1, elementMapping[elementType]);
+          }
+        });
+      }
+
+      // 7. Функціональна фурнітура
+      addDetail("Ящики",                    valInt("furnDrawers"),      "p_furn_drawers");
+      addDetail("Підійомні механізми",      valInt("furnLifts"),        "p_furn_lifts");
+      addDetail("Карго/сушка/смітник",      valInt("furnCargo"),        "p_furn_cargo");
+      addDetail("Магічний кут",             valInt("furnMagic"),        "p_furn_magic");
+      addDetail("Servo-Drive",              valInt("furnServo"),        "p_furn_servo");
+      addDetail("Консольні полиці",         valInt("furnConsole"),      "p_furn_console");
+      addDetail("Верхні шухляди",           valInt("furnTopDrawers"),   "p_furn_top");
+      addDetail("Системи розсувних дверей", valInt("furnSlidingDoors"), "p_furn_doors");
+      addDetail("Slide M",                  valInt("furnSlideM"),       "p_furn_slide");
+
+      // 7. Ручки - поінти тільки за конкретні типи
+      const hasHandles = document.getElementById("hasHandles")?.value;
+      if (hasHandles === "yes") {
+        const handles = document.querySelectorAll('[id^="handle_"]');
+        const handleMapping = {
+          "handles_gola_low": "p_handle_gola_low",
+          "handles_gola_up": "p_handle_gola_up",
+          "handles_gola_vert": "p_handle_gola_vert",
+          "handles_end": "p_handle_end",
+          "handles_milled": "p_handle_milled",
+          "handles_other": "p_handle_other"
+        };
+        
+        handles.forEach(handle => {
+          const handleType = handle.getAttribute('data-handle-type');
+          const handleNames = {
+            "handle_1": "Ручка 1",
+            "handle_2": "Ручка 2",
+            "handle_3": "Ручка 3",
+            "handle_4": "Ручка 4",
+            "handle_5": "Ручка 5"
+          };
+          
+          const handleName = handleNames[handleType] || handleType;
+          if (handleType && handleMapping[handleType]) {
+            addDetail("Ручки: " + handleName, 1, handleMapping[handleType]);
+          }
+        });
+      }
+
+      // 8. Підсвітка
+      const hasLighting = document.getElementById("hasLighting")?.value;
+      if (hasLighting === "yes") {
+        const lights = document.querySelectorAll('[id^="lighting_"]');
+        const lightingMapping = {
+          "light_modules": "p_light_mod",
+          "light_work": "p_light_work",
+          "light_base": "p_light_base",
+          "light_other": "p_light_other"
+        };
+        
+        lights.forEach(light => {
+          const lightingType = light.getAttribute('data-lighting-type');
+          const quantity = parseInt(light.getAttribute('data-quantity')) || 1;
+          const lightingNames = {
+            "light_modules": "К-сть модулів (корпусів) з підсвіткою",
+            "light_work": "Підсвітка робочої зони",
+            "light_base": "Підсвітка цоколя",
+            "light_other": "Інше (окремий модуль підсвітки, один відрізок)"
+          };
+          
+          const lightingName = lightingNames[lightingType] || lightingType;
+          if (lightingType && lightingMapping[lightingType]) {
+            addDetail("Підсвітка: " + lightingName, quantity, lightingMapping[lightingType]);
+          }
+        });
+      }
+
+      // 9. Вбудована техніка
+      addDetail("Вбудована техніка", valInt("appliancesCount"), "p_appliance");
+
+      // Вивід - показуємо поінти тільки після успішного розрахунку
+      const out = document.getElementById("pointsResult");
+      if (out) {
+        out.textContent = "Поінти: " + points;
+        out.style.display = "block";
+      }
+      const hud = document.getElementById("pointsHUD");
+      if (hud) {
+        hud.textContent = "Поінти: " + points;
+        hud.style.display = "inline-block";
+      }
+    }
+
+    function clearForm() {
+      document.querySelectorAll("input, select").forEach(el => {
+        if (el.id !== "dateField") {  // Не очищуємо дату
+          if (el.id !== "dateField") el.value = "";
+        }
+      });
+      document.getElementById("facadeContainer").innerHTML = "";
+      document.getElementById("countertopFields").classList.add("hidden");
+      document.getElementById("backsplashFields").classList.add("hidden");
+      document.getElementById("lightingFields").classList.add("hidden");
+      
+      // Приховуємо поінти при очищенні
+      const out = document.getElementById("pointsResult");
+      if (out) out.style.display = "none";
+      const hud = document.getElementById("pointsHUD");
+      if (hud) hud.style.display = "none";
+    }
+     
+     
+    
+    window.onload = function() {
+      // Приховуємо поінти при завантаженні
+      const out = document.getElementById("pointsResult");
+      if (out) out.style.display = "none";
+      const hud = document.getElementById("pointsHUD");
+      if (hud) hud.style.display = "none";
+      
+      const dateField = document.getElementById("dateField");
+      if (dateField) {
+        // Встановлюємо поточну дату
+        const today = new Date();
+        const day = String(today.getDate()).padStart(2, '0');
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const year = today.getFullYear();
+        const formatted = `${day}-${month}-${year}`;
+        dateField.value = formatted;
+        
+        // Заборона редагування дати користувачем
+        dateField.addEventListener('input', function(e) {
+          // Відновлюємо правильну дату, якщо користувач спробував змінити
+          const today = new Date();
+          const day = String(today.getDate()).padStart(2, '0');
+          const month = String(today.getMonth() + 1).padStart(2, '0');
+          const year = today.getFullYear();
+          const formatted = `${day}-${month}-${year}`;
+          setTimeout(() => {
+            dateField.value = formatted;
+          }, 0);
+        });
+        dateField.addEventListener('keydown', function(e) {
+          e.preventDefault();
+          return false;
+        });
+        dateField.addEventListener('paste', function(e) {
+          e.preventDefault();
+          return false;
+        });
+      }
+      
+     
+      
+    }
+  </script>
+</div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  function safeRecalc() { try { if (typeof calculateTotal === "function") calculateTotal(); } catch(e){} }
+  // Автоматичний перерахунок відключений - поінти показуються тільки після натискання "Розрахувати"
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  function safeRecalc(){ try{ if(typeof calculateTotal==="function") calculateTotal(); }catch(e){} }
+
+    // SCOPED CLEAR: clear only inside the same visual container as the clicked Clear button.
+  const buttons = Array.from(document.querySelectorAll('button, input[type="reset"]')).filter(el=>{
+    const txt = (el.textContent || el.value || "").trim().toLowerCase();
+    const isClear = el.type==="reset" || ["очистити","скинути","очистка","clear","reset"].some(k=>txt===k || txt.includes(k));
+    if (!isClear) return false;
+    // Ignore buttons inside settings
+    return !el.closest('#settingsModal, .settings-modal, [data-role="settings"], [id*="setting"], [class*="setting"]');
+  });
+
+  function findFormContainer(btn){
+    // Prefer nearest <form>, else a big section container
+    return btn.closest("form, .calculator-form, main, .wrapper, .container, .content, .card, section") || document.body;
+  }
+
+  buttons.forEach(btn=>{
+    btn.addEventListener("click", (e)=>{
+      e.preventDefault();
+      // Просто перезавантажуємо сторінку
+      location.reload();
+    }, {capture:true});
+  });
+
+  // Автоматичний перерахунок відключений - поінти показуються тільки після натискання "Розрахувати"
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  function safeRecalc(){ try{ if(typeof calculateTotal==="function") calculateTotal(); }catch(e){} }
+
+  function isInSettings(el) {
+    return !!(el && el.closest('#settingsModal, .settings-modal, [data-role="settings"], [id*="setting"], [class*="setting"]'));
+  }
+
+  function clearMainFormFrom(rootNode){
+    // find a broad container for the calculator form
+    const formRoot = rootNode?.closest("form, .calculator-form, main, .wrapper, .container, .content, section") || document.querySelector("main, .wrapper, .container, .content") || document.body;
+    const nodes = formRoot.querySelectorAll("input, select, textarea");
+    nodes.forEach(el=>{
+      if (isInSettings(el)) return; // do NOT touch settings
+      if (el.id === "dateField") return; // НЕ очищуємо дату
+      const tag = el.tagName.toLowerCase();
+      if (tag === "input") {
+        const t = (el.type || "").toLowerCase();
+        if (["text","number","email","tel","search","url","password","date","time","datetime-local"].includes(t)) el.value = "";
+        else if (t === "checkbox" || t === "radio") el.checked = false;
+        else if (t === "range") el.value = el.min || "0";
+        else if (t === "reset" || t === "button" || t === "submit") { /* skip */ }
+        else { try { if (el.id !== "dateField") el.value = ""; } catch(_) {} }
+      } else if (tag === "select") {
+        if (el.options && el.options.length) el.selectedIndex = 0; else if (el.id !== "dateField") el.value = "";
+      } else if (tag === "textarea") {
+        if (el.id !== "dateField") el.value = "";
+      }
+      el.dispatchEvent(new Event("input", {bubbles:true}));
+      el.dispatchEvent(new Event("change", {bubbles:true}));
+    });
+    
+    // Приховуємо поінти при очищенні
+    const out = document.getElementById("pointsResult");
+    if (out) out.style.display = "none";
+    const hud = document.getElementById("pointsHUD");
+    if (hud) hud.style.display = "none";
+  }
+
+  const topBtn = document.getElementById("topClearBtn");
+  if (topBtn) {
+    topBtn.addEventListener("click", (e)=>{
+      e.preventDefault();
+      // Просто перезавантажуємо сторінку
+      location.reload();
+    });
+  }
+});
+// Функція для завантаження PDF
+async function downloadPDF() {
+  try {
+    // Показуємо індикатор завантаження
+    const button = document.querySelector('button[onclick="downloadPDF()"]');
+    const originalText = button.textContent;
+    button.textContent = 'Генеруємо PDF...';
+    button.disabled = true;
+    
+    // Імпортуємо html2canvas
+    const html2canvas = window.html2canvas;
+    const jsPDF = window.jspdf.jsPDF;
+    
+    // Отримуємо елемент для конвертації
+    const element = document.querySelector('.wrapper');
+    
+    // Конвертуємо в canvas
+    const canvas = await html2canvas(element, {
+      scale: 2, // Вища якість
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+      width: element.scrollWidth,
+      height: element.scrollHeight
+    });
+    
+    // Створюємо PDF
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    
+    // Розраховуємо розміри для A4
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+    const imgWidth = canvas.width;
+    const imgHeight = canvas.height;
+    const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+    const imgX = (pdfWidth - imgWidth * ratio) / 2;
+    const imgY = 0;
+    
+    // Додаємо зображення до PDF
+    pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+    
+    // Генеруємо назву файлу
+    const projectNum = document.getElementById('projectNum').value || 'Без_номера';
+    const productName = document.getElementById('productName').value || 'Без_назви';
+    const date = document.getElementById('dateField').value || new Date().toLocaleDateString('uk-UA');
+    const fileName = `Калькулятор_кухні_${projectNum}_${productName}_${date}.pdf`;
+    
+    // Завантажуємо PDF
+    pdf.save(fileName);
+    
+    // Повертаємо кнопку в початковий стан
+    button.textContent = originalText;
+    button.disabled = false;
+    
+  } catch (error) {
+    console.error('Помилка при створенні PDF:', error);
+    alert('Помилка при створенні PDF. Спробуйте ще раз.');
+    
+    // Повертаємо кнопку в початковий стан
+    const button = document.querySelector('button[onclick="downloadPDF()"]');
+    button.textContent = 'Завантажити PDF';
+    button.disabled = false;
+  }
+}
+</script>
+
+
+</div></div>
+
+<!-- Модальне вікно для додавання фасадного матеріалу -->
+<div id="addFacadeMaterialModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Додати фасадний матеріал</h3>
+      <span class="close" onclick="closeAddFacadeMaterialModal()">&times;</span>
+    </div>
+    <div>
+      <label for="newFacadeMaterialType">Тип матеріалу:</label><br/>
+      <select id="newFacadeMaterialType" style="width: 100%; margin-bottom: 15px;">
+        <option value="">-- Виберіть матеріал --</option>
+        <option value="dsp_mat">ДСП мат.корпусу</option>
+        <option value="dsp">ДСП</option>
+        <option value="mdf">МДФ плити</option>
+        <option value="paint_straight">Фарба/плівка "прямі"</option>
+        <option value="paint_milled">Фарба/плівка "фрезеровані"</option>
+        <option value="veneer_straight">Шпоновані "прямі"</option>
+        <option value="veneer_milled">Шпоновані "фрезеровані"</option>
+        <option value="alum_frame">Алюм. рамкові</option>
+        <option value="arpa">ARPA/Fenix</option>
+        <option value="fiushin">Fiushin</option>
+        <option value="hpl">HPL</option>
+        <option value="rd_individual">R&D фасади індивід.</option>
+        <option value="mdf_individual">МДФ фасади з індивідуальним фрезеруванням</option>
+      </select>
+      
+      <label for="newFacadeMaterialTexture">Перехід текстури:</label><br/>
+      <select id="newFacadeMaterialTexture" style="width: 100%; margin-bottom: 15px;">
+        <option value="">-- Виберіть --</option>
+        <option value="yes">Так</option>
+        <option value="no">Ні</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button onclick="closeAddFacadeMaterialModal()" style="background: #6b7280;">Скасувати</button>
+      <button onclick="addFacadeMaterial()" style="background: #2563eb;">Додати</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модальне вікно для додавання додаткових елементів -->
+<div id="addAdditionalElementModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Додати додатковий елемент</h3>
+      <span class="close" onclick="closeAddAdditionalElementModal()">&times;</span>
+    </div>
+    <label for="newAdditionalElementType">Тип елементу:</label>
+    <select id="newAdditionalElementType" style="width: 100%; margin-bottom: 15px;">
+      <option value="">-- Виберіть --</option>
+      <option value="false_hor">Фальш горизонтальні</option>
+      <option value="false_ver">Фальш вертикальні</option>
+      <option value="detail_rd">Деталь R&D, гнутий елемент тощо</option>
+      <option value="metal_frame">Металоконструкція рамкова</option>
+      <option value="metal_volume">Металоконструкція об'ємна</option>
+    </select>
+    <label for="newAdditionalElementQuantity">Кількість:</label>
+    <input type="number" id="newAdditionalElementQuantity" min="1" value="1" style="width: 100%; margin-bottom: 15px;">
+    <div class="modal-actions">
+      <button onclick="closeAddAdditionalElementModal()" style="background: #6b7280;">Скасувати</button>
+      <button onclick="addAdditionalElement()" style="background: #2563eb;">Додати</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модальне вікно для додавання ручок -->
+<div id="addHandleModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Додати ручку</h3>
+      <span class="close" onclick="closeAddHandleModal()">&times;</span>
+    </div>
+    <label for="newHandleType">Тип ручки:</label>
+    <select id="newHandleType" style="width: 100%; margin-bottom: 15px;">
+      <option value="">-- Виберіть --</option>
+      <option value="handles_gola_low">GOLA низ</option>
+      <option value="handles_gola_up">GOLA верх</option>
+      <option value="handles_gola_vert">GOLA вертикал.</option>
+      <option value="handles_end">Торцеві</option>
+      <option value="handles_milled">Фрезеровані</option>
+      <option value="handles_other">Інші</option>
+    </select>
+    <div class="modal-actions">
+      <button onclick="closeAddHandleModal()" style="background: #6b7280;">Скасувати</button>
+      <button onclick="addHandle()" style="background: #2563eb;">Додати</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модальне вікно для додавання підсвітки -->
+<div id="addLightingModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Додати підсвітку</h3>
+      <span class="close" onclick="closeAddLightingModal()">&times;</span>
+    </div>
+    <label for="newLightingType">Тип підсвітки:</label>
+    <select id="newLightingType" onchange="showLightingQuantityField()" style="width: 100%; margin-bottom: 15px;">
+      <option value="">-- Виберіть --</option>
+      <option value="light_modules">К-сть модулів (корпусів) з підсвіткою (в боковинах, полицях, ящиках)</option>
+      <option value="light_work">Підсвітка робочої зони</option>
+      <option value="light_base">Підсвітка цоколя</option>
+      <option value="light_other">Інше (окремий модуль підсвітки, один відрізок)</option>
+    </select>
+    
+    <div id="lightingQuantityField" style="display: none; margin-bottom: 15px;">
+      <label for="newLightingQuantity">Кількість модулів:<span class="tooltip-container"><span class="tooltip-icon">?</span><div class="tooltip-content">Підсвітка в середині модулів-пеналів (в боковинах, полицях, підсвітка ящиків тощо)</div></span></label>
+      <input type="number" id="newLightingQuantity" min="1" value="1" style="width: 100%;">
+    </div>
+    
+    <div class="modal-actions" style="margin-top: 15px;">
+      <button onclick="addLightingFromModal()">Додати</button>
+      <button onclick="closeAddLightingModal()">Скасувати</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
+<!-- Модальне вікно для додавання стільниці -->
+<div id="addCountertopModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Додати стільницю</h3>
+      <span class="close" onclick="closeAddCountertopModal()">&times;</span>
+    </div>
+    <div>
+      <label for="newCountertopMaterial">Матеріал:</label><br/>
+      <select id="newCountertopMaterial" style="width: 100%; margin-bottom: 15px;">
+        <option value="">-- Виберіть матеріал --</option>
+        <option value="dsp_mdf">ДСП-МДФ</option>
+        <option value="ceramic">Керамограніт-Кварц</option>
+        <option value="hpl">HPL</option>
+        <option value="acryl">Акрил</option>
+        <option value="rd">R&D (дерево-метал)</option>
+      </select>
+      
+      <label for="newCountertopShape">Форма:</label><br/>
+      <select id="newCountertopShape" style="width: 100%; margin-bottom: 15px;">
+        <option value="">-- Виберіть форму --</option>
+        <option value="straight">Прямий</option>
+        <option value="g_shape">Г-подібний</option>
+        <option value="p_shape">П-подібний</option>
+      </select>
+      
+      <label for="newCountertopDrops">Наявність опусків:</label><br/>
+      <select id="newCountertopDrops" style="width: 100%; margin-bottom: 15px;">
+        <option value="">-- Виберіть --</option>
+        <option value="yes">Так</option>
+        <option value="no">Ні</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button onclick="closeAddCountertopModal()" style="background: #6b7280;">Скасувати</button>
+      <button onclick="addCountertop()" style="background: #2563eb;">Додати</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function safeRecalc(){ try{ if(typeof calculateTotal==="function") calculateTotal(); }catch(e){} }
+  // Автоматичний перерахунок відключений - поінти показуються тільки після натискання "Розрахувати"
+})();
+</script>
+
