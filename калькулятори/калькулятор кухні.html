@@ -560,6 +560,7 @@
       <option value="Пряма">Пряма</option>
       <option value="Г-подібна">Г-подібна</option>
       <option value="П-подібна">П-подібна</option>
+      <option value="G-подібна">G-подібна</option>
     </select>
     <br/><br/>
     <label for="measure">Заміри:</label><br/>
@@ -1891,6 +1892,7 @@ function updateFacadeMaterialNumbers() {
         if (form === "Пряма") addDetail("Форма кухні: Пряма", 1, "p_forma_pryama");
         else if (form === "Г-подібна") addDetail("Форма кухні: Г-подібна", 1, "p_forma_g");
         else if (form === "П-подібна") addDetail("Форма кухні: П-подібна", 1, "p_forma_p");
+        else if (form === "G-подібна") addDetail("Форма кухні: G-подібна", 1, "p_forma_g_eng");
 
         const measure = (document.getElementById("measure")?.value || "").trim();
         if (measure === "Без замірів") addDetail("Без замірів", 1, "p_bez_zamiriv");

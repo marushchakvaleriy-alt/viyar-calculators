@@ -15,6 +15,10 @@ let calculatorSettings = {
             "value": 23,
             "label": "Форма шафи - Г-подібна"
         },
+        "p_forma_g_eng": {
+            "value": 31,
+            "label": "Форма шафи - G-подібна"
+        },
         "p_forma_p": {
             "value": 27,
             "label": "Форма шафи - П-подібна"
@@ -76,15 +80,15 @@ let calculatorSettings = {
             "label": "МДФ плити"
         },
         "p_facade_paint_straight": {
-            "value": 8,
+            "value": 10,
             "label": "Фарба/плівка 'прямі'"
         },
         "p_facade_paint_milled": {
-            "value": 10,
+            "value": 14,
             "label": "Фарба/плівка 'фрезеровані'"
         },
         "p_facade_veneer_straight": {
-            "value": 12,
+            "value": 10,
             "label": "Шпоновані 'прямі'"
         },
         "p_facade_veneer_milled": {
@@ -92,27 +96,27 @@ let calculatorSettings = {
             "label": "Шпоновані 'фрезеровані'"
         },
         "p_facade_alum_frame": {
-            "value": 16,
+            "value": 8,
             "label": "Алюм. рамкові"
         },
         "p_facade_arpa": {
-            "value": 18,
+            "value": 8,
             "label": "ARPA/Fenix"
         },
         "p_facade_fiushin": {
-            "value": 20,
+            "value": 10,
             "label": "Fiushin"
         },
         "p_facade_hpl": {
-            "value": 22,
+            "value": 14,
             "label": "HPL"
         },
         "p_facade_rd_individual": {
-            "value": 24,
+            "value": 30,
             "label": "R&D фасади індивід."
         },
         "p_facade_mdf_individual": {
-            "value": 26,
+            "value": 17,
             "label": "МДФ фасади з індивідуальним фрезеруванням"
         },
         "p_facade_texture": {
@@ -140,11 +144,11 @@ let calculatorSettings = {
             "label": "Складна система WingLine"
         },
         "p_furn_doors": {
-            "value": 4,
+            "value": 24,
             "label": "Системи розсувних дверей (Revego, Hawa, Salice)"
         },
         "p_furn_slide": {
-            "value": 5,
+            "value": 6,
             "label": "Розсувні с-ми (типу slide М)"
         },
         "p_false_hor": {
@@ -152,7 +156,7 @@ let calculatorSettings = {
             "label": "Фальш горизонтальні"
         },
         "p_false_ver": {
-            "value": 4,
+            "value": 1,
             "label": "Фальш вертикальні"
         },
         "p_false_rnd": {
@@ -160,19 +164,19 @@ let calculatorSettings = {
             "label": "Деталь R&D, гнутий елемент тощо"
         },
         "p_metal_frame": {
-            "value": 8,
+            "value": 6,
             "label": "Металоконструкція рамкова"
         },
         "p_metal_volume": {
-            "value": 10,
+            "value": 12,
             "label": "Металоконструкція об'ємна"
         },
         "p_furn_drawers": {
-            "value": 2,
+            "value": 1,
             "label": "Ящики"
         },
         "p_furn_lifts": {
-            "value": 4,
+            "value": 2,
             "label": "Підійомні механізми"
         },
         "p_furn_accessories": {
@@ -187,28 +191,28 @@ let calculatorSettings = {
             "value": 2,
             "label": "Барні механізми"
         },
-        "p_handle_gola": {
+        "p_handle_gola_low": {
             "value": 3,
             "label": "GOLA"
         },
         "p_handle_end": {
-            "value": 4,
+            "value": 7,
             "label": "Торцеві"
         },
-        "p_handle_fr": {
+        "p_handle_milled": {
             "value": 8,
             "label": "Фрезеровані"
         },
         "p_handle_other": {
-            "value": 6,
+            "value": 3,
             "label": "Інші, накладні тощо"
         },
         "p_light_mod": {
-            "value": 3,
+            "value": 2,
             "label": "К-сть елементів (деталей) з підсвіткою"
         },
         "p_light_work": {
-            "value": 4,
+            "value": 3,
             "label": "К-сть пристроїв керування"
         },
         "p_tech_hatch": {
@@ -222,19 +226,23 @@ let calculatorSettings = {
     },
     "kitchen": {
         "p_forma_pryama": {
-            "value": 19,
+            "value": 33,
             "label": "Форма кухні - Пряма"
         },
         "p_forma_g": {
-            "value": 23,
+            "value": 37,
             "label": "Форма кухні - Г-подібна"
         },
+        "p_forma_g_eng": {
+            "value": 45,
+            "label": "Форма кухні - G-подібна"
+        },
         "p_forma_p": {
-            "value": 27,
+            "value": 41,
             "label": "Форма кухні - П-подібна"
         },
         "p_geo": {
-            "value": 8,
+            "value": 6,
             "label": "Нестандартна геометрія"
         },
         "p_vent": {
@@ -246,7 +254,7 @@ let calculatorSettings = {
             "label": "Без замірів"
         },
         "p_zamir_3d": {
-            "value": 8,
+            "value": 15,
             "label": "По замірам 3D"
         },
         "p_zamir_foto": {
@@ -278,11 +286,11 @@ let calculatorSettings = {
             "label": "МДФ плити"
         },
         "p_facade_paint_straight": {
-            "value": 8,
+            "value": 10,
             "label": "Фарба/плівка 'прямі'"
         },
         "p_facade_paint_milled": {
-            "value": 10,
+            "value": 14,
             "label": "Фарба/плівка 'фрезеровані'"
         },
         "p_facade_veneer_straight": {
@@ -290,71 +298,71 @@ let calculatorSettings = {
             "label": "Шпоновані 'прямі'"
         },
         "p_facade_veneer_milled": {
-            "value": 14,
+            "value": 16,
             "label": "Шпоновані 'фрезеровані'"
         },
         "p_facade_alum_frame": {
-            "value": 16,
+            "value": 8,
             "label": "Алюм. рамкові"
         },
         "p_facade_arpa": {
-            "value": 18,
+            "value": 8,
             "label": "ARPA/Fenix"
         },
         "p_facade_fiushin": {
-            "value": 20,
+            "value": 10,
             "label": "Fiushin"
         },
         "p_facade_hpl": {
-            "value": 22,
+            "value": 14,
             "label": "HPL"
         },
         "p_facade_rd_individual": {
-            "value": 24,
+            "value": 30,
             "label": "R&D фасади індивід."
         },
         "p_facade_mdf_individual": {
-            "value": 26,
+            "value": 17,
             "label": "МДФ фасади з індивідуальним фрезеруванням"
         },
         "p_facade_texture": {
-            "value": 3,
+            "value": 6,
             "label": "Перехід текстури фасадних матеріалів"
         },
         "p_tabletop_dsp_mdf": {
-            "value": 4,
+            "value": 6,
             "label": "ДСП-МДФ"
         },
         "p_tabletop_ceramic": {
-            "value": 6,
+            "value": 18,
             "label": "Керамограніт-Кварц"
         },
         "p_tabletop_hpl": {
-            "value": 8,
+            "value": 10,
             "label": "HPL"
         },
         "p_tabletop_acryl": {
-            "value": 10,
+            "value": 18,
             "label": "Акрил"
         },
         "p_tabletop_rd": {
-            "value": 12,
+            "value": 23,
             "label": "R&D (дерево-метал)"
         },
         "p_tabletop_form_straight": {
-            "value": 2,
+            "value": 1,
             "label": "Форма стільниці - Прямий"
         },
         "p_tabletop_form_g": {
-            "value": 4,
+            "value": 3,
             "label": "Форма стільниці - Г-подібний"
         },
         "p_tabletop_form_p": {
-            "value": 6,
+            "value": 5,
             "label": "Форма стільниці - П-подібний"
         },
         "p_tabletop_drop": {
-            "value": 3,
+            "value": 2,
             "label": "Опуски стільниці"
         },
         "p_fartukh_dsp_mdf": {
@@ -362,23 +370,23 @@ let calculatorSettings = {
             "label": "ДСП-МДФ"
         },
         "p_fartukh_ceramic": {
-            "value": 5,
+            "value": 6,
             "label": "Керамограніт-Кварц"
         },
         "p_fartukh_hpl": {
-            "value": 7,
+            "value": 6,
             "label": "HPL"
         },
         "p_fartukh_acryl": {
-            "value": 9,
+            "value": 6,
             "label": "Акрил"
         },
         "p_fartukh_glass": {
-            "value": 11,
+            "value": 10,
             "label": "Скло"
         },
         "p_fartukh_rd": {
-            "value": 13,
+            "value": 15,
             "label": "R&D (дерево-метал)"
         },
         "p_mod_low": {
@@ -386,15 +394,15 @@ let calculatorSettings = {
             "label": "Нижні модулі"
         },
         "p_mod_up": {
-            "value": 3,
+            "value": 1,
             "label": "Верхні модулі"
         },
         "p_mod_ant": {
-            "value": 4,
+            "value": 1,
             "label": "Антресолі"
         },
         "p_mod_penal": {
-            "value": 5,
+            "value": 2,
             "label": "Пенали"
         },
         "p_false_hor": {
@@ -402,35 +410,35 @@ let calculatorSettings = {
             "label": "Фальш горизонтальні"
         },
         "p_false_ver": {
-            "value": 4,
+            "value": 1,
             "label": "Фальш вертикальні"
         },
         "p_detail_rd": {
-            "value": 6,
+            "value": 15,
             "label": "Деталь R&D, гнутий елемент тощо"
         },
         "p_metal_frame": {
-            "value": 8,
+            "value": 6,
             "label": "Металоконструкція рамкова"
         },
         "p_metal_volume": {
-            "value": 10,
+            "value": 12,
             "label": "Металоконструкція об'ємна"
         },
         "p_furn_drawers": {
-            "value": 2,
+            "value": 1,
             "label": "Ящики"
         },
         "p_furn_lifts": {
-            "value": 4,
+            "value": 2,
             "label": "Підійомні механізми"
         },
         "p_furn_cargo": {
-            "value": 3,
+            "value": 1,
             "label": "Карго/сушка/смітник"
         },
         "p_furn_magic": {
-            "value": 5,
+            "value": 4,
             "label": "Магічний кут"
         },
         "p_furn_servo": {
@@ -438,47 +446,55 @@ let calculatorSettings = {
             "label": "Servo-Drive"
         },
         "p_furn_console": {
-            "value": 3,
+            "value": 2,
             "label": "Консольні полиці"
         },
         "p_furn_top": {
-            "value": 2,
+            "value": 4,
             "label": "Верхні шухляди"
         },
         "p_furn_doors": {
-            "value": 4,
+            "value": 24,
             "label": "Системи розсувних дверей"
         },
         "p_furn_slide": {
-            "value": 5,
+            "value": 6,
             "label": "Slide M"
         },
-        "p_handle_gola": {
-            "value": 3,
-            "label": "GOLA"
+        "p_handle_gola_low": {
+            "value": 6,
+            "label": "GOLA низ"
+        },
+        "p_handle_gola_up": {
+            "value": 6,
+            "label": "GOLA верх"
+        },
+        "p_handle_gola_vert": {
+            "value": 6,
+            "label": "GOLA вертикал."
         },
         "p_handle_end": {
-            "value": 4,
+            "value": 7,
             "label": "Торцеві"
         },
-        "p_handle_fr": {
+        "p_handle_milled": {
             "value": 8,
             "label": "Фрезеровані"
         },
         "p_handle_other": {
-            "value": 6,
+            "value": 4,
             "label": "Інші, накладні тощо"
         },
         "p_light_mod": {
-            "value": 3,
+            "value": 4,
             "label": "К-сть модулів з підсвіткою"
         },
         "p_light_work": {
-            "value": 4,
+            "value": 6,
             "label": "Підсвітка робочої зони"
         },
         "p_light_base": {
-            "value": 2,
+            "value": 5,
             "label": "Підсвітка цоколя"
         },
         "p_light_other": {
@@ -486,13 +502,13 @@ let calculatorSettings = {
             "label": "Інше (окремий модуль підсвітки)"
         },
         "p_appliance": {
-            "value": 2,
+            "value": 6,
             "label": "Вбудована техніка"
         }
     },
     "wardrobeSystems": {
         "p_product_стелажна_с-ма": {
-            "value": 1,
+            "value": 1000,
             "label": "Стелажна с-ма ( к-сть вертикальних секцій/модулів)"
         },
         "p_product_пристінна_с-ма": {
@@ -600,7 +616,7 @@ let calculatorSettings = {
             "label": "GOLA"
         },
         "p_handle_end": {
-            "value": 4,
+            "value": 7,
             "label": "Торцеві"
         },
         "p_handle_fr": {
@@ -608,13 +624,13 @@ let calculatorSettings = {
             "label": "Фрезеровані"
         },
         "p_handle_other": {
-            "value": 6,
+            "value": 4,
             "label": "Інші, накладні тощо"
         }
     },
     "wallPanels": {
         "p_product_стінові_панелі": {
-            "value": 1,
+            "value": 1000,
             "label": "Стінові панелі"
         },
         "p_product_стельові_панелі": {
@@ -758,7 +774,7 @@ let calculatorSettings = {
             "label": "GOLA"
         },
         "p_handle_end": {
-            "value": 4,
+            "value": 7,
             "label": "Торцеві"
         },
         "p_handle_fr": {
@@ -766,7 +782,7 @@ let calculatorSettings = {
             "label": "Фрезеровані"
         },
         "p_handle_other": {
-            "value": 6,
+            "value": 4,
             "label": "Інші, накладні тощо"
         }
     },
@@ -887,21 +903,157 @@ let calculatorSettings = {
             "value": 3,
             "label": "Перехід текстури фасадних матеріалів"
         },
-        "p_handle_gola": {
+        "p_countertop_dsp_mdf": {
             "value": 3,
-            "label": "GOLA"
+            "label": "ДСП-МДФ"
+        },
+        "p_countertop_ceramic": {
+            "value": 6,
+            "label": "Керамограніт-Кварц"
+        },
+        "p_countertop_hpl": {
+            "value": 5,
+            "label": "HPL"
+        },
+        "p_countertop_acryl": {
+            "value": 10,
+            "label": "Акрил"
+        },
+        "p_countertop_rd": {
+            "value": 18,
+            "label": "R&D (дерево-метал)"
+        },
+        "p_countertop_shape_straight": {
+            "value": 1,
+            "label": "Форма стільниці - Прямий"
+        },
+        "p_countertop_shape_g": {
+            "value": 3,
+            "label": "Форма стільниці - Г-подібний"
+        },
+        "p_countertop_shape_p": {
+            "value": 5,
+            "label": "Форма стільниці - П-подібний"
+        },
+        "p_countertop_drops": {
+            "value": 2,
+            "label": "Наявність опусків"
+        },
+        "p_sections": {
+            "value": 2,
+            "label": "Кількість проємів (секцій)"
+        },
+        "p_swing_facades": {
+            "value": 3,
+            "label": "Фасади роспашні"
+        },
+        "p_sliding_facades": {
+            "value": 4,
+            "label": "Фасади розсувні"
+        },
+        "p_element_metal_frame": {
+            "value": 6,
+            "label": "Металоконструкція рамкова"
+        },
+        "p_element_metal_volume": {
+            "value": 12,
+            "label": "Металоконструкція об'ємна"
+        },
+        "p_element_rd_detail": {
+            "value": 15,
+            "label": "Деталь R&D, гнутий елемент тощо"
+        },
+        "p_element_false_horizontal": {
+            "value": 1,
+            "label": "Фальш панелі горизонтальні"
+        },
+        "p_element_false_vertical": {
+            "value": 1,
+            "label": "Фальш панелі вертикальні"
+        },
+        "p_furn_drawers": {
+            "value": 1,
+            "label": "Ящики"
+        },
+        "p_furn_lifts": {
+            "value": 2,
+            "label": "Підйомні механізми"
+        },
+        "p_furn_bar": {
+            "value": 2,
+            "label": "Барні механізми"
+        },
+        "p_furn_accessories": {
+            "value": 3,
+            "label": "Аксесуари до шафи"
+        },
+        "p_furn_rods": {
+            "value": 1,
+            "label": "К-сть штанг для одягу"
+        },
+        "p_furn_sliding_bottom": {
+            "value": 6,
+            "label": "Розсувні с-ми (нижньоопорні)"
+        },
+        "p_furn_wingline": {
+            "value": 12,
+            "label": "Складна система WingLine"
+        },
+        "p_furn_doors": {
+            "value": 24,
+            "label": "Системи розсувних дверей (Revego, Hawa, Salice)"
+        },
+        "p_furn_slide_m": {
+            "value": 6,
+            "label": "Розсувні с-ми (типу slide М)"
+        },
+        "p_appliances_hatch": {
+            "value": 6,
+            "label": "Люк технічний інші комунікації"
+        },
+        "p_appliances_sink": {
+            "value": 6,
+            "label": "Рукомийник"
+        },
+        "p_appliances_fireplace": {
+            "value": 30,
+            "label": "Каміни"
+        },
+        "p_appliances_other": {
+            "value": 8,
+            "label": "Техніка (пралка, сушка, бойлер тощо)"
+        },
+        "p_handle_gola_low": {
+            "value": 6,
+            "label": "GOLA низ"
+        },
+        "p_handle_gola_up": {
+            "value": 6,
+            "label": "GOLA верх"
+        },
+        "p_handle_gola_vert": {
+            "value": 6,
+            "label": "GOLA вертикал."
         },
         "p_handle_end": {
-            "value": 4,
+            "value": 7,
             "label": "Торцеві"
         },
-        "p_handle_fr": {
+        "p_handle_milled": {
             "value": 8,
             "label": "Фрезеровані"
         },
         "p_handle_other": {
             "value": 6,
-            "label": "Інші, накладні тощо"
+            "label": "Інші"
+        },
+        "p_lighting_light_elements": {
+            "value": 2,
+            "label": "Елементів (деталей) з підсвіткою"
+        },
+        "p_lighting_light_control": {
+            "value": 3,
+            "label": "Пристроїв керування і вимірюються в кількостях"
         }
     }
 };

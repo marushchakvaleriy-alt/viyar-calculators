@@ -647,6 +647,7 @@
       <option value="Пряма">Пряма</option>
       <option value="Г-подібна">Г-подібна</option>
       <option value="П-подібна">П-подібна</option>
+      <option value="G-подібна">G-подібна</option>
     </select>
     <br/><br/>
     <label for="installationType">Тип встановлення шафи:</label><br/>
@@ -846,7 +847,7 @@
       <option value="">-- Виберіть --</option>
       <option value="gola">GOLA</option>
       <option value="end">Торцеві</option>
-      <option value="fr">Фрезеровані</option>
+      <option value="milled">Фрезеровані</option>
       <option value="other">Інші, накладні тощо</option>
     </select>
   </div>
@@ -1386,7 +1387,7 @@ function addFacadeMaterial() {
       const handleNames = {
         "gola": "GOLA",
         "end": "Торцеві",
-        "fr": "Фрезеровані",
+        "milled": "Фрезеровані",
         "other": "Інші, накладні тощо"
       };
 
@@ -1871,9 +1872,9 @@ function addFacadeMaterial() {
           handles.forEach(handle => {
             const handleType = handle.getAttribute('data-handle-type');
             let tariffId = "p_handle";
-            if (handleType === "gola") tariffId = "p_handle_gola";
+            if (handleType === "gola") tariffId = "p_handle_gola_low";
             else if (handleType === "end") tariffId = "p_handle_end";
-            else if (handleType === "fr") tariffId = "p_handle_fr";
+            else if (handleType === "milled") tariffId = "p_handle_milled";
             else if (handleType === "other") tariffId = "p_handle_other";
             
             const tariff = getSettingValue(tariffId);
@@ -2129,6 +2130,7 @@ function addFacadeMaterial() {
         if (form === "Пряма") addDetail("Форма шафи: Пряма", 1, "p_forma_pryama");
         else if (form === "Г-подібна") addDetail("Форма шафи: Г-подібна", 1, "p_forma_g");
         else if (form === "П-подібна") addDetail("Форма шафи: П-подібна", 1, "p_forma_p");
+        else if (form === "G-подібна") addDetail("Форма шафи: G-подібна", 1, "p_forma_g_eng");
 
         const measure = (document.getElementById("measure")?.value || "").trim();
         if (measure === "Без замірів") {
@@ -2253,9 +2255,9 @@ if (hasFacadeMaterials === "yes") {
       if (valYes("hasHandles")) {
         const handlesList = document.querySelectorAll('#handlesList .element-item');
         const handleMapping = {
-          "GOLA": "p_handle_gola",
+          "GOLA": "p_handle_gola_low",
           "Торцеві": "p_handle_end",
-          "Фрезеровані": "p_handle_fr",
+          "Фрезеровані": "p_handle_milled",
           "Інші, накладні тощо": "p_handle_other"
         };
         
@@ -2475,6 +2477,7 @@ async function calculateTotal() {
     if (form === "Пряма") await addDetail("Форма шафи: Пряма", 1, "p_forma_pryama");
     else if (form === "Г-подібна") await addDetail("Форма шафи: Г-подібна", 1, "p_forma_g");
     else if (form === "П-подібна") await addDetail("Форма шафи: П-подібна", 1, "p_forma_p");
+    else if (form === "G-подібна") await addDetail("Форма шафи: G-подібна", 1, "p_forma_g_eng");
 
     const measure = (document.getElementById("measure")?.value || "").trim();
     if (measure === "Без замірів") {
@@ -2632,9 +2635,9 @@ async function calculateTotal() {
   if (valYes("hasHandles")) {
     const handlesList = document.querySelectorAll('#handlesList .element-item');
     const handleMapping = {
-      "GOLA": "p_handle_gola",
+      "GOLA": "p_handle_gola_low",
       "Торцеві": "p_handle_end",
-      "Фрезеровані": "p_handle_fr",
+      "Фрезеровані": "p_handle_milled",
       "Інші, накладні тощо": "p_handle_other"
     };
     
