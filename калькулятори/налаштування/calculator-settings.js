@@ -8,7 +8,7 @@ let calculatorSettings = {
     },
     "wardrobe": {
         "p_forma_pryama": {
-            "value": 1000,
+            "value": 19,
             "label": "Форма шафи - Пряма"
         },
         "p_forma_g": {
@@ -222,7 +222,7 @@ let calculatorSettings = {
     },
     "kitchen": {
         "p_forma_pryama": {
-            "value": 1000,
+            "value": 19,
             "label": "Форма кухні - Пряма"
         },
         "p_forma_g": {
