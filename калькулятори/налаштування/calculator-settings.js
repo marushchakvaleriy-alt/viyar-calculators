@@ -226,7 +226,7 @@ let calculatorSettings = {
     },
     "kitchen": {
         "p_kitchen_forma_pryama": {
-            "value": 33,
+            "value": 1,
             "label": "Форма кухні - Пряма"
         },
         "p_kitchen_forma_g": {
@@ -1068,38 +1068,25 @@ function getSettingValue(id) {
     const settings = loadCalculatorSettings();
     console.log('✅ Використовую бібліотеку налаштувань для ID:', id);
     
-    // Визначаємо тип калькулятора на основі контексту
-    let calcType = 'wardrobe'; // за замовчуванням
-    
-    // Спроба визначити тип калькулятора з URL або інших індикаторів
-    if (window.location.pathname.includes('кухні') || window.location.pathname.includes('kitchen')) {
-        calcType = 'kitchen';
-    } else if (window.location.pathname.includes('шафи гардероби') || window.location.pathname.includes('wardrobe')) {
-        calcType = 'wardrobe';
-    } else if (window.location.pathname.includes('інші меблі') || window.location.pathname.includes('other')) {
-        calcType = 'otherFurniture';
-    } else if (window.location.pathname.includes('гардеробні системи') || window.location.pathname.includes('wardrobe-systems')) {
-        calcType = 'wardrobeSystems';
-    } else if (window.location.pathname.includes('стінових панелей') || window.location.pathname.includes('wall-panels')) {
-        calcType = 'wallPanels';
-    }
-    
-    console.log('🔍 Тип калькулятора:', calcType);
-    
-    // Шукаємо значення в налаштуваннях
-    if (settings[calcType] && settings[calcType][id]) {
-        console.log('✅ Знайдено значення для', id, ':', settings[calcType][id].value);
-        return settings[calcType][id].value;
-    }
-    
-    // Якщо не знайдено, шукаємо в усіх типах калькуляторів
-    for (const type in settings) {
-        if (settings[type][id]) {
-            return settings[type][id].value;
+    // Шукаємо значення в усіх типах калькуляторів
+    for (const calcType in settings) {
+        if (settings[calcType][id]) {
+            console.log('✅ Знайдено значення для', id, ':', settings[calcType][id].value);
+            return settings[calcType][id].value;
         }
     }
     
-    // Якщо все ще не знайдено, повертаємо стандартне значення
+    // Якщо не знайдено, повертаємо стандартне значення
     console.warn('⚠️ Не знайдено значення для', id, ', використовую стандартне значення: 1');
     return 1;
+}
+
+// Функція для оновлення налаштувань (використовується в налаштуваннях)
+function updateCalculatorSettings(newSettings) {
+    calculatorSettings = newSettings;
+}
+
+// Функція для отримання копії налаштувань (для редагування)
+function getCalculatorSettingsCopy() {
+    return JSON.parse(JSON.stringify(calculatorSettings));
 }
