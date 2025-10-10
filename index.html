@@ -1047,7 +1047,7 @@
             }
             
             document.getElementById('settingsModal').style.display = 'flex';
-            loadSettingsOld();
+            loadSettings();
             // Показуємо першу вкладку
             switchTab('kitchen');
         }
@@ -1080,28 +1080,30 @@
             }
         }
 
-        // Функція для завантаження налаштувань (стара логіка)
-        function loadSettingsOld() {
-            // Завжди завантажуємо з бібліотеки
-            currentSettings = loadCalculatorSettings();
-            
-            console.log('🔧 Завантажені налаштування:', currentSettings);
-            
-            // Заповнюємо всі секції
-            Object.keys(currentSettings).forEach(calcType => {
-                const container = document.getElementById(calcType + 'Points');
-                if (container) {
-                    container.innerHTML = '';
-                    
-                    console.log(`📊 Обробляємо ${calcType} з ${Object.keys(currentSettings[calcType]).length} поінтами`);
-                    
-                    // Динамічно групуємо поінти по розділах
-                    const sections = groupPointsBySections(currentSettings[calcType]);
-                    
-                    console.log(`📊 Секції для ${calcType}:`, sections);
-                    
-                    // Створюємо секції
-                    Object.keys(sections).forEach(sectionName => {
+        // Простий варіант - завантажуємо з основного файлу
+        function loadSettings() {
+            try {
+                // Завантажуємо дані з основного файлу
+                currentSettings = loadCalculatorSettings();
+                
+                // Встановлюємо пароль "1111" за замовчуванням якщо його немає
+                if (!currentSettings.password) {
+                    currentSettings.password = { value: "1111", label: "Пароль для налаштувань" };
+                }
+                
+                console.log('🔧 Завантажені налаштування:', currentSettings);
+                
+                // Заповнюємо всі секції
+                Object.keys(currentSettings).forEach(calcType => {
+                    const container = document.getElementById(calcType + 'Points');
+                    if (container) {
+                        container.innerHTML = '';
+                        
+                        // Динамічно групуємо поінти по розділах
+                        const sections = groupPointsBySections(currentSettings[calcType]);
+                        
+                        // Створюємо секції
+                        Object.keys(sections).forEach(sectionName => {
                         const sectionPoints = sections[sectionName];
                         
                         // Якщо є поінти для цього розділу, створюємо секцію
@@ -1140,6 +1142,10 @@
                     });
                 }
             });
+            } catch (error) {
+                console.error('❌ Помилка завантаження налаштувань:', error);
+                alert('❌ Помилка завантаження налаштувань. Спробуйте перезавантажити сторінку.');
+            }
         }
 
         // Функція для встановлення пароля
@@ -1271,77 +1277,16 @@
             return sections;
         }
 
-        function loadSettings() {
-            try {
-                // Завжди завантажуємо з бібліотеки
-                currentSettings = loadCalculatorSettings();
-                
-                // Встановлюємо пароль "1111" за замовчуванням якщо його немає
-                if (!currentSettings.password) {
-                    currentSettings.password = { value: "1111", label: "Пароль для налаштувань" };
-                }
-                
-                // Заповнюємо всі секції
-                Object.keys(currentSettings).forEach(calcType => {
-                    const container = document.getElementById(calcType + 'Points');
-                    if (container) {
-                        container.innerHTML = '';
-                        
-                        // Динамічно групуємо поінти по розділах
-                        const sections = groupPointsBySections(currentSettings[calcType]);
-                        
-                        // Створюємо секції
-                        Object.keys(sections).forEach(sectionName => {
-                            const sectionPoints = sections[sectionName];
-                            
-                            // Якщо є поінти для цього розділу, створюємо секцію
-                            if (Object.keys(sectionPoints).length > 0) {
-                                const sectionDiv = document.createElement('div');
-                                sectionDiv.className = 'points-section';
-                                
-                                const headerDiv = document.createElement('div');
-                                headerDiv.className = 'points-section-header';
-                                headerDiv.textContent = sectionName;
-                                
-                                const contentDiv = document.createElement('div');
-                                contentDiv.className = 'points-section-content';
-                                
-                                const gridDiv = document.createElement('div');
-                                gridDiv.className = 'points-grid';
-                                
-                                // Додаємо поінти до сітки
-                                Object.keys(sectionPoints).forEach(pointId => {
-                                    const point = sectionPoints[pointId];
-                                    const pointItem = document.createElement('div');
-                                    pointItem.className = 'point-item';
-                                    pointItem.innerHTML = `
-                                        <label for="${pointId}">${point.label}</label>
-                                        <input type="number" id="${pointId}" value="${point.value}" min="0" step="1">
-                                    `;
-                                    gridDiv.appendChild(pointItem);
-                                });
-                                
-                                contentDiv.appendChild(gridDiv);
-                                sectionDiv.appendChild(headerDiv);
-                                sectionDiv.appendChild(contentDiv);
-                                container.appendChild(sectionDiv);
-                            }
-                        });
-                    }
-                });
-            } catch (error) {
-                console.error('Помилка завантаження налаштувань:', error);
-                alert('❌ Помилка завантаження налаштувань. Перевірте, чи існує файл calculator-settings.js');
-            }
-        }
-
         // Збереження налаштувань
 
 
 
 
+        // Простий варіант збереження - зберігаємо все в один файл
         function saveSettings() {
             try {
+                console.log('🔧 Початок збереження налаштувань...');
+                
                 // Збираємо дані з усіх вкладок
                 const tabContents = document.querySelectorAll('.tab-content');
                 
@@ -1367,8 +1312,11 @@
                 
                 alert('✅ Налаштування збережено локально!\n\n💾 Завантажте файл calculator-settings.js та замініть ним старий файл в папці "калькулятори/налаштування/".\n\n🔄 Після заміни файлу на GitHub всі калькулятори отримають нові налаштування!');
             } catch (error) {
-                console.error('Помилка збереження налаштувань:', error);
-                alert('❌ Помилка збереження налаштувань. Спробуйте ще раз.');
+                console.error('❌ Помилка збереження налаштувань:', error);
+                console.error('❌ Стек помилки:', error.stack);
+                console.error('❌ Тип помилки:', typeof error);
+                console.error('❌ Повідомлення помилки:', error.message);
+                alert('❌ Помилка збереження налаштувань. Спробуйте ще раз.\n\nДеталі в консолі (F12)');
             }
         }
 
@@ -1398,6 +1346,7 @@
             
             alert('✅ Файл calculator-settings.js завантажено!\n\n📁 Замініть ним старий файл в папці "калькулятори/налаштування/" на GitHub');
         }
+
 
 
         // Функція для генерації оновленого JS файлу
@@ -1457,16 +1406,6 @@ function getSettingValue(id) {
     // Якщо все ще не знайдено, повертаємо стандартне значення
     console.warn('⚠️ Не знайдено значення для', id, ', використовую стандартне значення: 1');
     return 1;
-}
-
-// Функція для оновлення налаштувань (використовується в налаштуваннях)
-function updateCalculatorSettings(newSettings) {
-    calculatorSettings = newSettings;
-}
-
-// Функція для отримання копії налаштувань (для редагування)
-function getCalculatorSettingsCopy() {
-    return JSON.parse(JSON.stringify(calculatorSettings));
 }`;
 
             // Створюємо та завантажуємо файл
@@ -1479,6 +1418,17 @@ function getCalculatorSettingsCopy() {
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+        }
+
+        // Функція для оновлення налаштувань (використовується в налаштуваннях)
+        function updateCalculatorSettings(newSettings) {
+            calculatorSettings = newSettings;
+        }
+
+
+        // Функція для отримання копії налаштувань (для редагування)
+        function getCalculatorSettingsCopy() {
+            return JSON.parse(JSON.stringify(calculatorSettings));
         }
 
         // Експорт налаштувань
@@ -1494,15 +1444,14 @@ function getCalculatorSettingsCopy() {
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
+        
         // Закриття модального вікна при кліку поза ним
         window.onclick = function(event) {
             const modal = document.getElementById('settingsModal');
             if (event.target === modal) {
                 closeSettings();
             }
-        }
-        // Завантажуємо налаштування при завантаженні сторінки
-        loadSettingsOld();
+        };
     </script>
 
 </body>

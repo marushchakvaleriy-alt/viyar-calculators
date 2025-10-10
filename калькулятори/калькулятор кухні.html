@@ -1855,16 +1855,11 @@ function updateFacadeMaterialNumbers() {
     
     // Безпечна версія розрахунку без валідації
     function calculateTotal() {
-      function getSettingValue(id) {
-        // Використовуємо бібліотеку налаштувань
-        if (typeof window.getSettingValue === 'function') {
-          return window.getSettingValue(id);
-        }
-        
-        // Fallback - повертаємо стандартне значення
-        console.warn('⚠️ Бібліотека налаштувань недоступна, використовую стандартне значення: 1');
-        return 1;
-      }
+      // Використовуємо глобальну функцію getSettingValue з calculator-settings.js
+      console.log('🍳 Початок розрахунку калькулятора кухні');
+      console.log('🔍 URL:', window.location.href);
+      console.log('🔍 Pathname:', window.location.pathname);
+      console.log('🔍 Title:', document.title);
       
       function valInt(id) {
         const el = document.getElementById(id);
@@ -1880,6 +1875,7 @@ function updateFacadeMaterialNumbers() {
       
       function addDetail(label, count, tariffId) {
         const t = getSettingValue(tariffId);
+        console.log(`📊 ${label}: ${count} × ${t} = ${count * t} поінтів (ID: ${tariffId})`);
         if (!count || !t) return;
         points += count * t;
       }
@@ -1889,30 +1885,30 @@ function updateFacadeMaterialNumbers() {
       // ===== 1. Основні параметри =====
       (function(){
         const form = (document.getElementById("kitchenForm")?.value || "").trim();
-        if (form === "Пряма") addDetail("Форма кухні: Пряма", 1, "p_forma_pryama");
-        else if (form === "Г-подібна") addDetail("Форма кухні: Г-подібна", 1, "p_forma_g");
-        else if (form === "П-подібна") addDetail("Форма кухні: П-подібна", 1, "p_forma_p");
-        else if (form === "G-подібна") addDetail("Форма кухні: G-подібна", 1, "p_forma_g_eng");
+        if (form === "Пряма") addDetail("Форма кухні: Пряма", 1, "p_kitchen_forma_pryama");
+        else if (form === "Г-подібна") addDetail("Форма кухні: Г-подібна", 1, "p_kitchen_forma_g");
+        else if (form === "П-подібна") addDetail("Форма кухні: П-подібна", 1, "p_kitchen_forma_p");
+        else if (form === "G-подібна") addDetail("Форма кухні: G-подібна", 1, "p_kitchen_forma_g_eng");
 
         const measure = (document.getElementById("measure")?.value || "").trim();
-        if (measure === "Без замірів") addDetail("Без замірів", 1, "p_bez_zamiriv");
-        else if (measure === "По замірам 3D") addDetail("По замірам 3D", 1, "p_zamir_3d");
-        else if (measure === "По замірам фото-ескіз") addDetail("По замірам фото-ескіз", 1, "p_zamir_foto");
+        if (measure === "Без замірів") addDetail("Без замірів", 1, "p_kitchen_zamir_none");
+        else if (measure === "По замірам 3D") addDetail("По замірам 3D", 1, "p_kitchen_zamir_3d");
+        else if (measure === "По замірам фото-ескіз") addDetail("По замірам фото-ескіз", 1, "p_kitchen_zamir_photo");
 
         const geomYes = (document.getElementById("geom")?.value || "").trim().toLowerCase() === "так";
-        if (geomYes) addDetail("Нестандартна геометрія", 1, "p_geo");
+        if (geomYes) addDetail("Нестандартна геометрія", 1, "p_kitchen_geo");
 
         const ventYes = (document.getElementById("vent")?.value || "").trim().toLowerCase() === "так";
-        if (ventYes) addDetail("Вентмагістраль", 1, "p_vent");
+        if (ventYes) addDetail("Вентмагістраль", 1, "p_kitchen_vent");
 
         const islandYes = (document.getElementById("island")?.value || "").trim().toLowerCase() == "так";
-        if (islandYes) addDetail("Острів", 1, "p_island");
+        if (islandYes) addDetail("Острів", 1, "p_kitchen_island");
       })();
 
       // ===== 2. Матеріали =====
       (function(){
         const corpusCount = parseInt(document.getElementById("corpus")?.value) || 0;
-        if (corpusCount > 0) addDetail("Матеріал корпусу", corpusCount, "p_mat_corpus");
+        if (corpusCount > 0) addDetail("Матеріал корпусу", corpusCount, "p_kitchen_mat_corpus");
 
         const glassSel = (document.getElementById("glassSelect")?.value || "").trim().toLowerCase();
         const glassCount = parseInt(document.getElementById("glassCount")?.value) || 0;
@@ -1924,19 +1920,19 @@ const hasFacadeMaterials = document.getElementById("hasFacadeMaterials")?.value;
 if (hasFacadeMaterials === "yes") {
   const facadeMaterials = document.querySelectorAll('[id^="facadeMaterial_"]');
   const materialMapping = {
-    "dsp_mat": "p_facade_dsp_mat",
-    "dsp": "p_facade_dsp", 
-    "mdf": "p_facade_mdf",
-    "paint_straight": "p_facade_paint_straight",
-    "paint_milled": "p_facade_paint_milled",
-    "veneer_straight": "p_facade_veneer_straight",
-    "veneer_milled": "p_facade_veneer_milled",
-    "alum_frame": "p_facade_alum_frame",
-    "arpa": "p_facade_arpa",
-    "fiushin": "p_facade_fiushin",
-    "hpl": "p_facade_hpl",
-    "rd_individual": "p_facade_rd_individual",
-    "mdf_individual": "p_facade_mdf_individual"
+    "dsp_mat": "p_kitchen_facade_dsp_mat",
+    "dsp": "p_kitchen_facade_dsp", 
+    "mdf": "p_kitchen_facade_mdf",
+    "paint_straight": "p_kitchen_facade_paint_straight",
+    "paint_milled": "p_kitchen_facade_paint_milled",
+    "veneer_straight": "p_kitchen_facade_veneer_straight",
+    "veneer_milled": "p_kitchen_facade_veneer_milled",
+    "alum_frame": "p_kitchen_facade_alum_frame",
+    "arpa": "p_kitchen_facade_arpa",
+    "fiushin": "p_kitchen_facade_fiushin",
+    "hpl": "p_kitchen_facade_hpl",
+    "rd_individual": "p_kitchen_facade_rd_individual",
+    "mdf_individual": "p_kitchen_facade_mdf_individual"
   };
 
   const materialNames = {
@@ -1974,7 +1970,7 @@ if (hasFacadeMaterials === "yes") {
     
     // Додаємо поінти за текстуру (тільки якщо вибрано "з текстурою")
     if (texture === "yes") {
-      addDetail(`Текстура фасадного матеріалу ${index + 1}`, 1, "p_facade_texture");
+      addDetail(`Текстура фасадного матеріалу ${index + 1}`, 1, "p_kitchen_facade_texture");
     }
   });
 }
@@ -1985,17 +1981,17 @@ if (hasFacadeMaterials === "yes") {
         const countertops = document.querySelectorAll('[id^="countertop_"]');
         
         const materialMapping = {
-          "dsp_mdf": "p_tabletop_dsp_mdf",
-          "ceramic": "p_tabletop_ceramic", 
-          "hpl": "p_tabletop_hpl",
-          "acryl": "p_tabletop_acryl",
-          "rd": "p_tabletop_rd"
+          "dsp_mdf": "p_kitchen_tabletop_dsp_mdf",
+          "ceramic": "p_kitchen_tabletop_ceramic", 
+          "hpl": "p_kitchen_tabletop_hpl",
+          "acryl": "p_kitchen_tabletop_acryl",
+          "rd": "p_kitchen_tabletop_rd"
         };
         
         const formMapping = {
-          "straight": "p_tabletop_form_straight",
-          "g_shape": "p_tabletop_form_g",
-          "p_shape": "p_tabletop_form_p"
+          "straight": "p_kitchen_tabletop_form_straight",
+          "g_shape": "p_kitchen_tabletop_form_g",
+          "p_shape": "p_kitchen_tabletop_form_p"
         };
 
         countertops.forEach((countertop, index) => {
@@ -2021,7 +2017,7 @@ if (hasFacadeMaterials === "yes") {
           
           // Додаємо поінти за опуски
           if (drops === "yes") {
-            addDetail(`Опуски стільниці ${index + 1}`, 1, "p_tabletop_drop");
+            addDetail(`Опуски стільниці ${index + 1}`, 1, "p_kitchen_tabletop_drop");
           }
         });
       }
@@ -2031,34 +2027,34 @@ if (hasFacadeMaterials === "yes") {
         const backsplashMaterial = document.getElementById("backsplashMaterial")?.value;
         if (backsplashMaterial) {
           const materialMapping = {
-            "ДСП-МДФ": "p_fartukh_dsp_mdf",
-            "Керамограніт-Кварц": "p_fartukh_ceramic",
-            "HPL": "p_fartukh_hpl",
-            "Акрил": "p_fartukh_acryl",
-            "Скло": "p_fartukh_glass",
-            "R&D (дерево-метал)": "p_fartukh_rd"
+            "ДСП-МДФ": "p_kitchen_fartukh_dsp_mdf",
+            "Керамограніт-Кварц": "p_kitchen_fartukh_ceramic",
+            "HPL": "p_kitchen_fartukh_hpl",
+            "Акрил": "p_kitchen_fartukh_acryl",
+            "Скло": "p_kitchen_fartukh_glass",
+            "R&D (дерево-метал)": "p_kitchen_fartukh_rd"
           };
-          const tariffId = materialMapping[backsplashMaterial] || "p_fartukh";
+          const tariffId = materialMapping[backsplashMaterial] || "p_kitchen_fartukh";
           addDetail("Фартух: " + backsplashMaterial, 1, tariffId);
         }
       }
 
       // 5. Корпуса-модулі
-      addDetail("Нижні модулі", valInt("lowerModules"), "p_mod_low");
-      addDetail("Верхні модулі", valInt("upperModules"), "p_mod_up");
-      addDetail("Антресолі",     valInt("topModules"),   "p_mod_ant");
-      addDetail("Пенали",        valInt("tallModules"),  "p_mod_penal");
+      addDetail("Нижні модулі", valInt("lowerModules"), "p_kitchen_mod_low");
+      addDetail("Верхні модулі", valInt("upperModules"), "p_kitchen_mod_up");
+      addDetail("Антресолі",     valInt("topModules"),   "p_kitchen_mod_ant");
+      addDetail("Пенали",        valInt("tallModules"),  "p_kitchen_mod_penal");
 
       // 6. Додаткові елементи (нова система)
       const hasAdditionalElements = document.getElementById("hasAdditionalElements")?.value;
       if (hasAdditionalElements === "yes") {
         const additionalElements = document.querySelectorAll('[id^="additionalElement_"]');
         const elementMapping = {
-          "false_hor": "p_false_hor",
-          "false_ver": "p_false_ver",
-          "detail_rd": "p_detail_rd",
-          "metal_frame": "p_metal_frame",
-          "metal_volume": "p_metal_volume"
+          "false_hor": "p_kitchen_false_hor",
+          "false_ver": "p_kitchen_false_ver",
+          "detail_rd": "p_kitchen_detail_rd",
+          "metal_frame": "p_kitchen_metal_frame",
+          "metal_volume": "p_kitchen_metal_volume"
         };
 
         additionalElements.forEach(element => {
@@ -2080,27 +2076,27 @@ if (hasFacadeMaterials === "yes") {
       }
 
       // 7. Функціональна фурнітура
-      addDetail("Ящики",                    valInt("furnDrawers"),      "p_furn_drawers");
-      addDetail("Підійомні механізми",      valInt("furnLifts"),        "p_furn_lifts");
-      addDetail("Карго/сушка/смітник",      valInt("furnCargo"),        "p_furn_cargo");
-      addDetail("Магічний кут",             valInt("furnMagic"),        "p_furn_magic");
-      addDetail("Servo-Drive",              valInt("furnServo"),        "p_furn_servo");
-      addDetail("Консольні полиці",         valInt("furnConsole"),      "p_furn_console");
-      addDetail("Верхні шухляди",           valInt("furnTopDrawers"),   "p_furn_top");
-      addDetail("Системи розсувних дверей", valInt("furnSlidingDoors"), "p_furn_doors");
-      addDetail("Slide M",                  valInt("furnSlideM"),       "p_furn_slide");
+      addDetail("Ящики",                    valInt("furnDrawers"),      "p_kitchen_furn_drawers");
+      addDetail("Підійомні механізми",      valInt("furnLifts"),        "p_kitchen_furn_lifts");
+      addDetail("Карго/сушка/смітник",      valInt("furnCargo"),        "p_kitchen_furn_cargo");
+      addDetail("Магічний кут",             valInt("furnMagic"),        "p_kitchen_furn_magic");
+      addDetail("Servo-Drive",              valInt("furnServo"),        "p_kitchen_furn_servo");
+      addDetail("Консольні полиці",         valInt("furnConsole"),      "p_kitchen_furn_console");
+      addDetail("Верхні шухляди",           valInt("furnTopDrawers"),   "p_kitchen_furn_top");
+      addDetail("Системи розсувних дверей", valInt("furnSlidingDoors"), "p_kitchen_furn_doors");
+      addDetail("Slide M",                  valInt("furnSlideM"),       "p_kitchen_furn_slide");
 
       // 7. Ручки - поінти тільки за конкретні типи
       const hasHandles = document.getElementById("hasHandles")?.value;
       if (hasHandles === "yes") {
         const handles = document.querySelectorAll('[id^="handle_"]');
         const handleMapping = {
-          "handles_gola_low": "p_handle_gola_low",
-          "handles_gola_up": "p_handle_gola_up",
-          "handles_gola_vert": "p_handle_gola_vert",
-          "handles_end": "p_handle_end",
-          "handles_milled": "p_handle_milled",
-          "handles_other": "p_handle_other"
+          "handles_gola_low": "p_kitchen_handle_gola_low",
+          "handles_gola_up": "p_kitchen_handle_gola_up",
+          "handles_gola_vert": "p_kitchen_handle_gola_vert",
+          "handles_end": "p_kitchen_handle_end",
+          "handles_milled": "p_kitchen_handle_milled",
+          "handles_other": "p_kitchen_handle_other"
         };
         
         handles.forEach(handle => {
@@ -2125,10 +2121,10 @@ if (hasFacadeMaterials === "yes") {
       if (hasLighting === "yes") {
         const lights = document.querySelectorAll('[id^="lighting_"]');
         const lightingMapping = {
-          "light_modules": "p_light_mod",
-          "light_work": "p_light_work",
-          "light_base": "p_light_base",
-          "light_other": "p_light_other"
+          "light_modules": "p_kitchen_light_mod",
+          "light_work": "p_kitchen_light_work",
+          "light_base": "p_kitchen_light_base",
+          "light_other": "p_kitchen_light_other"
         };
         
         lights.forEach(light => {
@@ -2149,9 +2145,11 @@ if (hasFacadeMaterials === "yes") {
       }
 
       // 9. Вбудована техніка
-      addDetail("Вбудована техніка", valInt("appliancesCount"), "p_appliance");
+      addDetail("Вбудована техніка", valInt("appliancesCount"), "p_kitchen_appliance");
 
       // Вивід - показуємо поінти тільки після успішного розрахунку
+      console.log(`🎯 Загальна кількість поінтів: ${points}`);
+      
       const out = document.getElementById("pointsResult");
       if (out) {
         out.textContent = "Поінти: " + points;
