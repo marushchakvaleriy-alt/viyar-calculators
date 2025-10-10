@@ -515,6 +515,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="налаштування/calculator-settings.js"></script>
+    <script>
+// Очищуємо кеш при завантаженні калькулятора
+window.addEventListener('load', function() {
+    if ('caches' in window) {
+        caches.keys().then(function(names) {
+            names.forEach(function(name) {
+                if (name.includes('calculator-settings')) {
+                    caches.delete(name);
+                }
+            });
+        });
+    }
+});
+</script>
   </head>
 <body>
 <!-- Кнопка повернення -->
