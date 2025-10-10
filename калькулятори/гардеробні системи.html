@@ -830,9 +830,9 @@
 </script>
 <script>
         </script>
-<script>
-// ===== ПОІНТИ ЗАВАНТАЖУЮТЬСЯ З БІБЛІОТЕКИ НАЛАШТУВАНЬ =====
     <script src="налаштування/calculator-settings.js"></script>
+    <script>
+// ===== ПОІНТИ ЗАВАНТАЖУЮТЬСЯ З БІБЛІОТЕКИ НАЛАШТУВАНЬ =====
 // Всі значення поінтів тепер зберігаються в calculator-settings.js
 
 // Масив для зберігання доданих виробів
@@ -848,18 +848,6 @@ function showAddProductModal() {
 // Функція для закриття модального вікна
 function closeProductModal() {
   document.getElementById('productModal').style.display = 'none';
-}
-// Функція для переключення полів типу конструкції
-function toggleProductTypeFields() {
-  const productType = document.getElementById('productType').value;
-  const constructionFields = document.getElementById('productConstructionFields');
-  
-  if (productType === 'Стелажна с-ма ( к-сть вертикальних секцій/модулів)' || 
-      productType === 'Пристінна с-ма  ( к-сть вертикальних секцій/модулів)') {
-    constructionFields.style.display = 'block';
-  } else {
-    constructionFields.style.display = 'none';
-  }
 }
 // Функція для переключення полів типу конструкції
 function toggleProductTypeFields() {
@@ -2285,18 +2273,18 @@ function calculate() {
   (function(){
     const geometry = document.getElementById("geom")?.value;
     if (geometry === "Так") {
-      addDetail("Нестандартна геометрія приміщення", 1, "p_geometry");
+      addDetail("Нестандартна геометрія приміщення", 1, "p_wardrobe_systems_geometry");
     }
     
     
     const corpus = valInt("corpus");
     if (corpus > 0) {
-      addDetail("Матеріал корпусу (шт.)", corpus, "p_corpus");
+      addDetail("Матеріал корпусу (шт.)", corpus, "p_wardrobe_systems_corpus");
     }
     
     const glass = document.getElementById("glassSelect")?.value;
     if (glass === "Так") {
-      addDetail("Скло-дзеркало", 1, "p_glass");
+      addDetail("Скло-дзеркало", 1, "p_wardrobe_systems_glass");
     }
   })();
   
@@ -2324,7 +2312,7 @@ function calculate() {
       
       const materialName = materialNames[materialType] || materialType;
       const count = 1; // Кожен матеріал рахується як 1
-      addDetail(`Матеріал: ${materialName}`, count, `p_material_${materialType}`);
+      addDetail(`Матеріал: ${materialName}`, count, `p_wardrobe_systems_material_${materialType}`);
     });
   })();
    
@@ -2344,22 +2332,22 @@ function calculate() {
       };
       
       const elementName = elementNames[elementType] || elementType;
-      addDetail(`Додатковий елемент: ${elementName}`, quantity, `p_element_${elementType}`);
+      addDetail(`Додатковий елемент: ${elementName}`, quantity, `p_wardrobe_systems_element_${elementType}`);
     });
   })();
   
   // ===== 4. Складові елементи гардеробної =====
   (function(){
-    addDetail("Тумба конструкція 90*", valInt("furnTumba90"), "p_furn_tumba_90");
-    addDetail("Тумба конструкція 45*", valInt("furnTumba45"), "p_furn_tumba_45");
-    addDetail("Полиця пряма", valInt("furnShelfStraight"), "p_furn_shelf_straight");
-    addDetail("Полиця збірна (багатокомпонентна)", valInt("furnShelfMulti"), "p_furn_shelf_multi");
-    addDetail("Подіум", valInt("furnPodium"), "p_furn_podium");
-    addDetail("Ящики", valInt("furnDrawers"), "p_furn_drawers");
-    addDetail("Барні механізми", valInt("furnBarMechanisms"), "p_furn_bar");
-    addDetail("Аксесуари: кошики, полиці для взуття тощо", valInt("furnWardrobeAccessories"), "p_furn_accessories");
-    addDetail("К-сть штанг для одягу", valInt("furnClothingRods"), "p_furn_rods");
-    addDetail("Підйомні механізми", valInt("furnLifts"), "p_furn_lifts");
+    addDetail("Тумба конструкція 90*", valInt("furnTumba90"), "p_wardrobe_systems_furn_tumba_90");
+    addDetail("Тумба конструкція 45*", valInt("furnTumba45"), "p_wardrobe_systems_furn_tumba_45");
+    addDetail("Полиця пряма", valInt("furnShelfStraight"), "p_wardrobe_systems_furn_shelf_straight");
+    addDetail("Полиця збірна (багатокомпонентна)", valInt("furnShelfMulti"), "p_wardrobe_systems_furn_shelf_multi");
+    addDetail("Подіум", valInt("furnPodium"), "p_wardrobe_systems_furn_podium");
+    addDetail("Ящики", valInt("furnDrawers"), "p_wardrobe_systems_furn_drawers");
+    addDetail("Барні механізми", valInt("furnBarMechanisms"), "p_wardrobe_systems_furn_bar");
+    addDetail("Аксесуари: кошики, полиці для взуття тощо", valInt("furnWardrobeAccessories"), "p_wardrobe_systems_furn_accessories");
+    addDetail("К-сть штанг для одягу", valInt("furnClothingRods"), "p_wardrobe_systems_furn_rods");
+    addDetail("Підйомні механізми", valInt("furnLifts"), "p_wardrobe_systems_furn_lifts");
   })();
   
   // ===== 5. Інтегровані елементи =====
@@ -2378,7 +2366,7 @@ function calculate() {
       };
       
       const elementName = elementNames[elementType] || elementType;
-      addDetail(`Інтегрований елемент: ${elementName}`, quantity, `p_integrated_${elementType}`);
+      addDetail(`Інтегрований елемент: ${elementName}`, quantity, `p_wardrobe_systems_integrated_${elementType}`);
     });
   })();
   
@@ -2395,7 +2383,7 @@ function calculate() {
       };
       
       const handleName = handleNames[handleType] || handleType;
-      addDetail(`Ручка: ${handleName}`, 1, `p_handle_${handleType.replace('handles_', '')}`);
+      addDetail(`Ручка: ${handleName}`, 1, `p_wardrobe_systems_handle_${handleType.replace('handles_', '')}`);
     });
   })();
   
@@ -2412,7 +2400,7 @@ function calculate() {
       };
       
       const lightingName = lightingNames[lightingType] || lightingType;
-      addDetail(`Підсвітка: ${lightingName}`, quantity, `p_lighting_${lightingType}`);
+      addDetail(`Підсвітка: ${lightingName}`, quantity, `p_wardrobe_systems_lighting_${lightingType}`);
     });
   })();
   
