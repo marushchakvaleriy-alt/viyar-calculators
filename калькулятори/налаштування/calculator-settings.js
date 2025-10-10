@@ -1,6 +1,5 @@
 // Централізована бібліотека поінтів для всіх калькуляторів
 // Дані зберігаються тут і можуть редагуватися через налаштування
-// Версія: 2024-01-15-001
 
 let calculatorSettings = {
     "password": {
@@ -227,7 +226,7 @@ let calculatorSettings = {
     },
     "kitchen": {
         "p_kitchen_forma_pryama": {
-            "value": 1000,
+            "value": 33,
             "label": "Форма кухні - Пряма"
         },
         "p_kitchen_forma_g": {
