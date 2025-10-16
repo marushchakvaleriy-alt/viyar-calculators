@@ -508,11 +508,11 @@ let calculatorSettings = {
     },
     "wardrobeSystems": {
         "p_wardrobe_systems_product_стелажна_підлога_стіна": {
-            "value": 1000,
+            "value": 10,
             "label": "Стелажна с-ма Конструкція підлога-стіна ( к-сть вертикальних елементів) к-сть шт."
         },
         "p_wardrobe_systems_product_стелажна_підлога_стеля": {
-            "value": 1000,
+            "value": 10,
             "label": "Стелажна с-ма Конструкція підлога-стеля ( к-сть вертикальних елементів) к-сть шт."
         },
         "p_wardrobe_systems_product_пристінна_с-ма": {
