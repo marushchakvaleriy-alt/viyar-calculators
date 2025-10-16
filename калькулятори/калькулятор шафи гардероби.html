@@ -1264,6 +1264,7 @@ function addFacadeMaterial() {
       const typeDiv = document.createElement('div');
       typeDiv.className = 'element-item';
       typeDiv.id = typeId;
+      typeDiv.setAttribute('data-facade-type', facadeType);
       
       typeDiv.innerHTML = `
         <label>${facadeTypesCounter}. Тип фасадів: ${typeName}:</label>
@@ -1400,9 +1401,11 @@ function addFacadeMaterial() {
       const handleDiv = document.createElement('div');
       handleDiv.className = 'element-item';
       handleDiv.id = handleId;
+      handleDiv.setAttribute('data-handle-type', handleType);
       
       handleDiv.innerHTML = `
         <label>${handlesCounter}. Ручка: ${handleName}</label>
+        <input type="number" min="1" value="1" onchange="updatePointsDisplay()" style="width: 60px; margin-left: 10px;">
         <button type="button" class="remove-btn" onclick="removeHandle('${handleId}')">×</button>
       `;
       
@@ -1476,6 +1479,7 @@ function addFacadeMaterial() {
       const lightingDiv = document.createElement('div');
       lightingDiv.className = 'element-item';
       lightingDiv.id = lightingId;
+      lightingDiv.setAttribute('data-lighting-type', lightingType);
       
       lightingDiv.innerHTML = `
         <label>${lightingCounter}. ${lightingName}:</label>
@@ -1736,7 +1740,7 @@ function addFacadeMaterial() {
         // 2. Матеріали
         const corpus = parseInt(document.getElementById("corpus")?.value) || 0;
         if (corpus > 0) {
-          const tariff = getSettingValue("p_mat_corpus");
+          const tariff = getSettingValue("p_wardrobe_mat_corpus");
           totalPoints += corpus * tariff;
         }
         
@@ -1744,7 +1748,7 @@ function addFacadeMaterial() {
         if (glassSelect === "Так") {
           const glassCount = parseInt(document.getElementById("glassCount")?.value) || 0;
           if (glassCount > 0) {
-            const tariff = getSettingValue("p_mat_glass");
+            const tariff = getSettingValue("p_wardrobe_mat_glass");
             totalPoints += glassCount * tariff;
           }
         }
@@ -1752,7 +1756,7 @@ function addFacadeMaterial() {
         // 3. Корпуса-модулі
         const sections = parseInt(document.getElementById("sectionsCount")?.value) || 0;
         if (sections > 0) {
-          const tariff = getSettingValue("p_sections");
+          const tariff = getSettingValue("p_wardrobe_sections");
           totalPoints += sections * tariff;
         }
         
@@ -1851,7 +1855,7 @@ function addFacadeMaterial() {
               const count = parseInt(countInput.value) || 0;
               if (count > 0) {
                 const elementType = element.getAttribute('data-element-type');
-                let tariffId = "p_additional_element";
+                let tariffId = "";
                 if (elementType === "false_hor") tariffId = "p_wardrobe_false_hor";
                 else if (elementType === "false_ver") tariffId = "p_wardrobe_false_ver";
                 else if (elementType === "false_rnd") tariffId = "p_wardrobe_false_rnd";
@@ -1871,7 +1875,7 @@ function addFacadeMaterial() {
           const handles = document.querySelectorAll('#handlesList .element-item');
           handles.forEach(handle => {
             const handleType = handle.getAttribute('data-handle-type');
-            let tariffId = "p_handle";
+            let tariffId = "";
             if (handleType === "gola") tariffId = "p_wardrobe_handle_gola_low";
             else if (handleType === "end") tariffId = "p_wardrobe_handle_end";
             else if (handleType === "milled") tariffId = "p_wardrobe_handle_milled";
@@ -1892,7 +1896,7 @@ function addFacadeMaterial() {
               const count = parseInt(countInput.value) || 0;
               if (count > 0) {
                 const lightingType = item.getAttribute('data-lighting-type');
-                let tariffId = "p_lighting";
+                let tariffId = "";
                 if (lightingType === "elements") tariffId = "p_wardrobe_light_mod";
                 else if (lightingType === "control") tariffId = "p_wardrobe_light_work";
                 
@@ -1914,7 +1918,8 @@ function addFacadeMaterial() {
           
           appliances.forEach(appliance => {
             const applianceType = appliance.getAttribute('data-appliance-type');
-            const quantity = parseInt(appliance.getAttribute('data-quantity')) || 0;
+            const countInput = appliance.querySelector('input[type="number"]');
+            const quantity = countInput ? (parseInt(countInput.value) || 0) : 0;
             if (applianceType && quantity > 0) {
               const tariffId = applianceMapping[applianceType];
               if (tariffId) {
@@ -2459,7 +2464,7 @@ function calculateTotal() {
   }
   function addDetail(label, count, tariffId) {
     if (!count || count <= 0) return;
-    const t = getSettingValueLocal(tariffId);
+    const t = getSettingValue(tariffId);
     if (!t || t <= 0) return;
     points += count * t;
   }
@@ -2469,35 +2474,35 @@ function calculateTotal() {
 
   
   // ===== 1. Основні параметри =====
-  (async function(){
+  (function(){
     const form = (document.getElementById("wardrobeForm")?.value || "").trim();
-    if (form === "Пряма") await addDetail("Форма шафи: Пряма", 1, "p_wardrobe_forma_pryama");
-    else if (form === "Г-подібна") await addDetail("Форма шафи: Г-подібна", 1, "p_wardrobe_forma_g");
-    else if (form === "П-подібна") await addDetail("Форма шафи: П-подібна", 1, "p_wardrobe_forma_p");
-    else if (form === "G-подібна") await addDetail("Форма шафи: G-подібна", 1, "p_wardrobe_forma_g_eng");
+    if (form === "Пряма") addDetail("Форма шафи: Пряма", 1, "p_wardrobe_forma_pryama");
+    else if (form === "Г-подібна") addDetail("Форма шафи: Г-подібна", 1, "p_wardrobe_forma_g");
+    else if (form === "П-подібна") addDetail("Форма шафи: П-подібна", 1, "p_wardrobe_forma_p");
+    else if (form === "G-подібна") addDetail("Форма шафи: G-подібна", 1, "p_wardrobe_forma_g_eng");
 
     const measure = (document.getElementById("measure")?.value || "").trim();
     if (measure === "Без замірів") {
-      await addDetail("Заміри: Без замірів", 1, "p_wardrobe_zamir_none");
+      addDetail("Заміри: Без замірів", 1, "p_wardrobe_zamir_none");
     } else if (measure === "По замірам 3D") {
-      await addDetail("Заміри: По замірам 3D", 1, "p_wardrobe_zamir_3d");
+      addDetail("Заміри: По замірам 3D", 1, "p_wardrobe_zamir_3d");
     } else if (measure === "По замірам фото-ескіз") {
-      await addDetail("Заміри: По замірам фото-ескіз", 1, "p_wardrobe_zamir_photo");
+      addDetail("Заміри: По замірам фото-ескіз", 1, "p_wardrobe_zamir_photo");
     }
 
     const geomYes = (document.getElementById("geom")?.value || "").trim().toLowerCase() === "так";
-    if (geomYes) await addDetail("Нестандартна геометрія", 1, "p_wardrobe_geo");
+    if (geomYes) addDetail("Нестандартна геометрія приміщення", 1, "p_wardrobe_geo");
 
     const atticYes = (document.getElementById("attic")?.value || "").trim().toLowerCase() === "так";
-    if (atticYes) await addDetail("Мансардна шафа", 1, "p_wardrobe_attic");
+    if (atticYes) addDetail("Мансардна шафа", 1, "p_wardrobe_attic");
 
     const installationType = (document.getElementById("installationType")?.value || "").trim();
     if (installationType === "Вбудована") {
-      await addDetail("Тип встановлення: Вбудована", 1, "p_wardrobe_installation_builtin");
+      addDetail("Тип встановлення: Вбудована", 1, "p_wardrobe_installation_builtin");
     } else if (installationType === "Окремостояча") {
-      await addDetail("Тип встановлення: Окремостояча", 1, "p_wardrobe_installation_standalone");
+      addDetail("Тип встановлення: Окремостояча", 1, "p_wardrobe_installation_standalone");
     } else if (installationType === "Шафа підвісна") {
-      await addDetail("Тип встановлення: Шафа підвісна", 1, "p_wardrobe_installation_suspended");
+      addDetail("Тип встановлення: Шафа підвісна", 1, "p_wardrobe_installation_suspended");
     }
   })();
 
@@ -2544,19 +2549,19 @@ function calculateTotal() {
     for (let material of facadeMaterials) {
       const label = material.querySelector('label').textContent;
       let paramKey = '';
-      if (label.includes('ДСП мат.корпусу')) paramKey = 'p_facade_dsp_mat';
-      else if (label.includes('ДСП') && !label.includes('мат.корпусу')) paramKey = 'p_facade_dsp';
-      else if (label.includes('МДФ плити')) paramKey = 'p_facade_mdf';
-      else if (label.includes('Фарба/плівка "прямі"')) paramKey = 'p_facade_paint_straight';
-      else if (label.includes('Фарба/плівка "фрезеровані"')) paramKey = 'p_facade_paint_milled';
-      else if (label.includes('Шпоновані "прямі"')) paramKey = 'p_facade_veneer_straight';
-      else if (label.includes('Шпоновані "фрезеровані"')) paramKey = 'p_facade_veneer_milled';
-      else if (label.includes('Алюм. рамкові')) paramKey = 'p_facade_alum_frame';
-      else if (label.includes('ARPA/Fenix')) paramKey = 'p_facade_arpa';
-      else if (label.includes('Fiushin')) paramKey = 'p_facade_fiushin';
-      else if (label.includes('HPL')) paramKey = 'p_facade_hpl';
-      else if (label.includes('R&D фасади індивід.')) paramKey = 'p_facade_rd_individual';
-      else if (label.includes('МДФ фасади з індивідуальним фрезеруванням')) paramKey = 'p_facade_mdf_individual';
+      if (label.includes('ДСП мат.корпусу')) paramKey = 'p_wardrobe_facade_dsp_mat';
+      else if (label.includes('ДСП') && !label.includes('мат.корпусу')) paramKey = 'p_wardrobe_facade_dsp';
+      else if (label.includes('МДФ плити')) paramKey = 'p_wardrobe_facade_mdf';
+      else if (label.includes('Фарба/плівка "прямі"')) paramKey = 'p_wardrobe_facade_paint_straight';
+      else if (label.includes('Фарба/плівка "фрезеровані"')) paramKey = 'p_wardrobe_facade_paint_milled';
+      else if (label.includes('Шпоновані "прямі"')) paramKey = 'p_wardrobe_facade_veneer_straight';
+      else if (label.includes('Шпоновані "фрезеровані"')) paramKey = 'p_wardrobe_facade_veneer_milled';
+      else if (label.includes('Алюм. рамкові')) paramKey = 'p_wardrobe_facade_alum_frame';
+      else if (label.includes('ARPA/Fenix')) paramKey = 'p_wardrobe_facade_arpa';
+      else if (label.includes('Fiushin')) paramKey = 'p_wardrobe_facade_fiushin';
+      else if (label.includes('HPL')) paramKey = 'p_wardrobe_facade_hpl';
+      else if (label.includes('R&D фасади індивід.')) paramKey = 'p_wardrobe_facade_rd_individual';
+      else if (label.includes('МДФ фасади з індивідуальним фрезеруванням')) paramKey = 'p_wardrobe_facade_mdf_individual';
       
       if (paramKey) {
         addDetail("Фасадний матеріал: " + label, 1, paramKey);
@@ -2622,28 +2627,30 @@ function calculateTotal() {
   }
 
   // 5. Функціональна фурнітура
-  addDetail("Ящики",                    valInt("furnDrawers"),      "p_furn_drawers");
-  addDetail("Підійомні механізми",      valInt("furnLifts"),        "p_furn_lifts");
-  addDetail("Аксесуари до шафи",        valInt("furnAccessories"),  "p_furn_accessories");
-  addDetail("Штанги для одягу",         valInt("furnHangingRods"),  "p_furn_hanging_rods");
-  addDetail("Барні механізми",          valInt("furnBarMechanisms"), "p_furn_bar_mechanisms");
+  addDetail("Ящики",                    valInt("furnDrawers"),      "p_wardrobe_furn_drawers");
+  addDetail("Підійомні механізми",      valInt("furnLifts"),        "p_wardrobe_furn_lifts");
+  addDetail("Аксесуари до шафи",        valInt("furnAccessories"),  "p_wardrobe_furn_accessories");
+  addDetail("Штанги для одягу",         valInt("furnHangingRods"),  "p_wardrobe_furn_hanging_rods");
+  addDetail("Барні механізми",          valInt("furnBarMechanisms"), "p_wardrobe_furn_bar_mechanisms");
 
   // 6. Ручки - поінти тільки за конкретні типи
   if (valYes("hasHandles")) {
     const handlesList = document.querySelectorAll('#handlesList .element-item');
     const handleMapping = {
-      "GOLA": "p_handle_gola_low",
-      "Торцеві": "p_handle_end",
-      "Фрезеровані": "p_handle_milled",
-      "Інші, накладні тощо": "p_handle_other"
+      "GOLA": "p_wardrobe_handle_gola_low",
+      "Торцеві": "p_wardrobe_handle_end",
+      "Фрезеровані": "p_wardrobe_handle_milled",
+      "Інші, накладні тощо": "p_wardrobe_handle_other"
     };
     
     handlesList.forEach(handle => {
       const label = handle.querySelector('label');
-      if (label) {
+      const countInput = handle.querySelector('input[type="number"]');
+      if (label && countInput) {
         const handleName = label.textContent.replace(/^\d+\.\s*Ручка:\s*/, '');
-        if (handleMapping[handleName]) {
-          addDetail("Ручки: " + handleName, 1, handleMapping[handleName]);
+        const count = parseInt(countInput.value) || 0;
+        if (handleMapping[handleName] && count > 0) {
+          addDetail("Ручки: " + handleName, count, handleMapping[handleName]);
         }
       }
     });
@@ -2674,13 +2681,14 @@ function calculateTotal() {
   if (valYes("hasAppliances")) {
     const appliancesList = document.querySelectorAll('#appliancesList .element-item');
     const applianceMapping = {
-      "tech_hatch": "p_tech_hatch",
-      "tech_appliance": "p_tech_appliance"
+      "tech_hatch": "p_wardrobe_tech_hatch",
+      "tech_appliance": "p_wardrobe_tech_appliance"
     };
     
     appliancesList.forEach(appliance => {
       const applianceType = appliance.getAttribute('data-appliance-type');
-      const quantity = parseInt(appliance.getAttribute('data-quantity')) || 0;
+      const countInput = appliance.querySelector('input[type="number"]');
+      const quantity = countInput ? (parseInt(countInput.value) || 0) : 0;
       const label = appliance.querySelector('label');
       if (label && applianceType && quantity > 0) {
         const applianceName = label.textContent.replace(/^\d+\.\s*/, '').replace(':','');

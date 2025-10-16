@@ -2178,18 +2178,18 @@ function calculate() {
   (function(){
     const geometry = document.getElementById("geom")?.value;
     if (geometry === "Так") {
-      addDetail("Нестандартна геометрія приміщення", 1, "p_geometry");
+      addDetail("Нестандартна геометрія приміщення", 1, "p_wall_panels_geometry");
     }
     
     
     const corpus = valInt("corpus");
     if (corpus > 0) {
-      addDetail("Матеріал корпусу (шт.)", corpus, "p_corpus");
+      addDetail("Матеріал корпусу (шт.)", corpus, "p_wall_panels_corpus");
     }
     
     const glass = document.getElementById("glassSelect")?.value;
     if (glass === "Так") {
-      addDetail("Скло-дзеркало", 1, "p_glass");
+      addDetail("Скло-дзеркало", 1, "p_wall_panels_glass");
     }
   })();
   
@@ -2227,7 +2227,7 @@ function calculate() {
         "adhesive": "Клейовий монтаж"
       };
       const installationName = installationNames[installationType] || installationType;
-      addDetail(`Тип монтажу: ${installationName}`, 1, `p_installation_${installationType}`);
+      addDetail(`Тип монтажу: ${installationName}`, 1, `p_wall_panels_installation_${installationType}`);
     }
   })();
   
@@ -2272,55 +2272,55 @@ function calculate() {
     // Ревізійні дверки/лючки
     const revisionDoors = valInt("furnRevisionDoors");
     if (revisionDoors > 0) {
-      addDetail("Ревізійні дверки/лючки", revisionDoors, "p_furn_revision_doors");
+      addDetail("Ревізійні дверки/лючки", revisionDoors, "p_wall_panels_furn_revision_doors");
     }
     
     // Наявність розпашної двері як частина стінпанелей
     const swingDoor = valInt("furnSwingDoor");
     if (swingDoor > 0) {
-      addDetail("Наявність розпашної двері як частина стінпанелей", swingDoor, "p_furn_swing_door");
+      addDetail("Наявність розпашної двері як частина стінпанелей", swingDoor, "p_wall_panels_furn_swing_door");
     }
     
     // Стиковка панелей з дверним блоком прихованого монтажу
     const doorBlockConnection = valInt("furnDoorBlockConnection");
     if (doorBlockConnection > 0) {
-      addDetail("Стиковка панелей з дверним блоком прихованого монтажу", doorBlockConnection, "p_furn_door_block_connection");
+      addDetail("Стиковка панелей з дверним блоком прихованого монтажу", doorBlockConnection, "p_wall_panels_furn_door_block_connection");
     }
     
     // Обшивка проему дверного
     const doorOpening = valInt("furnDoorOpening");
     if (doorOpening > 0) {
-      addDetail("Обшивка проему дверного", doorOpening, "p_furn_door_opening");
+      addDetail("Обшивка проему дверного", doorOpening, "p_wall_panels_furn_door_opening");
     }
     
     // Обшивка проему віконного
     const windowOpening = valInt("furnWindowOpening");
     if (windowOpening > 0) {
-      addDetail("Обшивка проему віконного", windowOpening, "p_furn_window_opening");
+      addDetail("Обшивка проему віконного", windowOpening, "p_wall_panels_furn_window_opening");
     }
     
     // Елемент дверної накладки
     const doorOverlay = valInt("furnDoorOverlay");
     if (doorOverlay > 0) {
-      addDetail("Елемент дверної накладки", doorOverlay, "p_furn_door_overlay");
+      addDetail("Елемент дверної накладки", doorOverlay, "p_wall_panels_furn_door_overlay");
     }
     
     // Накладні елементи (молдинги, декри - тощо)
     const overlayElements = valInt("furnOverlayElements");
     if (overlayElements > 0) {
-      addDetail("Накладні елементи (молдинги, декри - тощо)", overlayElements, "p_furn_overlay_elements");
+      addDetail("Накладні елементи (молдинги, декри - тощо)", overlayElements, "p_wall_panels_furn_overlay_elements");
     }
     
     // Розшивки/стиковочні планки-профілі
     const expansionStrips = valInt("furnExpansionStrips");
     if (expansionStrips > 0) {
-      addDetail("Розшивки/стиковочні планки-профілі", expansionStrips, "p_furn_expansion_strips");
+      addDetail("Розшивки/стиковочні планки-профілі", expansionStrips, "p_wall_panels_furn_expansion_strips");
     }
     
     // Вирізи в дзеркальних панелях
     const mirrorCutouts = valInt("furnMirrorCutouts");
     if (mirrorCutouts > 0) {
-      addDetail("Вирізи в дзеркальних панелях", mirrorCutouts, "p_furn_mirror_cutouts");
+      addDetail("Вирізи в дзеркальних панелях", mirrorCutouts, "p_wall_panels_furn_mirror_cutouts");
     }
   })();
   
@@ -2341,7 +2341,7 @@ function calculate() {
       };
       
       const elementName = elementNames[elementType] || elementType;
-      addDetail(`Інтегрований елемент: ${elementName}`, quantity, `p_integrated_${elementType}`);
+      addDetail(`Інтегрований елемент: ${elementName}`, quantity, `p_wall_panels_integrated_${elementType}`);
     });
   })();
   
@@ -2359,7 +2359,7 @@ function calculate() {
       };
       
       const lightingName = lightingNames[lightingType] || lightingType;
-      addDetail(`Підсвітка: ${lightingName}`, quantity, `p_lighting_${lightingType}`);
+      addDetail(`Підсвітка: ${lightingName}`, quantity, `p_wall_panels_lighting_${lightingType}`);
     });
   })();
   

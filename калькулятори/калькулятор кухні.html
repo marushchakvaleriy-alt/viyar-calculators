@@ -1866,6 +1866,7 @@ function updateFacadeMaterialNumbers() {
       const base = parts.join('__') || 'kitchen_calc_' + new Date().toISOString().split('T')[0];
       return base + '.vcalc.json';
     }
+
     
     // Безпечна версія розрахунку без валідації
     function calculateTotal() {
@@ -1926,7 +1927,7 @@ function updateFacadeMaterialNumbers() {
 
         const glassSel = (document.getElementById("glassSelect")?.value || "").trim().toLowerCase();
         const glassCount = parseInt(document.getElementById("glassCount")?.value) || 0;
-        if (glassSel === "так" && glassCount > 0) addDetail("Скло-дзеркало", glassCount, "p_mat_glass");
+        if (glassSel === "так" && glassCount > 0) addDetail("Скло-дзеркало", glassCount, "p_kitchen_mat_glass");
       })();
 
       // 2. Матеріали - Фасадні матеріали (нова система)
@@ -2073,6 +2074,7 @@ if (hasFacadeMaterials === "yes") {
 
         additionalElements.forEach(element => {
           const elementType = element.getAttribute('data-element-type');
+          const quantity = parseInt(element.getAttribute('data-quantity')) || 1;
           const elementNames = {
             "false_hor": "Фальш горизонтальні",
             "false_ver": "Фальш вертикальні",
@@ -2084,7 +2086,7 @@ if (hasFacadeMaterials === "yes") {
           const elementName = elementNames[elementType] || elementType;
           
           if (elementType && elementMapping[elementType]) {
-            addDetail("Додатковий елемент: " + elementName, 1, elementMapping[elementType]);
+            addDetail("Додатковий елемент: " + elementName, quantity, elementMapping[elementType]);
           }
         });
       }
@@ -2506,8 +2508,8 @@ async function downloadPDF() {
     </div>
     
     <div class="modal-actions" style="margin-top: 15px;">
-      <button onclick="addLightingFromModal()">Додати</button>
       <button onclick="closeAddLightingModal()">Скасувати</button>
+      <button onclick="addLightingFromModal()">Додати</button>
     </div>
   </div>
 </div>

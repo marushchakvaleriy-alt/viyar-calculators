@@ -88,11 +88,11 @@ let calculatorSettings = {
             "label": "Фарба/плівка 'фрезеровані'"
         },
         "p_wardrobe_facade_veneer_straight": {
-            "value": 10,
+            "value": 12,
             "label": "Шпоновані 'прямі'"
         },
         "p_wardrobe_facade_veneer_milled": {
-            "value": 14,
+            "value": 16,
             "label": "Шпоновані 'фрезеровані'"
         },
         "p_wardrobe_facade_alum_frame": {
@@ -226,7 +226,7 @@ let calculatorSettings = {
     },
     "kitchen": {
         "p_kitchen_forma_pryama": {
-            "value": 1,
+            "value": 33,
             "label": "Форма кухні - Пряма"
         },
         "p_kitchen_forma_g": {
@@ -507,13 +507,25 @@ let calculatorSettings = {
         }
     },
     "wardrobeSystems": {
-        "p_wardrobe_systems_product_стелажна_с-ма": {
+        "p_wardrobe_systems_product_стелажна_підлога_стіна": {
             "value": 1000,
-            "label": "Стелажна с-ма ( к-сть вертикальних секцій/модулів)"
+            "label": "Стелажна с-ма Конструкція підлога-стіна ( к-сть вертикальних елементів) к-сть шт."
+        },
+        "p_wardrobe_systems_product_стелажна_підлога_стеля": {
+            "value": 1000,
+            "label": "Стелажна с-ма Конструкція підлога-стеля ( к-сть вертикальних елементів) к-сть шт."
         },
         "p_wardrobe_systems_product_пристінна_с-ма": {
             "value": 4,
-            "label": "Пристінна с-ма ( к-сть вертикальних секцій/модулів)"
+            "label": "Пристінна с-ма (к-сть вертикальних елементів) к-сть шт."
+        },
+        "p_wardrobe_systems_product_елемент_прямих": {
+            "value": 1,
+            "label": "Елемент стінових панелей, прямих м.п."
+        },
+        "p_wardrobe_systems_product_елемент_рейкових": {
+            "value": 1,
+            "label": "Елемент стінових панелей, рейкових м.п."
         },
         "p_wardrobe_systems_shape_straight": {
             "value": 1,
@@ -611,6 +623,78 @@ let calculatorSettings = {
             "value": 3,
             "label": "Перехід текстури фасадних матеріалів"
         },
+        "p_wardrobe_systems_element_metal_frame": {
+            "value": 6,
+            "label": "Металоконструкція рамкова"
+        },
+        "p_wardrobe_systems_element_metal_volume": {
+            "value": 12,
+            "label": "Металоконструкція об'ємна"
+        },
+        "p_wardrobe_systems_element_rd_detail": {
+            "value": 15,
+            "label": "Деталь R&D, гнутий елемент тощо"
+        },
+        "p_wardrobe_systems_element_false_horizontal": {
+            "value": 1,
+            "label": "Фальш панелі горизонтальні"
+        },
+        "p_wardrobe_systems_element_false_vertical": {
+            "value": 1,
+            "label": "Фальш панелі вертикальні"
+        },
+        "p_wardrobe_systems_furn_tumba_90": {
+            "value": 6,
+            "label": "Тумба конструкція 90*"
+        },
+        "p_wardrobe_systems_furn_tumba_45": {
+            "value": 4,
+            "label": "Тумба конструкція 45*"
+        },
+        "p_wardrobe_systems_furn_shelf_straight": {
+            "value": 2,
+            "label": "Полиця пряма"
+        },
+        "p_wardrobe_systems_furn_shelf_multi": {
+            "value": 4,
+            "label": "Полиця збірна (багатокомпонентна)"
+        },
+        "p_wardrobe_systems_furn_podium": {
+            "value": 8,
+            "label": "Подіум"
+        },
+        "p_wardrobe_systems_furn_drawers": {
+            "value": 3,
+            "label": "Ящики"
+        },
+        "p_wardrobe_systems_furn_bar": {
+            "value": 2,
+            "label": "Барні механізми"
+        },
+        "p_wardrobe_systems_furn_accessories": {
+            "value": 4,
+            "label": "Аксесуари: кошики, полиці для взуття тощо"
+        },
+        "p_wardrobe_systems_furn_rods": {
+            "value": 1,
+            "label": "К-сть штанг для одягу"
+        },
+        "p_wardrobe_systems_furn_lifts": {
+            "value": 5,
+            "label": "Підйомні механізми"
+        },
+        "p_wardrobe_systems_integrated_metal_frame": {
+            "value": 8,
+            "label": "Інтегрована металоконструкція рамкова"
+        },
+        "p_wardrobe_systems_integrated_metal_volume": {
+            "value": 15,
+            "label": "Інтегрована металоконструкція об'ємна"
+        },
+        "p_wardrobe_systems_integrated_rd_detail": {
+            "value": 18,
+            "label": "Інтегрована деталь R&D"
+        },
         "p_wardrobe_systems_handle_gola": {
             "value": 3,
             "label": "GOLA"
@@ -626,6 +710,14 @@ let calculatorSettings = {
         "p_wardrobe_systems_handle_other": {
             "value": 4,
             "label": "Інші, накладні тощо"
+        },
+        "p_wardrobe_systems_lighting_light_elements": {
+            "value": 2,
+            "label": "Елементів (деталей) з підсвіткою"
+        },
+        "p_wardrobe_systems_lighting_light_control": {
+            "value": 3,
+            "label": "Пристроїв керування і вимірюються в кількостях"
         }
     },
     "wallPanels": {
@@ -936,8 +1028,12 @@ let calculatorSettings = {
             "label": "Форма стільниці - П-подібний"
         },
         "p_other_countertop_drops": {
-            "value": 2,
+            "value": 3,
             "label": "Наявність опусків"
+        },
+        "p_other_countertop_sink_integrated": {
+            "value": 12,
+            "label": "Рукомийник інтегрований"
         },
         "p_other_sections": {
             "value": 2,
@@ -1068,25 +1164,38 @@ function getSettingValue(id) {
     const settings = loadCalculatorSettings();
     console.log('✅ Використовую бібліотеку налаштувань для ID:', id);
     
-    // Шукаємо значення в усіх типах калькуляторів
-    for (const calcType in settings) {
-        if (settings[calcType][id]) {
-            console.log('✅ Знайдено значення для', id, ':', settings[calcType][id].value);
-            return settings[calcType][id].value;
+    // Визначаємо тип калькулятора на основі контексту
+    let calcType = 'wardrobe'; // за замовчуванням
+    
+    // Спроба визначити тип калькулятора з URL або інших індикаторів
+    if (window.location.pathname.includes('кухні') || window.location.pathname.includes('kitchen')) {
+        calcType = 'kitchen';
+    } else if (window.location.pathname.includes('шафи гардероби') || window.location.pathname.includes('wardrobe')) {
+        calcType = 'wardrobe';
+    } else if (window.location.pathname.includes('інші меблі') || window.location.pathname.includes('other')) {
+        calcType = 'otherFurniture';
+    } else if (window.location.pathname.includes('гардеробні системи') || window.location.pathname.includes('wardrobe-systems')) {
+        calcType = 'wardrobeSystems';
+    } else if (window.location.pathname.includes('стінових панелей') || window.location.pathname.includes('wall-panels')) {
+        calcType = 'wallPanels';
+    }
+    
+    console.log('🔍 Тип калькулятора:', calcType);
+    
+    // Шукаємо значення в налаштуваннях
+    if (settings[calcType] && settings[calcType][id]) {
+        console.log('✅ Знайдено значення для', id, ':', settings[calcType][id].value);
+        return settings[calcType][id].value;
+    }
+    
+    // Якщо не знайдено, шукаємо в усіх типах калькуляторів
+    for (const type in settings) {
+        if (settings[type][id]) {
+            return settings[type][id].value;
         }
     }
     
-    // Якщо не знайдено, повертаємо стандартне значення
+    // Якщо все ще не знайдено, повертаємо стандартне значення
     console.warn('⚠️ Не знайдено значення для', id, ', використовую стандартне значення: 1');
     return 1;
-}
-
-// Функція для оновлення налаштувань (використовується в налаштуваннях)
-function updateCalculatorSettings(newSettings) {
-    calculatorSettings = newSettings;
-}
-
-// Функція для отримання копії налаштувань (для редагування)
-function getCalculatorSettingsCopy() {
-    return JSON.parse(JSON.stringify(calculatorSettings));
 }

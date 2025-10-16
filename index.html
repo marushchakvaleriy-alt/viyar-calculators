@@ -997,7 +997,7 @@
     </div>
 
     <!-- Підключаємо спільну бібліотеку налаштувань -->
-    <script src="калькулятори/налаштування/calculator-settings.js"></script>
+    <script src="калькулятори/налаштування/calculator-settings.js?v=2024-01-15-001"></script>
 
     <script>
         // Додаємо анімації при завантаженні
@@ -1215,31 +1215,180 @@
         // Функція для динамічного групування поінтів по розділах
         function groupPointsBySections(points) {
             const sections = {};
+            console.log('🔍 Групуємо поінти по розділах:', Object.keys(points));
             
+            // Статичні секції для "Кухня"
+            const kitchenSections = {
+                "1. ОСНОВНІ ПАРАМЕТРИ": [
+                    'p_kitchen_forma_', 'p_kitchen_geo', 'p_kitchen_vent', 'p_kitchen_bez_zamiriv', 'p_kitchen_zamir_', 'p_kitchen_island'
+                ],
+                "2. МАТЕРІАЛИ": [
+                    'p_kitchen_mat_', 'p_kitchen_facade_'
+                ],
+                "3. СТІЛЬНИЦІ": [
+                    'p_kitchen_tabletop_'
+                ],
+                "4. ФАРТУХ": [
+                    'p_kitchen_fartukh_'
+                ],
+                "5. КОРПУСА-МОДУЛІ": [
+                    'p_kitchen_mod_'
+                ],
+                "6. ДОДАТКОВІ ЕЛЕМЕНТИ": [
+                    'p_kitchen_false_', 'p_kitchen_detail_', 'p_kitchen_metal_'
+                ],
+                "7. ФУРНІТУРА": [
+                    'p_kitchen_furn_'
+                ],
+                "8. РУЧКИ": [
+                    'p_kitchen_handle_'
+                ],
+                "9. ПІДСВІТКА": [
+                    'p_kitchen_light_'
+                ],
+                "10. ТЕХНІКА": [
+                    'p_kitchen_appliance'
+                ]
+            };
+
+            // Статичні секції для "Шафа гардероба"
+            const wardrobeSections = {
+                "1. ОСНОВНІ ПАРАМЕТРИ": [
+                    'p_wardrobe_forma_', 'p_wardrobe_installation_', 'p_wardrobe_zamir_', 'p_wardrobe_geo', 'p_wardrobe_attic'
+                ],
+                "2. МАТЕРІАЛИ": [
+                    'p_wardrobe_mat_', 'p_wardrobe_facade_'
+                ],
+                "3. КОРПУСА-МОДУЛІ": [
+                    'p_wardrobe_sections', 'p_wardrobe_swing_facades'
+                ],
+                "4. ДОДАТКОВІ ЕЛЕМЕНТИ": [
+                    'p_wardrobe_false_', 'p_wardrobe_metal_'
+                ],
+                "5. ФУРНІТУРА": [
+                    'p_wardrobe_furn_'
+                ],
+                "6. РУЧКИ": [
+                    'p_wardrobe_handle_'
+                ],
+                "7. ПІДСВІТКА": [
+                    'p_wardrobe_light_'
+                ],
+                "8. ТЕХНІКА": [
+                    'p_wardrobe_tech_'
+                ]
+            };
+
+            // Статичні секції для "Гардеробні системи"
+            const wardrobeSystemsSections = {
+                "1. ОСНОВНІ ПАРАМЕТРИ": [
+                    'p_wardrobe_systems_product_', 'p_wardrobe_systems_shape_', 'p_wardrobe_systems_measure_', 'p_wardrobe_systems_geometry'
+                ],
+                "2. МАТЕРІАЛИ": [
+                    'p_wardrobe_systems_corpus', 'p_wardrobe_systems_glass', 'p_wardrobe_systems_material_'
+                ],
+                "3. ДОДАТКОВІ ЕЛЕМЕНТИ": [
+                    'p_wardrobe_systems_element_'
+                ],
+                "4. ФУРНІТУРА": [
+                    'p_wardrobe_systems_furn_'
+                ],
+                "5. ІНТЕГРОВАНІ ЕЛЕМЕНТИ": [
+                    'p_wardrobe_systems_integrated_'
+                ],
+                "6. РУЧКИ": [
+                    'p_wardrobe_systems_handle_'
+                ],
+                "7. ПІДСВІТКА": [
+                    'p_wardrobe_systems_lighting_'
+                ]
+            };
+
+            // Статичні секції для "Стінові панелі"
+            const wallPanelsSections = {
+                "1. ОСНОВНІ ПАРАМЕТРИ": [
+                    'p_wall_panels_product_', 'p_wall_panels_shape_', 'p_wall_panels_measure_', 'p_wall_panels_geometry'
+                ],
+                "2. КОНСТРУКЦІЇ": [
+                    'p_wall_panels_construction_'
+                ],
+                "3. МАТЕРІАЛИ": [
+                    'p_wall_panels_material_'
+                ],
+                "4. РУЧКИ": [
+                    'p_wall_panels_handle_'
+                ]
+            };
+
             // Статичні секції для "Інші меблі"
             const otherFurnitureSections = {
-                "1. Основні параметри окремостоячого виробу": [
-                    'p_product_', 'p_installation_', 'p_measure_', 'p_geometry', 'p_corpus', 'p_glass'
+                "1. ОСНОВНІ ПАРАМЕТРИ": [
+                    'p_other_product_', 'p_other_installation_', 'p_other_measure_', 'p_other_geometry', 'p_other_corpus', 'p_other_glass'
                 ],
-                "2. Матеріали": ['p_material_'],
-                "3. Стільниці": ['p_countertop_'],
-                "4. Корпуса-модулі": ['p_sections', 'p_swing_facades', 'p_sliding_facades'],
-                "5. Додаткові елементи – конструкції": ['p_element_'],
-                "6. Функціональна фурнітура": ['p_furn_'],
-                "7. Вбудована техніка": ['p_appliances_'],
-                "8. Ручки": ['p_handle_'],
-                "9. Підсвітка": ['p_lighting_']
+                "2. МАТЕРІАЛИ": ['p_other_material_'],
+                "3. СТІЛЬНИЦІ": ['p_other_countertop_'],
+                "4. КОРПУСА-МОДУЛІ": ['p_other_sections', 'p_other_swing_facades', 'p_other_sliding_facades'],
+                "5. ДОДАТКОВІ ЕЛЕМЕНТИ": ['p_other_element_'],
+                "6. ФУРНІТУРА": ['p_other_furn_'],
+                "7. ТЕХНІКА": ['p_other_appliances_'],
+                "8. РУЧКИ": ['p_other_handle_'],
+                "9. ПІДСВІТКА": ['p_other_lighting_']
             };
             
             Object.keys(points).forEach(pointId => {
                 const point = points[pointId];
                 let sectionName = "Інші";
                 
-                // Перевіряємо кожну секцію для "Інші меблі"
-                for (const [section, prefixes] of Object.entries(otherFurnitureSections)) {
+                // Перевіряємо кожну секцію для "Кухня"
+                for (const [section, prefixes] of Object.entries(kitchenSections)) {
                     if (prefixes.some(prefix => pointId.startsWith(prefix))) {
                         sectionName = section;
+                        console.log(`✅ Поінт ${pointId} віднесено до розділу: ${section}`);
                         break;
+                    }
+                }
+                
+                // Якщо не знайшли в "Кухня", перевіряємо "Шафа гардероба"
+                if (sectionName === "Інші") {
+                    for (const [section, prefixes] of Object.entries(wardrobeSections)) {
+                        if (prefixes.some(prefix => pointId.startsWith(prefix))) {
+                            sectionName = section;
+                            console.log(`✅ Поінт ${pointId} віднесено до розділу: ${section}`);
+                            break;
+                        }
+                    }
+                }
+                
+                // Якщо не знайшли в "Шафа гардероба", перевіряємо "Гардеробні системи"
+                if (sectionName === "Інші") {
+                    for (const [section, prefixes] of Object.entries(wardrobeSystemsSections)) {
+                        if (prefixes.some(prefix => pointId.startsWith(prefix))) {
+                            sectionName = section;
+                            console.log(`✅ Поінт ${pointId} віднесено до розділу: ${section}`);
+                            break;
+                        }
+                    }
+                }
+                
+                // Якщо не знайшли в "Гардеробні системи", перевіряємо "Стінові панелі"
+                if (sectionName === "Інші") {
+                    for (const [section, prefixes] of Object.entries(wallPanelsSections)) {
+                        if (prefixes.some(prefix => pointId.startsWith(prefix))) {
+                            sectionName = section;
+                            console.log(`✅ Поінт ${pointId} віднесено до розділу: ${section}`);
+                            break;
+                        }
+                    }
+                }
+                
+                // Якщо не знайшли в "Стінові панелі", перевіряємо "Інші меблі"
+                if (sectionName === "Інші") {
+                    for (const [section, prefixes] of Object.entries(otherFurnitureSections)) {
+                        if (prefixes.some(prefix => pointId.startsWith(prefix))) {
+                            sectionName = section;
+                            console.log(`✅ Поінт ${pointId} віднесено до розділу: ${section}`);
+                            break;
+                        }
                     }
                 }
                 
@@ -1274,6 +1423,7 @@
                 sections[sectionName][pointId] = point;
             });
             
+            console.log('📊 Результат групування:', sections);
             return sections;
         }
 
