@@ -830,7 +830,38 @@
 </script>
 <script>
         </script>
-    <script src="налаштування/calculator-settings.js"></script>
+    <script src="налаштування/calculator-settings.js" onerror="console.error('❌ Помилка завантаження calculator-settings.js:', event)"></script>
+    <script>
+      // Затримка для завантаження файлу налаштувань
+      setTimeout(() => {
+        // Перевіряємо, чи завантажився файл налаштувань
+        console.log('🔍 Перевіряємо calculatorSettings:', typeof calculatorSettings);
+        if (calculatorSettings) {
+          console.log('✅ calculatorSettings завантажено');
+          console.log('🔍 Розділ wardrobeSystems:', calculatorSettings.wardrobeSystems);
+          console.log('🔍 Кількість тарифів в wardrobeSystems:', Object.keys(calculatorSettings.wardrobeSystems || {}).length);
+          
+          // Перевіряємо конкретні тарифи
+          const testIds = [
+            'p_wardrobe_systems_product_стелажна_підлога_стіна',
+            'p_wardrobe_systems_shape_straight',
+            'p_wardrobe_systems_measure_no',
+            'p_wardrobe_systems_geometry',
+            'p_wardrobe_systems_corpus'
+          ];
+          
+          testIds.forEach(id => {
+            if (calculatorSettings.wardrobeSystems && calculatorSettings.wardrobeSystems[id]) {
+              console.log('✅ Знайдено тариф:', id, '=', calculatorSettings.wardrobeSystems[id].value);
+            } else {
+              console.error('❌ НЕ знайдено тариф:', id);
+            }
+          });
+        } else {
+          console.error('❌ calculatorSettings не завантажено!');
+        }
+      }, 100);
+    </script>
     <script>
 // ===== ПОІНТИ ЗАВАНТАЖУЮТЬСЯ З БІБЛІОТЕКИ НАЛАШТУВАНЬ =====
 // Всі значення поінтів тепер зберігаються в calculator-settings.js
@@ -1652,12 +1683,18 @@ function toggleLightingFields() {
 
 function getSettingValue(id) {
   // Використовуємо бібліотеку налаштувань
-  if (typeof window.getSettingValue === 'function') {
-    return window.getSettingValue(id);
+  if (typeof calculatorSettings !== 'undefined') {
+    // Шукаємо значення в налаштуваннях
+    for (const calcType in calculatorSettings) {
+      if (calculatorSettings[calcType][id]) {
+        console.log('✅ Знайдено значення для', id, ':', calculatorSettings[calcType][id].value);
+        return calculatorSettings[calcType][id].value;
+      }
+    }
   }
   
   // Fallback - повертаємо стандартне значення
-  console.warn('⚠️ Бібліотека налаштувань недоступна, використовую стандартне значення: 1');
+  console.warn('⚠️ Не знайдено значення для', id, ', використовую стандартне значення: 1');
   return 1;
 }
 
@@ -2227,11 +2264,11 @@ function calculate() {
       
       // Мапа для правильного відображення ID полів
       const productIdMap = {
-        "Стелажна с-ма ( к-сть вертикальних секцій/модулів)": "p_product_стелажна_с-ма",
-        "Пристінна с-ма  ( к-сть вертикальних секцій/модулів)": "p_product_пристінна_с-ма"
+        "Стелажна с-ма ( к-сть вертикальних секцій/модулів)": "p_wardrobe_systems_product_стелажна_підлога_стіна",
+        "Пристінна с-ма  ( к-сть вертикальних секцій/модулів)": "p_wardrobe_systems_product_пристінна_с-ма"
       };
       
-      const productId = productIdMap[product.type] || `p_product_${product.type.replace(/\s+/g, '_').toLowerCase()}`;
+      const productId = productIdMap[product.type] || "p_wardrobe_systems_product_стелажна_підлога_стіна";
       addDetail(`Вид виробу: ${productName}`, product.quantity, productId);
     });
   })();
@@ -2241,10 +2278,10 @@ function calculate() {
     const productShape = document.getElementById("productShape")?.value;
     if (productShape) {
       const shapeMap = {
-        "Пряма": "p_shape_straight",
-        "Кутова": "p_shape_corner", 
-        "П-подібна": "p_shape_u",
-        "G-по периметру": "p_shape_g"
+        "Пряма": "p_wardrobe_systems_shape_straight",
+        "Кутова": "p_wardrobe_systems_shape_corner", 
+        "П-подібна": "p_wardrobe_systems_shape_u",
+        "G-по периметру": "p_wardrobe_systems_shape_g"
       };
       const shapeId = shapeMap[productShape];
       if (shapeId) {
@@ -2258,9 +2295,9 @@ function calculate() {
     const measure = document.getElementById("measure")?.value;
     if (measure) {
       const measureMap = {
-        "Без замірів": "p_measure_no",
-        "По замірам 3D": "p_measure_3d", 
-        "По замірам фото-ескіз": "p_measure_photo"
+        "Без замірів": "p_wardrobe_systems_measure_no",
+        "По замірам 3D": "p_wardrobe_systems_measure_3d", 
+        "По замірам фото-ескіз": "p_wardrobe_systems_measure_photo"
       };
       const measureId = measureMap[measure];
       if (measureId) {
