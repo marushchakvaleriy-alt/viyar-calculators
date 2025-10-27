@@ -520,8 +520,18 @@
 <div class="container">
   <h3>1. Основні параметри окремостоячого виробу</h3>
   <div style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px;">
-    <!-- Вид виробу -->
+    <!-- Тип виробу -->
     <div style="flex: 1;">
+      <div style="margin-bottom: 15px;">
+        <label for="kitType">Тип комплектації:</label><br/>
+        <select id="kitType" style="width: 60%;">
+          <option value="">Оберіть тип комплектації</option>
+          <option value="furniture_set">Меблевий набір \ Комплект</option>
+          <option value="single_product">Одинарний виріб</option>
+        </select>
+      </div>
+      
+      <!-- Вид виробу -->
       <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
         <label>Вид виробу:</label>
         <button type="button" id="addProductBtn" onclick="showAddProductModal()" style="background: #2563eb; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px;">
@@ -753,7 +763,7 @@
     </div>
     <div style="padding: 20px 24px;">
       <label for="productType">Тип виробу:</label><br/>
-      <select id="productType" style="width: 100%; margin-bottom: 15px;">
+      <select id="productType" onchange="updateProductFields()" style="width: 100%; margin-bottom: 15px;">
         <option value="">-- Виберіть тип --</option>
         <option value="Підлогова меблева конструкція">Підлогова меблева конструкція</option>
         <option value="Підвісна меблева конструкція">Підвісна меблева конструкція</option>
@@ -763,6 +773,9 @@
         <option value="Елементи стінових панелей рейкових як елемент конструкції">Елементи стінових панелей рейкових як елемент конструкції</option>
         <option value="Елементи стінових панелей нестандартної форми як елемент конструкції">Елементи стінових панелей нестандартної форми як елемент конструкції</option>
       </select>
+      
+      <!-- Динамічні поля для кожного типу виробу -->
+      <div id="dynamicProductFields" style="margin-bottom: 15px;"></div>
       
       <label for="productQuantity">Кількість:</label><br/>
       <input type="number" id="productQuantity" min="1" value="1" style="width: 100%; margin-bottom: 15px;">
@@ -945,11 +958,142 @@ function showAddProductModal() {
   document.getElementById('productModal').style.display = 'flex';
   document.getElementById('productType').value = '';
   document.getElementById('productQuantity').value = '1';
+  // Очищаємо динамічні поля
+  document.getElementById('dynamicProductFields').innerHTML = '';
 }
 
 // Функція для закриття модального вікна
 function closeProductModal() {
   document.getElementById('productModal').style.display = 'none';
+}
+
+// Функція для оновлення динамічних полів залежно від типу виробу
+function updateProductFields() {
+  const productType = document.getElementById('productType').value;
+  const dynamicFields = document.getElementById('dynamicProductFields');
+  
+  // Очищаємо попередні поля
+  dynamicFields.innerHTML = '';
+  
+  if (!productType) return;
+  
+  let fieldsHTML = '';
+  
+  // Загальні поля для всіх типів виробів
+  fieldsHTML += `
+    <div style="margin-bottom: 15px;">
+      <label for="sectionsCount">Кількість вертикальних проємів (секцій, відділень):</label><br/>
+      <input type="number" id="sectionsCount" min="0" value="0" style="width: 100%;">
+    </div>
+  `;
+  
+  // Поля для конкретних типів виробів
+  if (productType === 'Підлогова меблева конструкція' || productType === 'Підвісна меблева конструкція') {
+    fieldsHTML += `
+      <div style="margin-bottom: 15px;">
+        <label for="facadeTypes">Типи фасадів:</label><br/>
+        <select id="facadeTypes" onchange="toggleFacadeQuantity()" style="width: 100%;">
+          <option value="">-- Виберіть тип фасадів --</option>
+          <option value="none">Без фасадів</option>
+          <option value="swing">Фасади роспашні</option>
+        </select>
+      </div>
+      
+      <div id="facadeQuantityWrapper" style="margin-bottom: 15px; display: none;">
+        <label for="facadeQuantity">Кількість фасадів:</label><br/>
+        <input type="number" id="facadeQuantity" min="0" value="0" style="width: 100%;">
+      </div>
+      
+      <div style="margin-bottom: 15px;">
+        <label>Особливості конструкції:</label><br/>
+        <div style="margin-top: 8px;">
+          <label style="display: block; margin-bottom: 5px;">
+            <input type="checkbox" id="tumba90" value="tumba90"> Тумба конструкція 90°
+          </label>
+          <label style="display: block; margin-bottom: 5px;">
+            <input type="checkbox" id="tumba45" value="tumba45"> Тумба конструкція 45°
+          </label>
+          <label style="display: block; margin-bottom: 5px;">
+            <input type="checkbox" id="irregularShape" value="irregularShape"> Неправильна геометрична форма
+          </label>
+          <label style="display: block; margin-bottom: 5px;">
+            <input type="checkbox" id="cutouts" value="cutouts"> Вирізи
+          </label>
+        </div>
+      </div>
+    `;
+  }
+  
+  // Поля для тумб
+  if (productType === 'Тумба в санвузол (з рукомийником)' || productType === 'Тумба над інсталяцією') {
+    fieldsHTML += `
+      <div style="margin-bottom: 15px;">
+        <label for="facadeTypes">Типи фасадів:</label><br/>
+        <select id="facadeTypes" onchange="toggleFacadeQuantity()" style="width: 100%;">
+          <option value="">-- Виберіть тип фасадів --</option>
+          <option value="none">Без фасадів</option>
+          <option value="swing">Фасади роспашні</option>
+        </select>
+      </div>
+      
+      <div id="facadeQuantityWrapper" style="margin-bottom: 15px; display: none;">
+        <label for="facadeQuantity">Кількість фасадів:</label><br/>
+        <input type="number" id="facadeQuantity" min="0" value="0" style="width: 100%;">
+      </div>
+      
+      <div style="margin-bottom: 15px;">
+        <label>Особливості конструкції:</label><br/>
+        <div style="margin-top: 8px;">
+          <label style="display: block; margin-bottom: 5px;">
+            <input type="checkbox" id="tumba90" value="tumba90"> Тумба конструкція 90°
+          </label>
+          <label style="display: block; margin-bottom: 5px;">
+            <input type="checkbox" id="tumba45" value="tumba45"> Тумба конструкція 45°
+          </label>
+          <label style="display: block; margin-bottom: 5px;">
+            <input type="checkbox" id="irregularShape" value="irregularShape"> Неправильна геометрична форма
+          </label>
+          <label style="display: block; margin-bottom: 5px;">
+            <input type="checkbox" id="cutouts" value="cutouts"> Вирізи
+          </label>
+        </div>
+      </div>
+    `;
+  }
+  
+  // Поля для стінових панелей
+  if (productType.includes('Елементи стінових панелей')) {
+    fieldsHTML += `
+      <div style="margin-bottom: 15px;">
+        <label>Особливості конструкції:</label><br/>
+        <div style="margin-top: 8px;">
+          <label style="display: block; margin-bottom: 5px;">
+            <input type="checkbox" id="irregularShape" value="irregularShape"> Неправильна геометрична форма
+          </label>
+          <label style="display: block; margin-bottom: 5px;">
+            <input type="checkbox" id="cutouts" value="cutouts"> Вирізи
+          </label>
+          <label style="display: block; margin-bottom: 5px;">
+            <input type="checkbox" id="customShape" value="customShape"> Нестандартна форма
+          </label>
+        </div>
+      </div>
+    `;
+  }
+  
+  dynamicFields.innerHTML = fieldsHTML;
+}
+
+// Функція для показу/приховування поля кількості фасадів
+function toggleFacadeQuantity() {
+  const facadeTypes = document.getElementById('facadeTypes').value;
+  const facadeQuantityWrapper = document.getElementById('facadeQuantityWrapper');
+  
+  if (facadeTypes === 'swing') {
+    facadeQuantityWrapper.style.display = 'block';
+  } else {
+    facadeQuantityWrapper.style.display = 'none';
+  }
 }
 
 // Функція для додавання виробу
@@ -962,8 +1106,46 @@ function addProduct() {
     return;
   }
   
+  // Збираємо дані з динамічних полів
+  const sectionsCount = parseInt(document.getElementById('sectionsCount')?.value) || 0;
+  const facadeTypes = document.getElementById('facadeTypes')?.value || '';
+  const facadeQuantity = parseInt(document.getElementById('facadeQuantity')?.value) || 0;
+  
+  // Збираємо особливості конструкції
+  const constructionFeatures = [];
+  const checkboxes = document.querySelectorAll('#dynamicProductFields input[type="checkbox"]:checked');
+  checkboxes.forEach(checkbox => {
+    constructionFeatures.push(checkbox.value);
+  });
+  
+  // Створюємо детальний опис виробу
+  let productDescription = type;
+  
+  if (sectionsCount > 0) {
+    productDescription += ` (${sectionsCount} секцій)`;
+  }
+  
+  if (facadeTypes === 'swing' && facadeQuantity > 0) {
+    productDescription += `, роспашні фасади (${facadeQuantity} шт.)`;
+  } else if (facadeTypes === 'none') {
+    productDescription += ', без фасадів';
+  }
+  
+  if (constructionFeatures.length > 0) {
+    const featureNames = {
+      'tumba90': 'тумба 90°',
+      'tumba45': 'тумба 45°',
+      'irregularShape': 'неправильна форма',
+      'cutouts': 'вирізи',
+      'customShape': 'нестандартна форма'
+    };
+    
+    const features = constructionFeatures.map(feature => featureNames[feature] || feature).join(', ');
+    productDescription += `, ${features}`;
+  }
+  
   // Перевіряємо, чи вже існує такий тип виробу
-  const existingProduct = addedProducts.find(p => p.type === type);
+  const existingProduct = addedProducts.find(p => p.type === type && p.description === productDescription);
   
   if (existingProduct) {
     // Якщо існує, додаємо до кількості
@@ -972,7 +1154,12 @@ function addProduct() {
     // Якщо не існує, додаємо новий
     addedProducts.push({
       type: type,
+      description: productDescription,
       quantity: quantity,
+      sectionsCount: sectionsCount,
+      facadeTypes: facadeTypes,
+      facadeQuantity: facadeQuantity,
+      constructionFeatures: constructionFeatures,
       id: Date.now() // унікальний ID
     });
   }
@@ -1007,21 +1194,38 @@ function renderProductsList() {
   
   let html = '';
   addedProducts.forEach((product, index) => {
-    const shortName = getShortName(product.type);
+    const displayName = product.description || getShortName(product.type);
     html += `
-      <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0; margin-bottom: 3px;">
-        <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
-          <span style="font-size: 14px;" title="${product.type}">${index + 1}. ${shortName}</span>
-          <input type="number" 
-                 id="quantity_${product.id}" 
-                 value="${product.quantity}" 
-                 min="1" 
-                 style="width: 60px; padding: 2px 4px; border: 1px solid #ccc; border-radius: 3px; font-size: 12px;"
-                 onchange="updateProductQuantity(${product.id}, this.value)"
-                 onblur="updateProductQuantity(${product.id}, this.value)">
-          <span style="font-size: 12px; color: #666;">шт.</span>
+      <div style="padding: 8px 0; margin-bottom: 8px; border-bottom: 1px solid #e5e7eb;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
+          <div style="flex: 1;">
+            <div style="font-size: 14px; font-weight: 500; margin-bottom: 2px;">${index + 1}. ${displayName}</div>
+            ${product.sectionsCount > 0 ? `<div style="font-size: 12px; color: #6b7280;">Секцій: ${product.sectionsCount}</div>` : ''}
+            ${product.facadeTypes === 'swing' && product.facadeQuantity > 0 ? `<div style="font-size: 12px; color: #6b7280;">Фасади: ${product.facadeQuantity} шт.</div>` : ''}
+            ${product.facadeTypes === 'none' ? `<div style="font-size: 12px; color: #6b7280;">Без фасадів</div>` : ''}
+            ${product.constructionFeatures && product.constructionFeatures.length > 0 ? `<div style="font-size: 12px; color: #6b7280;">Особливості: ${product.constructionFeatures.map(f => {
+              const names = {
+                'tumba90': 'тумба 90°',
+                'tumba45': 'тумба 45°',
+                'irregularShape': 'неправильна форма',
+                'cutouts': 'вирізи',
+                'customShape': 'нестандартна форма'
+              };
+              return names[f] || f;
+            }).join(', ')}</div>` : ''}
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <input type="number" 
+                   id="quantity_${product.id}" 
+                   value="${product.quantity}" 
+                   min="1" 
+                   style="width: 60px; padding: 4px 6px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 12px;"
+                   onchange="updateProductQuantity(${product.id}, this.value)"
+                   onblur="updateProductQuantity(${product.id}, this.value)">
+            <span style="font-size: 12px; color: #666;">шт.</span>
+            <button onclick="removeProduct(${product.id})" class="remove-btn" title="Видалити" style="background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px;">×</button>
+          </div>
         </div>
-        <button onclick="removeProduct(${product.id})" class="remove-btn" title="Видалити" style="background: #ef4444; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 12px;">×</button>
       </div>
     `;
   });
@@ -1846,6 +2050,9 @@ function checkRequiredFields() {
   console.log("=== Початок перевірки полів ===");
   
   // 1. Основні параметри
+  if (!document.getElementById("kitType")?.value) {
+    missing.push("1. Тип комплектації");
+  }
   if (addedProducts.length === 0) {
     missing.push("1. Вид виробу");
   }
