@@ -96,13 +96,16 @@
       background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
       padding: 0;
       border-radius: 16px;
-      max-width: 500px;
-      width: 90%;
-      max-height: 80vh;
-      overflow: hidden;
+      max-width: 600px; /* wider for better visibility */
+      width: 95%;
+      height: auto;
+      max-height: 90vh;         /* авто-підгонка до екрану */
+      overflow-y: auto;         /* скрол всієї модалки при необхідності */
       box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
       animation: slideUp 0.3s ease-out;
       border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      flex-direction: column;
     }
 
     @keyframes slideUp {
@@ -153,6 +156,7 @@
       justify-content: flex-end;
       gap: 12px;
       background: white;
+      border-top: 1px solid #e5e7eb;
     }
     .modal-actions button {
       padding: 10px 20px;
@@ -476,6 +480,32 @@
       display: none !important;
     }
     
+    #functionalHardwareList > div:hover {
+      background-color: #f9fafb;
+    }
+
+    /* Modal body area - без внутрішнього скролу */
+    .modal-body {
+      padding: 20px 24px;
+      max-height: none;
+      overflow: visible;
+    }
+
+    /* Chips for readable lists */
+    .chips-row { margin-top: 4px; display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 12px;
+      line-height: 18px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #1e3a8a;
+      border: 1px solid #c7d2fe;
+      white-space: nowrap;
+    }
+    .chip--neutral { background: #f1f5f9; color: #334155; border-color: #e2e8f0; }
+    
     </style>
   
   <!-- Додати jsPDF бібліотеку -->
@@ -659,29 +689,7 @@
   </div>
   <!-- Розділ 6 -->
   <div class="section">
-  <h3>6. Функціональна фурнітура</h3>
-  <label for="furnDrawers">Ящики:</label>
-  <input id="furnDrawers" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/><br/><br/>
-  <label for="furnLifts">Підйомні механізми:</label>
-  <input id="furnLifts" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/><br/><br/>
-  <label for="furnBarMechanisms">Барні механізми:</label>
-  <input id="furnBarMechanisms" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/><br/><br/>
-  <label for="furnWardrobeAccessories">Аксесуари до шафи:</label>
-  <input id="furnWardrobeAccessories" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/><br/><br/>
-  <label for="furnClothingRods">К-сть штанг для одягу:</label>
-  <input id="furnClothingRods" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/><br/><br/>
-  <label for="furnSlidingBottom">Розсувні с-ми (нижньоопорні):</label>
-  <input id="furnSlidingBottom" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/><br/><br/>
-  <label for="furnWingline">Складна система WingLine:</label>
-  <input id="furnWingline" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/><br/><br/>
-  <label for="furnSlidingDoors">Системи розсувних дверей (Revego, Hawa, Salice):</label>
-  <input id="furnSlidingDoors" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/><br/><br/>
-  <label for="furnSlideM">Розсувні с-ми (типу slide М):</label>
-  <input id="furnSlideM" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/>
-  </div>
-  <!-- Розділ 7 -->
-  <div class="section">
-  <h3>7. Вбудована техніка</h3>
+  <h3>6. Вбудована техніка</h3>
   <label for="appliancesHatch">Люк технічний інші комунікації:</label>
   <input id="appliancesHatch" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/><br/><br/>
   <label for="appliancesSink">Рукомийник:</label>
@@ -691,9 +699,9 @@
   <label for="appliancesOther">Техніка (пралка, сушка, бойлер тощо):</label>
   <input id="appliancesOther" min="0" onfocus="this.select()" placeholder="Вкажіть кількість або 0" type="number"/>
   </div>
-  <!-- Розділ 8 -->
+  <!-- Розділ 7 -->
   <div class="section">
-  <h3>8. Ручки</h3>
+  <h3>7. Ручки</h3>
   <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
     <label for="hasHandles">Ручки:</label>
     <select id="hasHandles" onchange="toggleHandlesFields()">
@@ -711,9 +719,9 @@
   </div>
   <script>
         </script>
-  <!-- Розділ 9 -->
+  <!-- Розділ 8 -->
   <div class="section">
-  <h3>9. Підсвітка</h3>
+  <h3>8. Підсвітка</h3>
   <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
     <label for="hasLighting">Підсвітка:</label>
     <select id="hasLighting" onchange="toggleLightingFields()">
@@ -761,9 +769,9 @@
       <h3>Додати виріб</h3>
       <button class="close" onclick="closeProductModal()">&times;</button>
     </div>
-    <div style="padding: 20px 24px;">
+    <div class="modal-body">
       <label for="productType">Тип виробу:</label><br/>
-      <select id="productType" onchange="updateProductFields()" style="width: 100%; margin-bottom: 15px;">
+      <select id="productType" onchange="onProductTypeChange()" style="width: 100%; margin-bottom: 15px;">
         <option value="">-- Виберіть тип --</option>
         <option value="Підлогова меблева конструкція">Підлогова меблева конструкція</option>
         <option value="Підвісна меблева конструкція">Підвісна меблева конструкція</option>
@@ -953,18 +961,76 @@
 // Масив для зберігання доданих виробів
 let addedProducts = [];
 
+// Змінна для режиму редагування
+let editingProductId = null;
+
 // Функція для відкриття модального вікна додавання виробу
-function showAddProductModal() {
-  document.getElementById('productModal').style.display = 'flex';
+function showAddProductModal(productId = null) {
+  editingProductId = productId;
+  const modal = document.getElementById('productModal');
+  modal.style.display = 'flex';
+  // автофокус на тип
+  setTimeout(() => document.getElementById('productType')?.focus(), 0);
+  
+  if (productId) {
+    // Режим редагування
+    document.querySelector('.modal-header h3').textContent = 'Редагувати виріб';
+    modal.querySelector('.modal-actions button:last-child').textContent = 'Зберегти';
+  } else {
+    // Режим додавання
+    document.querySelector('.modal-header h3').textContent = 'Додати виріб';
+    modal.querySelector('.modal-actions button:last-child').textContent = 'Додати';
   document.getElementById('productType').value = '';
   document.getElementById('productQuantity').value = '1';
-  // Очищаємо динамічні поля
   document.getElementById('dynamicProductFields').innerHTML = '';
+  }
 }
 
 // Функція для закриття модального вікна
 function closeProductModal() {
   document.getElementById('productModal').style.display = 'none';
+  editingProductId = null; // Скидаємо режим редагування
+}
+
+// Функція обробки зміни типу продукту
+function onProductTypeChange() {
+  updateProductFields();
+  
+  // Якщо це режим редагування, після оновлення полів потрібно знову заповнити їх
+  if (editingProductId !== null) {
+    const product = addedProducts.find(p => p.id === editingProductId);
+    if (product) {
+      setTimeout(() => {
+        const sectionsInput = document.getElementById('sectionsCount');
+        if (sectionsInput) {
+          sectionsInput.value = product.sectionsCount || 0;
+        }
+        
+        // Заповнюємо функціональну фурнітуру
+        if (product.functionalHardware && typeof product.functionalHardware === 'object') {
+          Object.entries(product.functionalHardware).forEach(([key, qty]) => {
+            const input = document.querySelector(`#functionalHardwareList input[data-hw="${key}"]`);
+            if (input) {
+              input.value = qty;
+            }
+          });
+        }
+        
+        // Заповнюємо особливості конструкції
+        if (product.constructionFeatures && Array.isArray(product.constructionFeatures)) {
+          product.constructionFeatures.forEach(feature => {
+            const checkbox = document.getElementById(feature);
+            if (checkbox) {
+              checkbox.checked = true;
+            }
+          });
+        }
+        
+        // Оновлюємо текст кнопки фурнітури
+        updateFunctionalHardwareText();
+      }, 100);
+    }
+  }
 }
 
 // Функція для оновлення динамічних полів залежно від типу виробу
@@ -991,33 +1057,62 @@ function updateProductFields() {
   if (productType === 'Підлогова меблева конструкція' || productType === 'Підвісна меблева конструкція') {
     fieldsHTML += `
       <div style="margin-bottom: 15px;">
-        <label for="facadeTypes">Типи фасадів:</label><br/>
-        <select id="facadeTypes" onchange="toggleFacadeQuantity()" style="width: 100%;">
-          <option value="">-- Виберіть тип фасадів --</option>
-          <option value="none">Без фасадів</option>
-          <option value="swing">Фасади роспашні</option>
-        </select>
+        <label>Функціональна фурнітура:</label><br/>
+        <div id="functionalHardwareDropdown" style="position: relative;">
+          <button type="button" id="functionalHardwareBtn" onclick="toggleFunctionalHardware()" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; background: white; text-align: left; cursor: pointer;">Функціональна фурнітура</button>
+          <div id="functionalHardwareList" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #d1d5db; border-radius: 6px; margin-top: 4px; max-height: 350px; overflow-y: auto; z-index: 1000; padding: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #e5e7eb;">
+              <span style="font-size: 13px;">Фасади розпашні:</span>
+              <input type="number" value="0" min="0" style="width: 70px; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px;" onchange="updateFunctionalHardwareText()" data-hw="swing_facades">
       </div>
-      
-      <div id="facadeQuantityWrapper" style="margin-bottom: 15px; display: none;">
-        <label for="facadeQuantity">Кількість фасадів:</label><br/>
-        <input type="number" id="facadeQuantity" min="0" value="0" style="width: 100%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #e5e7eb;">
+              <span style="font-size: 13px;">Ящики:</span>
+              <input type="number" value="0" min="0" style="width: 70px; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px;" onchange="updateFunctionalHardwareText()" data-hw="drawers">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #e5e7eb;">
+              <span style="font-size: 13px;">Підйомні механізми:</span>
+              <input type="number" value="0" min="0" style="width: 70px; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px;" onchange="updateFunctionalHardwareText()" data-hw="lift_mechanisms">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #e5e7eb;">
+              <span style="font-size: 13px;">Барні механізми:</span>
+              <input type="number" value="0" min="0" style="width: 70px; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px;" onchange="updateFunctionalHardwareText()" data-hw="bar_mechanisms">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #e5e7eb;">
+              <span style="font-size: 13px;">Аксесуари до шафи:</span>
+              <input type="number" value="0" min="0" style="width: 70px; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px;" onchange="updateFunctionalHardwareText()" data-hw="cabinet_accessories">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #e5e7eb;">
+              <span style="font-size: 13px;">К-сть штанг для одягу:</span>
+              <input type="number" value="0" min="0" style="width: 70px; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px;" onchange="updateFunctionalHardwareText()" data-hw="clothing_rods">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #e5e7eb;">
+              <span style="font-size: 13px;">Розсувні с-ми (нижньоопорні):</span>
+              <input type="number" value="0" min="0" style="width: 70px; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px;" onchange="updateFunctionalHardwareText()" data-hw="bottom_support_systems">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #e5e7eb;">
+              <span style="font-size: 13px;">Складна система WingLine:</span>
+              <input type="number" value="0" min="0" style="width: 70px; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px;" onchange="updateFunctionalHardwareText()" data-hw="wingline_system">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #e5e7eb;">
+              <span style="font-size: 13px;">Системи розсувних дверей (Revego, Hawa, Salice):</span>
+              <input type="number" value="0" min="0" style="width: 70px; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px;" onchange="updateFunctionalHardwareText()" data-hw="sliding_door_systems">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px;">
+              <span style="font-size: 13px;">Розсувні с-ми (типу slide М):</span>
+              <input type="number" value="0" min="0" style="width: 70px; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px;" onchange="updateFunctionalHardwareText()" data-hw="slide_m_systems">
+            </div>
+          </div>
+        </div>
       </div>
       
       <div style="margin-bottom: 15px;">
         <label>Особливості конструкції:</label><br/>
         <div style="margin-top: 8px;">
           <label style="display: block; margin-bottom: 5px;">
-            <input type="checkbox" id="tumba90" value="tumba90"> Тумба конструкція 90°
+            <input type="checkbox" id="tumba90" value="tumba90"> Тумба конструкція 90*
           </label>
           <label style="display: block; margin-bottom: 5px;">
-            <input type="checkbox" id="tumba45" value="tumba45"> Тумба конструкція 45°
-          </label>
-          <label style="display: block; margin-bottom: 5px;">
-            <input type="checkbox" id="irregularShape" value="irregularShape"> Неправильна геометрична форма
-          </label>
-          <label style="display: block; margin-bottom: 5px;">
-            <input type="checkbox" id="cutouts" value="cutouts"> Вирізи
+            <input type="checkbox" id="tumba45" value="tumba45"> Тумба конструкція 45*
           </label>
         </div>
       </div>
@@ -1028,33 +1123,62 @@ function updateProductFields() {
   if (productType === 'Тумба в санвузол (з рукомийником)' || productType === 'Тумба над інсталяцією') {
     fieldsHTML += `
       <div style="margin-bottom: 15px;">
-        <label for="facadeTypes">Типи фасадів:</label><br/>
-        <select id="facadeTypes" onchange="toggleFacadeQuantity()" style="width: 100%;">
-          <option value="">-- Виберіть тип фасадів --</option>
-          <option value="none">Без фасадів</option>
-          <option value="swing">Фасади роспашні</option>
-        </select>
+        <label>Функціональна фурнітура:</label><br/>
+        <div id="functionalHardwareDropdown" style="position: relative;">
+          <button type="button" id="functionalHardwareBtn" onclick="toggleFunctionalHardware()" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; background: white; text-align: left; cursor: pointer;">Функціональна фурнітура</button>
+          <div id="functionalHardwareList" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #d1d5db; border-radius: 6px; margin-top: 4px; max-height: 350px; overflow-y: auto; z-index: 1000; padding: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #e5e7eb;">
+              <span style="font-size: 13px;">Фасади розпашні:</span>
+              <input type="number" value="0" min="0" style="width: 70px; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px;" onchange="updateFunctionalHardwareText()" data-hw="swing_facades">
       </div>
-      
-      <div id="facadeQuantityWrapper" style="margin-bottom: 15px; display: none;">
-        <label for="facadeQuantity">Кількість фасадів:</label><br/>
-        <input type="number" id="facadeQuantity" min="0" value="0" style="width: 100%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #e5e7eb;">
+              <span style="font-size: 13px;">Ящики:</span>
+              <input type="number" value="0" min="0" style="width: 70px; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px;" onchange="updateFunctionalHardwareText()" data-hw="drawers">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #e5e7eb;">
+              <span style="font-size: 13px;">Підйомні механізми:</span>
+              <input type="number" value="0" min="0" style="width: 70px; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px;" onchange="updateFunctionalHardwareText()" data-hw="lift_mechanisms">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #e5e7eb;">
+              <span style="font-size: 13px;">Барні механізми:</span>
+              <input type="number" value="0" min="0" style="width: 70px; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px;" onchange="updateFunctionalHardwareText()" data-hw="bar_mechanisms">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #e5e7eb;">
+              <span style="font-size: 13px;">Аксесуари до шафи:</span>
+              <input type="number" value="0" min="0" style="width: 70px; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px;" onchange="updateFunctionalHardwareText()" data-hw="cabinet_accessories">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #e5e7eb;">
+              <span style="font-size: 13px;">К-сть штанг для одягу:</span>
+              <input type="number" value="0" min="0" style="width: 70px; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px;" onchange="updateFunctionalHardwareText()" data-hw="clothing_rods">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #e5e7eb;">
+              <span style="font-size: 13px;">Розсувні с-ми (нижньоопорні):</span>
+              <input type="number" value="0" min="0" style="width: 70px; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px;" onchange="updateFunctionalHardwareText()" data-hw="bottom_support_systems">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #e5e7eb;">
+              <span style="font-size: 13px;">Складна система WingLine:</span>
+              <input type="number" value="0" min="0" style="width: 70px; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px;" onchange="updateFunctionalHardwareText()" data-hw="wingline_system">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #e5e7eb;">
+              <span style="font-size: 13px;">Системи розсувних дверей (Revego, Hawa, Salice):</span>
+              <input type="number" value="0" min="0" style="width: 70px; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px;" onchange="updateFunctionalHardwareText()" data-hw="sliding_door_systems">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px;">
+              <span style="font-size: 13px;">Розсувні с-ми (типу slide М):</span>
+              <input type="number" value="0" min="0" style="width: 70px; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px;" onchange="updateFunctionalHardwareText()" data-hw="slide_m_systems">
+            </div>
+          </div>
+        </div>
       </div>
       
       <div style="margin-bottom: 15px;">
         <label>Особливості конструкції:</label><br/>
         <div style="margin-top: 8px;">
           <label style="display: block; margin-bottom: 5px;">
-            <input type="checkbox" id="tumba90" value="tumba90"> Тумба конструкція 90°
+            <input type="checkbox" id="tumba90" value="tumba90"> Тумба конструкція 90*
           </label>
           <label style="display: block; margin-bottom: 5px;">
-            <input type="checkbox" id="tumba45" value="tumba45"> Тумба конструкція 45°
-          </label>
-          <label style="display: block; margin-bottom: 5px;">
-            <input type="checkbox" id="irregularShape" value="irregularShape"> Неправильна геометрична форма
-          </label>
-          <label style="display: block; margin-bottom: 5px;">
-            <input type="checkbox" id="cutouts" value="cutouts"> Вирізи
+            <input type="checkbox" id="tumba45" value="tumba45"> Тумба конструкція 45*
           </label>
         </div>
       </div>
@@ -1082,17 +1206,59 @@ function updateProductFields() {
   }
   
   dynamicFields.innerHTML = fieldsHTML;
+  // авто-виділення чисел при фокусі
+  const numbers = document.querySelectorAll('#dynamicProductFields input[type="number"]');
+  numbers.forEach(inp => {
+    inp.addEventListener('focus', function() { this.select(); });
+  });
 }
 
-// Функція для показу/приховування поля кількості фасадів
-function toggleFacadeQuantity() {
-  const facadeTypes = document.getElementById('facadeTypes').value;
-  const facadeQuantityWrapper = document.getElementById('facadeQuantityWrapper');
+// Функція для відкриття/закриття випадаючого списку фурнітури
+function toggleFunctionalHardware() {
+  const list = document.getElementById('functionalHardwareList');
+  if (list) {
+    list.style.display = list.style.display === 'none' ? 'block' : 'none';
+  }
+}
+
+// Функція для оновлення тексту кнопки з вибраними елементами
+function updateFunctionalHardwareText() {
+  const inputs = document.querySelectorAll('#functionalHardwareList input[type="number"]');
+  const btn = document.getElementById('functionalHardwareBtn');
   
-  if (facadeTypes === 'swing') {
-    facadeQuantityWrapper.style.display = 'block';
+  if (!btn) return;
+  
+  const hardwareNames = {
+    'swing_facades': 'Фасади розпашні',
+    'drawers': 'Ящики',
+    'lift_mechanisms': 'Підйомні механізми',
+    'bar_mechanisms': 'Барні механізми',
+    'cabinet_accessories': 'Аксесуари до шафи',
+    'clothing_rods': 'Штанги для одягу',
+    'bottom_support_systems': 'Розсувні с-ми',
+    'wingline_system': 'WingLine',
+    'sliding_door_systems': 'Системи дверей',
+    'slide_m_systems': 'Slide М'
+  };
+  
+  let totalItems = 0;
+  const items = [];
+  
+  inputs.forEach(input => {
+    const value = parseInt(input.value) || 0;
+    if (value > 0) {
+      totalItems += value;
+      const name = hardwareNames[input.getAttribute('data-hw')] || input.getAttribute('data-hw');
+      items.push(`${name}: ${value}`);
+    }
+  });
+  
+  if (totalItems === 0) {
+    btn.textContent = 'Вказати кількість фурнітури';
+  } else if (totalItems <= 2) {
+    btn.textContent = items.join(', ');
   } else {
-    facadeQuantityWrapper.style.display = 'none';
+    btn.textContent = `Вказано елементів: ${totalItems}`;
   }
 }
 
@@ -1108,8 +1274,16 @@ function addProduct() {
   
   // Збираємо дані з динамічних полів
   const sectionsCount = parseInt(document.getElementById('sectionsCount')?.value) || 0;
-  const facadeTypes = document.getElementById('facadeTypes')?.value || '';
-  const facadeQuantity = parseInt(document.getElementById('facadeQuantity')?.value) || 0;
+  
+  // Збираємо функціональну фурнітуру з кількостями
+  const functionalHardwareData = {};
+  const functionalHardwareInputs = document.querySelectorAll('#functionalHardwareList input[type="number"]');
+  functionalHardwareInputs.forEach(input => {
+    const value = parseInt(input.value) || 0;
+    if (value > 0) {
+      functionalHardwareData[input.getAttribute('data-hw')] = value;
+    }
+  });
   
   // Збираємо особливості конструкції
   const constructionFeatures = [];
@@ -1125,16 +1299,33 @@ function addProduct() {
     productDescription += ` (${sectionsCount} секцій)`;
   }
   
-  if (facadeTypes === 'swing' && facadeQuantity > 0) {
-    productDescription += `, роспашні фасади (${facadeQuantity} шт.)`;
-  } else if (facadeTypes === 'none') {
-    productDescription += ', без фасадів';
+  // Додаємо функціональну фурнітуру до опису
+  if (Object.keys(functionalHardwareData).length > 0) {
+    const hardwareNames = {
+      'swing_facades': 'Фасади розпашні',
+      'drawers': 'Ящики',
+      'lift_mechanisms': 'Підйомні механізми',
+      'bar_mechanisms': 'Барні механізми',
+      'cabinet_accessories': 'Аксесуари до шафи',
+      'clothing_rods': 'Штанги для одягу',
+      'bottom_support_systems': 'Розсувні с-ми (нижньоопорні)',
+      'wingline_system': 'Складна система WingLine',
+      'sliding_door_systems': 'Системи розсувних дверей',
+      'slide_m_systems': 'Розсувні с-ми (типу slide М)'
+    };
+    
+    const hardwareItems = Object.entries(functionalHardwareData).map(([key, qty]) => {
+      const name = hardwareNames[key] || key;
+      return `${name} (${qty} шт.)`;
+    });
+    
+    productDescription += `, фурнітура: ${hardwareItems.join(', ')}`;
   }
   
   if (constructionFeatures.length > 0) {
     const featureNames = {
-      'tumba90': 'тумба 90°',
-      'tumba45': 'тумба 45°',
+      'tumba90': 'тумба 90*',
+      'tumba45': 'тумба 45*',
       'irregularShape': 'неправильна форма',
       'cutouts': 'вирізи',
       'customShape': 'нестандартна форма'
@@ -1144,7 +1335,25 @@ function addProduct() {
     productDescription += `, ${features}`;
   }
   
-  // Перевіряємо, чи вже існує такий тип виробу
+  // Перевіряємо, чи це режим редагування
+  if (editingProductId !== null) {
+    // Знаходимо продукт для редагування
+    const productIndex = addedProducts.findIndex(p => p.id === editingProductId);
+    if (productIndex !== -1) {
+      // Оновлюємо існуючий продукт
+      addedProducts[productIndex] = {
+        type: type,
+        description: productDescription,
+        quantity: quantity,
+        sectionsCount: sectionsCount,
+        functionalHardware: functionalHardwareData,
+        constructionFeatures: constructionFeatures,
+        id: editingProductId // зберігаємо той самий ID
+      };
+    }
+    editingProductId = null; // Скидаємо режим редагування
+  } else {
+    // Режим додавання
   const existingProduct = addedProducts.find(p => p.type === type && p.description === productDescription);
   
   if (existingProduct) {
@@ -1157,11 +1366,11 @@ function addProduct() {
       description: productDescription,
       quantity: quantity,
       sectionsCount: sectionsCount,
-      facadeTypes: facadeTypes,
-      facadeQuantity: facadeQuantity,
+        functionalHardware: functionalHardwareData,
       constructionFeatures: constructionFeatures,
       id: Date.now() // унікальний ID
     });
+    }
   }
   
   renderProductsList();
@@ -1194,25 +1403,41 @@ function renderProductsList() {
   
   let html = '';
   addedProducts.forEach((product, index) => {
-    const displayName = product.description || getShortName(product.type);
+    const displayName = getShortName(product.type);
     html += `
       <div style="padding: 8px 0; margin-bottom: 8px; border-bottom: 1px solid #e5e7eb;">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
           <div style="flex: 1;">
             <div style="font-size: 14px; font-weight: 500; margin-bottom: 2px;">${index + 1}. ${displayName}</div>
-            ${product.sectionsCount > 0 ? `<div style="font-size: 12px; color: #6b7280;">Секцій: ${product.sectionsCount}</div>` : ''}
-            ${product.facadeTypes === 'swing' && product.facadeQuantity > 0 ? `<div style="font-size: 12px; color: #6b7280;">Фасади: ${product.facadeQuantity} шт.</div>` : ''}
-            ${product.facadeTypes === 'none' ? `<div style="font-size: 12px; color: #6b7280;">Без фасадів</div>` : ''}
-            ${product.constructionFeatures && product.constructionFeatures.length > 0 ? `<div style="font-size: 12px; color: #6b7280;">Особливості: ${product.constructionFeatures.map(f => {
+            ${product.sectionsCount > 0 ? `<div class="chips-row"><span class="chip chip--neutral">Секцій: ${product.sectionsCount}</span></div>` : ''}
+            ${product.functionalHardware && Object.keys(product.functionalHardware).length > 0 ? `<div class="chips-row">${Object.entries(product.functionalHardware).map(([key, qty]) => {
               const names = {
-                'tumba90': 'тумба 90°',
-                'tumba45': 'тумба 45°',
+                'swing_facades': 'Фасади розпашні',
+                'drawers': 'Ящики',
+                'lift_mechanisms': 'Підйомні механізми',
+                'bar_mechanisms': 'Барні механізми',
+                'cabinet_accessories': 'Аксесуари до шафи',
+                'clothing_rods': 'Штанги для одягу',
+                'bottom_support_systems': 'Розсувні с-ми (нижньоопорні)',
+                'wingline_system': 'Складна система WingLine',
+                'sliding_door_systems': 'Системи розсувних дверей',
+                'slide_m_systems': 'Розсувні с-ми (типу slide М)'
+              };
+              const name = names[key] || key;
+              const label = `${name} (${qty} шт.)`;
+              return `<span class=\"chip\">${label}</span>`;
+            }).join('')}</div>` : ''}
+            ${product.constructionFeatures && product.constructionFeatures.length > 0 ? `<div class="chips-row">${product.constructionFeatures.map(f => {
+              const names = {
+                'tumba90': 'тумба 90*',
+                'tumba45': 'тумба 45*',
                 'irregularShape': 'неправильна форма',
                 'cutouts': 'вирізи',
                 'customShape': 'нестандартна форма'
               };
-              return names[f] || f;
-            }).join(', ')}</div>` : ''}
+              const name = names[f] || f;
+              return `<span class=\"chip chip--neutral\">${name}</span>`;
+            }).join('')}</div>` : ''}
           </div>
           <div style="display: flex; align-items: center; gap: 8px;">
             <input type="number" 
@@ -1223,6 +1448,7 @@ function renderProductsList() {
                    onchange="updateProductQuantity(${product.id}, this.value)"
                    onblur="updateProductQuantity(${product.id}, this.value)">
             <span style="font-size: 12px; color: #666;">шт.</span>
+            <button onclick="editProduct(${product.id})" class="edit-btn" title="Редагувати" style="background: #2563eb; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px;">✎</button>
             <button onclick="removeProduct(${product.id})" class="remove-btn" title="Видалити" style="background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px;">×</button>
           </div>
         </div>
@@ -1250,9 +1476,55 @@ function updateProductQuantity(id, newQuantity) {
   const product = addedProducts.find(p => p.id === id);
   if (product) {
     product.quantity = quantity;
-    // Не перерендерюємо весь список, щоб не втратити фокус
-    console.log(`Оновлено кількість для ${product.type}: ${quantity}`);
+    // Додатковий бейдж біля заголовка прибрано; окремі пункти показують свою кількість
   }
+}
+
+// Функція для редагування виробу
+function editProduct(id) {
+  const product = addedProducts.find(p => p.id === id);
+  if (!product) return;
+  
+  // Відкриваємо модальне вікно
+  showAddProductModal(id);
+  
+  // Заповнюємо поля
+  document.getElementById('productType').value = product.type;
+  document.getElementById('productQuantity').value = product.quantity;
+  
+  // Оновлюємо динамічні поля
+  updateProductFields();
+  
+  // Після оновлення полів, заповнюємо їх даними продукту
+  setTimeout(() => {
+    const sectionsInput = document.getElementById('sectionsCount');
+    if (sectionsInput) {
+      sectionsInput.value = product.sectionsCount || 0;
+    }
+    
+    // Заповнюємо функціональну фурнітуру
+    if (product.functionalHardware && typeof product.functionalHardware === 'object') {
+      Object.entries(product.functionalHardware).forEach(([key, qty]) => {
+        const input = document.querySelector(`#functionalHardwareList input[data-hw="${key}"]`);
+        if (input) {
+          input.value = qty;
+        }
+      });
+    }
+    
+    // Заповнюємо особливості конструкції
+    if (product.constructionFeatures && Array.isArray(product.constructionFeatures)) {
+      product.constructionFeatures.forEach(feature => {
+        const checkbox = document.getElementById(feature);
+        if (checkbox) {
+          checkbox.checked = true;
+        }
+      });
+    }
+    
+    // Оновлюємо текст кнопки фурнітури
+    updateFunctionalHardwareText();
+  }, 100);
 }
 
 // Функція для видалення виробу
@@ -1271,6 +1543,13 @@ document.addEventListener('click', function(event) {
   const modal = document.getElementById('productModal');
   if (event.target === modal) {
     closeProductModal();
+  }
+  
+  // Закриваємо випадаючий список фурнітури при кліку поза ним
+  const functionalHardwareDropdown = document.getElementById('functionalHardwareDropdown');
+  const functionalHardwareList = document.getElementById('functionalHardwareList');
+  if (functionalHardwareDropdown && functionalHardwareList && !functionalHardwareDropdown.contains(event.target)) {
+    functionalHardwareList.style.display = 'none';
   }
 });
 
@@ -2121,60 +2400,40 @@ function checkRequiredFields() {
     }
   }
   
-  // 6. Функціональна фурнітура
-  const furnFields = ["furnDrawers", "furnLifts", "furnBarMechanisms", "furnWardrobeAccessories", "furnClothingRods", "furnSlidingBottom", "furnWingline", "furnSlidingDoors", "furnSlideM"];
-  for (let fieldId of furnFields) {
-    const field = document.getElementById(fieldId);
-    if (!field || field.value === "") {
-      const labels = {
-        "furnDrawers": "6. Ящики",
-        "furnLifts": "6. Підйомні механізми",
-        "furnBarMechanisms": "6. Барні механізми",
-        "furnWardrobeAccessories": "6. Аксесуари до шафи",
-        "furnClothingRods": "6. К-сть штанг для одягу",
-        "furnSlidingBottom": "6. Розсувні с-ми (нижньоопорні)",
-        "furnWingline": "6. Складна система WingLine",
-        "furnSlidingDoors": "6. Системи розсувних дверей",
-        "furnSlideM": "6. Розсувні с-ми (типу slide М)"
-      };
-      missing.push(labels[fieldId]);
-    }
-  }
-  
-  // 7. Вбудована техніка
+  // 6. Вбудована техніка
   const applianceFields = ["appliancesHatch", "appliancesSink", "appliancesFireplace", "appliancesOther"];
   for (let fieldId of applianceFields) {
     const field = document.getElementById(fieldId);
     if (!field || field.value === "") {
       const labels = {
-        "appliancesHatch": "7. Люк технічний інші комунікації",
-        "appliancesSink": "7. Рукомийник",
-        "appliancesFireplace": "7. Каміни",
-        "appliancesOther": "7. Техніка (пралка, сушка, бойлер тощо)"
+        "appliancesHatch": "6. Люк технічний інші комунікації",
+        "appliancesSink": "6. Рукомийник",
+        "appliancesFireplace": "6. Каміни",
+        "appliancesOther": "6. Техніка (пралка, сушка, бойлер тощо)"
       };
       missing.push(labels[fieldId]);
     }
   }
   
-  // 8. Ручки - перевіряємо динамічні ручки
+  // 7. Ручки - перевіряємо динамічні ручки
   const hasHandles = document.getElementById("hasHandles");
   if (!hasHandles || !hasHandles.value) {
-    missing.push("8. Ручки (вибір)");
+    missing.push("7. Ручки (вибір)");
   } else if (hasHandles.value === "yes") {
     const handles = document.querySelectorAll('[id^="handle_"]');
     if (handles.length === 0) {
-      missing.push("8. Ручки (не додано жодної)");
+      missing.push("7. Ручки (не додано жодної)");
     }
   }
   
-  // 9. Підсвітка - перевіряємо динамічну підсвітку
+  // 8. Підсвітка - перевіряємо динамічну підсвітку
   const hasLighting = document.getElementById("hasLighting");
   if (!hasLighting || !hasLighting.value) {
-    missing.push("9. Підсвітка (вибір)");
+    missing.push("8. Підсвітка (вибір)");
   } else if (hasLighting.value === "yes") {
     const lights = document.querySelectorAll('[id^="lighting_"]');
     if (lights.length === 0) {
-      missing.push("9. Підсвітка (не додано жодного типу)");
+      missing.push("8. Підсвітка (не додано жодного типу)");
     }
   }
   
@@ -2825,19 +3084,6 @@ function calculate() {
       const elementName = elementNames[elementType] || elementType;
       addDetail(`Додатковий елемент: ${elementName}`, quantity, `p_other_element_${elementType}`);
     });
-  })();
-  
-  // ===== 6. Функціональна фурнітура =====
-  (function(){
-    addDetail("Ящики", valInt("furnDrawers"), "p_other_furn_drawers");
-    addDetail("Підйомні механізми", valInt("furnLifts"), "p_other_furn_lifts");
-    addDetail("Барні механізми", valInt("furnBarMechanisms"), "p_other_furn_bar");
-    addDetail("Аксесуари до шафи", valInt("furnWardrobeAccessories"), "p_other_furn_accessories");
-    addDetail("К-сть штанг для одягу", valInt("furnClothingRods"), "p_other_furn_rods");
-    addDetail("Розсувні с-ми (нижньоопорні)", valInt("furnSlidingBottom"), "p_other_furn_sliding_bottom");
-    addDetail("Складна система WingLine", valInt("furnWingline"), "p_other_furn_wingline");
-    addDetail("Системи розсувних дверей (Revego, Hawa, Salice)", valInt("furnSlidingDoors"), "p_other_furn_doors");
-    addDetail("Розсувні с-ми (типу slide М)", valInt("furnSlideM"), "p_other_furn_slide_m");
   })();
   
   // ===== 6. Вбудована техніка =====
